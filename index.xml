@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hello Friend NG</title>
+    <link>https://buzhimingyonghu.github.io/</link>
+    <description>Recent content on Hello Friend NG</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
+    <lastBuildDate>Tue, 18 Feb 2025 19:42:02 +0800</lastBuildDate>
+    <atom:link href="https://buzhimingyonghu.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Test</title>
+      <link>https://buzhimingyonghu.github.io/posts/test/</link>
+      <pubDate>Tue, 18 Feb 2025 19:42:02 +0800</pubDate>
+      <guid>https://buzhimingyonghu.github.io/posts/test/</guid>
+      <description>&lt;h1 id=&#34;pacifica-一致性测试用例说明&#34;&gt;PacificA 一致性测试用例说明&lt;/h1&gt;&#xA;&lt;h2 id=&#34;测试用例1基础一致性测试&#34;&gt;测试用例1：基础一致性测试&lt;/h2&gt;&#xA;&lt;p&gt;&lt;strong&gt;目的&lt;/strong&gt;：验证主从复制的基本功能和数据一致性&#xA;&lt;strong&gt;步骤&lt;/strong&gt;：&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;向主节点写入数据&lt;/li&gt;&#xA;&lt;li&gt;验证两个从节点的数据同步情况&lt;/li&gt;&#xA;&lt;li&gt;检查所有节点的复制状态&#xA;&lt;strong&gt;预期结果&lt;/strong&gt;：所有节点数据完全一致，复制状态正常&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;h2 id=&#34;测试用例2并发写入一致性测试&#34;&gt;测试用例2：并发写入一致性测试&lt;/h2&gt;&#xA;&lt;p&gt;&lt;strong&gt;目的&lt;/strong&gt;：确保并发写入时的数据一致性&#xA;&lt;strong&gt;步骤&lt;/strong&gt;：&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;向主节点并发写入10条数据&lt;/li&gt;&#xA;&lt;li&gt;等待数据同步完成&lt;/li&gt;&#xA;&lt;li&gt;验证两个从节点的所有数据&#xA;&lt;strong&gt;预期结果&lt;/strong&gt;：所有并发写入的数据都正确同步到从节点&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;h2 id=&#34;测试用例3网络分区恢复测试&#34;&gt;测试用例3：网络分区恢复测试&lt;/h2&gt;&#xA;&lt;p&gt;&lt;strong&gt;目的&lt;/strong&gt;：测试网络分区后的一致性恢复&#xA;&lt;strong&gt;步骤&lt;/strong&gt;：&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;写入初始数据&lt;/li&gt;&#xA;&lt;li&gt;断开从节点1连接（模拟网络分区）&lt;/li&gt;&#xA;&lt;li&gt;向主节点写入新数据&lt;/li&gt;&#xA;&lt;li&gt;恢复从节点1连接&lt;/li&gt;&#xA;&lt;li&gt;验证数据一致性&#xA;&lt;strong&gt;预期结果&lt;/strong&gt;：网络恢复后，断开的从节点应同步所有错过的数据&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;h2 id=&#34;测试用例4动态节点添加测试&#34;&gt;测试用例4：动态节点添加测试&lt;/h2&gt;&#xA;&lt;p&gt;&lt;strong&gt;目的&lt;/strong&gt;：验证新增节点时的数据一致性&#xA;&lt;strong&gt;步骤&lt;/strong&gt;：&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;初始只启动主节点和一个从节点&lt;/li&gt;&#xA;&lt;li&gt;写入一批初始数据&lt;/li&gt;&#xA;&lt;li&gt;添加第二个从节点&lt;/li&gt;&#xA;&lt;li&gt;写入新的数据&lt;/li&gt;&#xA;&lt;li&gt;验证新旧数据的一致性&#xA;&lt;strong&gt;预期结果&lt;/strong&gt;：新加入的从节点应正确接收所有历史数据和新数据&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;h2 id=&#34;测试用例5节点故障恢复测试&#34;&gt;测试用例5：节点故障恢复测试&lt;/h2&gt;&#xA;&lt;p&gt;&lt;strong&gt;目的&lt;/strong&gt;：测试节点故障和恢复时的系统行为&#xA;&lt;strong&gt;步骤&lt;/strong&gt;：&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;向所有节点写入初始数据&lt;/li&gt;&#xA;&lt;li&gt;模拟从节点1故障&lt;/li&gt;&#xA;&lt;li&gt;故障期间写入数据&lt;/li&gt;&#xA;&lt;li&gt;恢复从节点1&lt;/li&gt;&#xA;&lt;li&gt;写入新的数据&lt;/li&gt;&#xA;&lt;li&gt;验证所有数据集&#xA;&lt;strong&gt;预期结果&lt;/strong&gt;：&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;节点故障期间系统继续正常运行&lt;/li&gt;&#xA;&lt;li&gt;故障节点恢复后能同步所有错过的数据&lt;/li&gt;&#xA;&lt;li&gt;所有节点最终达到数据一致&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;测试环境&#34;&gt;测试环境&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;1个主节点（端口：9301）&lt;/li&gt;&#xA;&lt;li&gt;2个从节点（端口：9302，9303）&lt;/li&gt;&#xA;&lt;li&gt;启用强一致性模式&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;注意事项&#34;&gt;注意事项&lt;/h2&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;每个测试用例都包含足够的等待时间，确保数据同步完成&lt;/li&gt;&#xA;&lt;li&gt;所有测试都在强一致性模式下进行&lt;/li&gt;&#xA;&lt;li&gt;测试过程中会验证数据的完整性和一致性&lt;/li&gt;&#xA;&lt;/ol&gt;</description>
+    </item>
+  </channel>
+</rss>
