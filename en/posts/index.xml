@@ -1,0 +1,609 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Posts on Victor&#39;s World</title>
+        <link>//localhost:1313/en/posts/</link>
+        <description>Recent content in Posts on Victor&#39;s World</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en</language>
+        <lastBuildDate>Tue, 18 Feb 2025 19:42:02 +0800</lastBuildDate>
+        <atom:link href="//localhost:1313/en/posts/index.xml" rel="self" type="application/rss+xml" />
+        
+        <item>
+            <title>PacificA Consistency Test Cases Description</title>
+            <link>//localhost:1313/en/posts/en/pika/pacifica-test-cases/</link>
+            <pubDate>Tue, 18 Feb 2025 19:42:02 +0800</pubDate>
+            
+            <guid>//localhost:1313/en/posts/en/pika/pacifica-test-cases/</guid>
+            <description>&lt;h2 id=&#34;test-case-1-basic-consistency-test&#34;&gt;Test Case 1: Basic Consistency Test&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Purpose&lt;/strong&gt;: Verify basic master-slave replication functionality and data consistency
+&lt;strong&gt;Steps&lt;/strong&gt;:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Write data to master node&lt;/li&gt;
+&lt;li&gt;Verify data synchronization on both slave nodes&lt;/li&gt;
+&lt;li&gt;Check replication status of all nodes
+&lt;strong&gt;Expected Results&lt;/strong&gt;: Complete data consistency across all nodes, normal replication status&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;test-case-2-concurrent-write-consistency-test&#34;&gt;Test Case 2: Concurrent Write Consistency Test&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Purpose&lt;/strong&gt;: Ensure data consistency during concurrent writes
+&lt;strong&gt;Steps&lt;/strong&gt;:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Concurrently write 10 data entries to master node&lt;/li&gt;
+&lt;li&gt;Wait for data synchronization completion&lt;/li&gt;
+&lt;li&gt;Verify all data on both slave nodes
+&lt;strong&gt;Expected Results&lt;/strong&gt;: All concurrent writes correctly synchronized to slave nodes&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;test-case-3-network-partition-recovery-test&#34;&gt;Test Case 3: Network Partition Recovery Test&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Purpose&lt;/strong&gt;: Test consistency recovery after network partition
+&lt;strong&gt;Steps&lt;/strong&gt;:&lt;/p&gt;</description>
+            <content type="html"><![CDATA[<h2 id="test-case-1-basic-consistency-test">Test Case 1: Basic Consistency Test</h2>
+<p><strong>Purpose</strong>: Verify basic master-slave replication functionality and data consistency
+<strong>Steps</strong>:</p>
+<ol>
+<li>Write data to master node</li>
+<li>Verify data synchronization on both slave nodes</li>
+<li>Check replication status of all nodes
+<strong>Expected Results</strong>: Complete data consistency across all nodes, normal replication status</li>
+</ol>
+<h2 id="test-case-2-concurrent-write-consistency-test">Test Case 2: Concurrent Write Consistency Test</h2>
+<p><strong>Purpose</strong>: Ensure data consistency during concurrent writes
+<strong>Steps</strong>:</p>
+<ol>
+<li>Concurrently write 10 data entries to master node</li>
+<li>Wait for data synchronization completion</li>
+<li>Verify all data on both slave nodes
+<strong>Expected Results</strong>: All concurrent writes correctly synchronized to slave nodes</li>
+</ol>
+<h2 id="test-case-3-network-partition-recovery-test">Test Case 3: Network Partition Recovery Test</h2>
+<p><strong>Purpose</strong>: Test consistency recovery after network partition
+<strong>Steps</strong>:</p>
+<ol>
+<li>Write initial data</li>
+<li>Disconnect slave node 1 (simulating network partition)</li>
+<li>Write new data to master node</li>
+<li>Restore slave node 1 connection</li>
+<li>Verify data consistency
+<strong>Expected Results</strong>: After network recovery, disconnected slave should sync all missed data</li>
+</ol>
+<h2 id="test-case-4-dynamic-node-addition-test">Test Case 4: Dynamic Node Addition Test</h2>
+<p><strong>Purpose</strong>: Verify data consistency when adding new nodes
+<strong>Steps</strong>:</p>
+<ol>
+<li>Initially start master node and one slave node</li>
+<li>Write initial batch of data</li>
+<li>Add second slave node</li>
+<li>Write new data</li>
+<li>Verify consistency of both old and new data
+<strong>Expected Results</strong>: Newly added slave node should correctly receive all historical and new data</li>
+</ol>
+<h2 id="test-case-5-node-failure-recovery-test">Test Case 5: Node Failure Recovery Test</h2>
+<p><strong>Purpose</strong>: Test system behavior during node failure and recovery
+<strong>Steps</strong>:</p>
+<ol>
+<li>Write initial data to all nodes</li>
+<li>Simulate slave node 1 failure</li>
+<li>Write data during failure period</li>
+<li>Recover slave node 1</li>
+<li>Write new data</li>
+<li>Verify all datasets
+<strong>Expected Results</strong>:</li>
+</ol>
+<ul>
+<li>System continues normal operation during node failure</li>
+<li>Failed node syncs all missed data after recovery</li>
+<li>All nodes eventually achieve data consistency</li>
+</ul>
+<h2 id="test-environment">Test Environment</h2>
+<ul>
+<li>1 master node (port: 9301)</li>
+<li>2 slave nodes (ports: 9302, 9303)</li>
+<li>Strong consistency mode enabled</li>
+</ul>
+<h2 id="important-notes">Important Notes</h2>
+<ol>
+<li>Each test case includes sufficient wait time to ensure data synchronization completion</li>
+<li>All tests conducted in strong consistency mode</li>
+<li>Data integrity and consistency verified throughout testing process</li>
+</ol>
+]]></content>
+        </item>
+        
+        <item>
+            <title>Pacifica-Analysis</title>
+            <link>//localhost:1313/en/posts/en/distributed/pacifica-test-cases/</link>
+            <pubDate>Tue, 18 Feb 2025 19:42:02 +0800</pubDate>
+            
+            <guid>//localhost:1313/en/posts/en/distributed/pacifica-test-cases/</guid>
+            <description>&lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
+&lt;p&gt;Large-scale distributed storage systems have gained attention due to increasing data volumes, with replication mechanisms being key to achieving high availability and throughput. While consensus research has laid foundations for replication protocols, architectural design and engineering implementation remain challenging. This article shares experiences in designing replication mechanisms for log-based storage systems using the PacificA protocol, proposing a simple, practical, strongly consistent general replication framework that demonstrates flexibility in supporting various design choices.&lt;/p&gt;</description>
+            <content type="html"><![CDATA[<h2 id="abstract">Abstract</h2>
+<p>Large-scale distributed storage systems have gained attention due to increasing data volumes, with replication mechanisms being key to achieving high availability and throughput. While consensus research has laid foundations for replication protocols, architectural design and engineering implementation remain challenging. This article shares experiences in designing replication mechanisms for log-based storage systems using the PacificA protocol, proposing a simple, practical, strongly consistent general replication framework that demonstrates flexibility in supporting various design choices.</p>
+<hr>
+<h1 id="1-pacifica-process">1. PacificA Process</h1>
+<p>The system implements data replication through a primary-backup model, where each data set is managed by a replica group with a designated primary server and remaining backup servers. Configuration changes are tracked by version numbers. This article focuses on strong consistency replication protocols, ensuring distributed system behavior matches single-machine consistency (linearizability).</p>
+<h2 id="11-primary-backup-replication">1.1 Primary-Backup Replication</h2>
+<p>Client requests are categorized into two types:</p>
+<ol>
+<li>Query requests for reading data</li>
+<li>Update requests for writing data</li>
+</ol>
+<p>Strong consistency can be achieved if all servers in the replica group process the same set of requests in the same order (assuming updates are deterministic). Therefore, the primary server assigns consecutive and monotonically increasing sequence numbers to updates and directs all backup servers to process requests in this order.</p>
+<h3 id="normal-operation-process">Normal Operation Process:</h3>
+<h4 id="query-request-handling">Query Request Handling:</h4>
+<ul>
+<li>When the primary server receives a read request, it directly processes it using the state recorded in the current commit list. Query requests don&rsquo;t affect data consistency, so the primary can return results immediately.</li>
+</ul>
+<h4 id="write-request-handling">Write Request Handling:</h4>
+<ul>
+<li>The primary server assigns an incremental global sequence number to write requests, ensuring all requests are processed in a fixed order.</li>
+<li>The primary sends a <code>prepare</code> message containing configuration version, sequence number, and CommittedID to all backup servers.</li>
+</ul>
+<h4 id="backup-server-processing">Backup Server Processing:</h4>
+<ul>
+<li>Each backup server adds requests to its prepare list in sequence number order upon receiving <code>prepare</code> messages, marking requests as &ldquo;prepared&rdquo;.</li>
+<li>The backup then sends a <code>prepared</code> message to the primary as confirmation.</li>
+</ul>
+<h4 id="state-machine-commitment">State Machine Commitment:</h4>
+<ul>
+<li>The primary marks a request as committed only after receiving confirmations from all backup servers. The primary then updates its commit point to the highest committed sequence number.</li>
+<li>The primary returns an acknowledgment to the client indicating successful request completion.</li>
+<li>With each <code>prepare</code> message, the primary includes the current commit point sequence number, informing backup servers which requests are committed. This allows backup servers to advance their commit points in sync with the primary.</li>
+</ul>
+<h3 id="consistency-guarantees">Consistency Guarantees:</h3>
+<p>The primary only adds requests to the commit list after all backups have added them to their prepare lists, ensuring commit list consistency with backup prepare lists. Backups only consider requests committed after the primary marks them as such, ensuring backup commit lists remain within the primary&rsquo;s commit range.</p>
+<h3 id="commit-invariant">Commit Invariant:</h3>
+<p>Forms the &ldquo;Commit Invariant&rdquo;: for primary <code>p</code> and any backup <code>q</code>, always maintains:</p>
+<p>committedq ⊆ committedp ⊆ preparedq</p>
+<p>This ensures data consistency and synchronization between primary and backups.</p>
+<hr>
+<h2 id="12-configuration-management">1.2 Configuration Management</h2>
+<h3 id="design-a-global-configuration-manager">Design a Global Configuration Manager:</h3>
+<ul>
+<li>Responsible for managing and maintaining configuration for all replica groups in the system.</li>
+<li>For each replica group, the configuration manager saves the current configuration and configuration version.</li>
+</ul>
+<h3 id="global-configuration-manager-functions">Global Configuration Manager Functions:</h3>
+<ol>
+<li>
+<p><strong>Reconfiguration</strong>:</p>
+<ul>
+<li>Detects if any replica is faulty and decides whether to remove the replica or restart the replica configuration.</li>
+<li>Adds new replicas.</li>
+</ul>
+</li>
+<li>
+<p><strong>Adding Backup Nodes</strong>:</p>
+<ul>
+<li>Decides whether to add new configuration based on the set rules.</li>
+<li>Configuration rules: Whether version matches, checks if the <code>committedID</code> of the replica matches (whether exists, whether less than the primary&rsquo;s <code>committedID</code>).</li>
+</ul>
+</li>
+<li>
+<p><strong>Primary Crash, Reconfiguration</strong>:</p>
+<ul>
+<li>If a network partition occurs, causing the primary server to be disconnected from the replicas, there may be conflicting reconfiguration requests. For example, the primary server may want to remove some replicas, while some replicas may want to remove the primary server.</li>
+<li>Still first checks whether the match rule <code>L</code> is successful, and the request accepted by the configuration manager &ldquo;wins&rdquo;.</li>
+</ul>
+</li>
+<li>
+<p><strong>Fault Detection and Primary Server Immutability</strong>:</p>
+<ul>
+<li>Primary server immutability requirement, at any time, server <code>p</code> is only considered the primary server when the configuration manager believes it is in the current configuration. This ensures that in the system, at most only one server in the replica group believes it is the primary server.</li>
+</ul>
+</li>
+</ol>
+<h3 id="summary">Summary:</h3>
+<p>The configuration manager is responsible for coordinating and maintaining system configuration, ensuring consistency of replica group configuration, version control, and fault recovery. Primary server immutability ensures that there is only one primary server in the system, and multiple servers cannot be primary servers at the same time.</p>
+<hr>
+<h2 id="13-coordination-state">1.3 Coordination State</h2>
+<h3 id="how-to-ensure-data-consistency-when-primary-server-changes"><strong>How to Ensure Data Consistency When Primary Server Changes</strong></h3>
+<p>If the primary server fails, the primary server change process will be triggered, and the replicas become the new primary server. The new primary server needs to complete the coordination process before processing new requests, which is to handle <code>preparedID</code> and <code>committedID</code>.</p>
+<h4 id="coordination-process"><strong>Coordination Process</strong></h4>
+<ol>
+<li>
+<p><strong>Initial State</strong>:</p>
+<ul>
+<li><code>A</code> is the primary server, <code>B</code>, <code>C</code>, and <code>D</code> are replicas.</li>
+<li><code>committedB</code> is a subset of <code>committedA</code>, and <code>committedA</code> is also a subset of any replica&rsquo;s <code>prepared</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Coordination Process</strong>:</p>
+<ul>
+<li>Suppose a reconfiguration occurs, replacing <code>B</code> as the primary server.</li>
+<li>After <code>B</code> completes coordination, the new <code>committedB</code> is the same as the old <code>preparedB</code>, meaning now all replicas&rsquo; <code>prepared</code> and <code>preparedB</code> are aligned.</li>
+</ul>
+</li>
+</ol>
+<h4 id="summary-1"><strong>Summary</strong></h4>
+<ol>
+<li>The new primary will submit all prepared logs now, making <code>preparedIdB</code> and <code>committedIdB</code> the same.</li>
+<li>Make all replicas&rsquo; <code>preparedID</code> and the primary&rsquo;s <code>preparedID</code> aligned, extra ones are deleted, and missing ones are added up.</li>
+</ol>
+<h2 id="14-adding-new-replica">1.4 Adding New Replica</h2>
+<p>When some replicas in the replica group fail, in order to restore redundancy levels, a new replica can be added to the replica group. When adding a new server to the configuration, the submit invariant must be maintained, and the new replica must have a complete prepare list before joining the replica group, ensuring consistency.</p>
+<h3 id="synchronization-scheme">Synchronization Scheme:</h3>
+<ol>
+<li><strong>Simple Synchronization Scheme</strong>
+<ul>
+<li>Primary server pauses processing new updates until the new replica has copied the prepare list from the existing replicas before continuing work. This ensures consistency but may slow down system processing speed.</li>
+</ul>
+</li>
+<li><strong>Candidate Replica Mechanism</strong>
+<ul>
+<li>Candidate replica: Primary server does not stop processing updates but adds the new replica as a &ldquo;candidate replica&rdquo; to the system. Primary server sends the update prepare message to the candidate replica.</li>
+<li>Confirmation mechanism: Candidate replica receives and confirms the message before becoming a member of the system.</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="15-configuration-manager-availability-and-performance">1.5 Configuration Manager Availability and Performance</h2>
+<h3 id="configuration-manager-functions">Configuration Manager Functions:</h3>
+<ul>
+<li>Responsible for managing the current configuration of all replica groups in the system, simplifying management.</li>
+<li>Separated from data replication protocol, improving system fault tolerance, can tolerate up to <code>n-1</code> replica failures.</li>
+</ul>
+<h3 id="configuration-manager-high-availability">Configuration Manager High Availability:</h3>
+<ul>
+<li>Uses <strong>Replication State Machine</strong> combined with <strong>Paxos Protocol</strong>, ensuring system consistency and fault tolerance.</li>
+<li>Deploys multiple instances (usually 5 or 7 servers), can tolerate a few server failures.</li>
+</ul>
+<hr>
+<h2 id="16-primary-backup-model-vs-paxos-protocol-comparison">1.6 Primary-Backup Model vs. Paxos Protocol Comparison</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Comparison Item</th>
+          <th>Primary-Backup Model</th>
+          <th>Paxos Protocol</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Consistency</strong></td>
+          <td>Requires all replicas to be prepared</td>
+          <td>Requires majority replicas to be prepared</td>
+      </tr>
+      <tr>
+          <td><strong>Fault Tolerance</strong></td>
+          <td>Single point failure affects greatly</td>
+          <td>Tolerates a few replica failures</td>
+      </tr>
+      <tr>
+          <td><strong>Reconfiguration</strong></td>
+          <td>Configuration manager assists, simple</td>
+          <td>Requires consensus decision, more complex</td>
+      </tr>
+      <tr>
+          <td><strong>Applicable Scenario</strong></td>
+          <td>Simple structure, easy engineering implementation</td>
+          <td>Applicable to higher reliability demand systems</td>
+      </tr>
+  </tbody>
+</table>
+<p>In practice, the primary-backup model is often used due to its simplicity, while the Paxos protocol is applicable to systems with higher reliability demands. This article chooses the primary-backup model to simplify implementation and ensure consistency.</p>
+<h2 id="2-pacifica-replication-framework">2. PacificA Replication Framework</h2>
+<p>In distributed log-based storage systems, the replication framework is usually used to ensure data persistence and efficient storage, especially when data is distributed across multiple servers. This design provides efficient data management through a combination of log recording, checkpoint, memory cache, and disk image, avoiding frequent random disk writes. The following are the main steps and principles of the design:</p>
+<h3 id="1-log-recording-ensure-persistence">1. Log Recording (Ensure Persistence)</h3>
+<ul>
+<li>When the system receives an update request, it first writes the update to the log. This step ensures that even if the system fails, the log can be used as a persistent backup to recover data.</li>
+</ul>
+<h3 id="2-memory-data-structure-update">2. Memory Data Structure Update</h3>
+<ul>
+<li>After recording to the log, the system applies the update to the data structure in memory for quick processing and query of the latest data.</li>
+</ul>
+<h3 id="3-regular-checkpoint-creation">3. Regular Checkpoint Creation</h3>
+<ul>
+<li>To prevent memory overflow, the system periodically creates a checkpoint on the disk to save the data snapshot in memory. This step writes all data in memory to disk to form a persistent checkpoint.</li>
+</ul>
+<h3 id="4-log-truncation">4. Log Truncation</h3>
+<ul>
+<li>After creating a checkpoint, the updates recorded in the log that are included in the checkpoint can be truncated or deleted, because they are already safely stored on disk. This step optimizes log storage requirements, preventing log from growing indefinitely.</li>
+</ul>
+<h3 id="5-query-processing">5. Query Processing</h3>
+<ul>
+<li>Query is completed through a combination of data structure in memory, checkpoint, and disk image. This allows data to be preferentially obtained from memory, and if data is not in memory, further search is performed on checkpoint and final disk image.</li>
+</ul>
+<h3 id="design-advantages">Design Advantages</h3>
+<ul>
+<li><strong>Sequential Writing</strong>: The design converts updates to sequential writing based on log, avoiding random disk writes, greatly improving write speed and system performance.</li>
+<li><strong>Quick Recovery</strong>: The system can quickly replay log and checkpoint after failure, recovering data.</li>
+<li><strong>Storage Optimization</strong>: Log truncation prevents log file from growing indefinitely, ensuring efficient persistence storage.</li>
+</ul>
+<h2 id="logical-replication">Logical Replication</h2>
+<p>Logical replication is a data replication method used to implement data consistency in distributed systems. It emphasizes maintaining data state consistency across all replicas logically, that is, each replica&rsquo;s state logically should be consistent with the primary replica, although the physical storage methods of the replicas can be different. The following is the specific content explanation:</p>
+<h3 id="1-state-consistency">1. State Consistency</h3>
+<ul>
+<li>In logical replication, all replicas maintain the same state logically and can handle the same type of updates and queries. Each replica can decide when to perform checkpoint (save snapshot) or merge on its own, but their states are logically consistent.</li>
+</ul>
+<h3 id="2-prepared-list-and-application-log">2. Prepared List and Application Log</h3>
+<ul>
+<li><strong>Prepared List</strong>: Used to store those updates that have been received but not yet officially submitted. These requests are already prepared but may not have been applied to the primary storage state.</li>
+<li><strong>Application Log</strong>: Used to store the log records of all client requests received, including both committed and uncommitted requests. For avoiding write overhead, these two lists can be merged, and only prepared updates need to be saved in the application log.</li>
+<li><strong>Log Entry</strong> Contains three key fields: configuration version number, sequence number, and the final committed sequence number. These information help the system track request status, especially ensuring log uniqueness and consistency when the primary node changes.</li>
+</ul>
+<h3 id="3-two-phase-process">3. Two-Phase Process</h3>
+<ul>
+<li><strong>First Phase</strong>: When a replica receives a request message (including request content, version number, sequence number, etc.), the message is appended to the replica&rsquo;s application log.</li>
+<li><strong>Second Phase</strong>: When a request is officially submitted, it is directly applied to memory without needing to be written back to log, because it has been recorded in the log.</li>
+</ul>
+<h3 id="4-log-truncation-1">4. Log Truncation</h3>
+<ul>
+<li>The committed updates in the log are truncated after generating checkpoint, only the uncommitted updates are retained. This reduces log file size while retaining the content needed for system failure recovery.</li>
+</ul>
+<h3 id="5-checkpoint-and-recovery">5. Checkpoint and Recovery</h3>
+<ul>
+<li>Each checkpoint saves all updates within a certain sequence number range, helping replicas recover after failure.</li>
+<li>The replica&rsquo;s disk image (persistent storage) is associated with its last sequence number, which can serve as a recovery point when the replica restarts.</li>
+</ul>
+<h2 id="logical-replication-variant-logical-v">Logical Replication Variant (Logical-V)</h2>
+<p>A special variant of logical replication is <strong>Logical-V</strong>, which optimizes system performance by reducing resource consumption:</p>
+<h3 id="1-only-primary-node-processes-updates">1. Only Primary Node Processes Updates</h3>
+<ul>
+<li>In Logical-V, only the primary node executes state updates, generates checkpoints, and performs merge operations.</li>
+<li>Secondary nodes only record update logs without actually applying updates, reducing memory and CPU usage of secondary nodes.</li>
+</ul>
+<h3 id="2-secondary-node-checkpoint-transfer">2. Secondary Node Checkpoint Transfer</h3>
+<ul>
+<li>Secondary nodes don&rsquo;t generate checkpoints themselves but directly receive completed checkpoints from the primary node.</li>
+<li>This approach reduces memory and CPU overhead for replicas but increases network load as checkpoints need to be transferred over the network.</li>
+</ul>
+<h3 id="3-impact-on-failover">3. Impact on Failover</h3>
+<ul>
+<li>In Logical-V, if the primary node fails, secondary nodes need to replay logs to recover to the latest state before generating checkpoints.</li>
+<li>This results in longer failover times in Logical-V.</li>
+</ul>
+<h2 id="advantages-and-disadvantages-comparison">Advantages and Disadvantages Comparison</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Solution</th>
+          <th>Advantages</th>
+          <th>Disadvantages</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Logical Replication (Standard Mode)</strong></td>
+          <td>Provides higher local consistency and independence, each replica can generate checkpoints independently</td>
+          <td>Each replica consumes more resources (memory, CPU), increasing system overhead</td>
+      </tr>
+      <tr>
+          <td><strong>Logical-V</strong></td>
+          <td>Reduces resource consumption of secondary nodes, making the system more scalable</td>
+          <td>Increases network load and failover delay, secondary nodes need more recovery time when becoming primary</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="summary-2">Summary</h2>
+<p>Both logical replication and Logical-V aim to achieve efficient replica consistency in distributed systems.</p>
+<ul>
+<li><strong>Logical Replication</strong> is suitable for scenarios with sufficient resources and desire for replica independence.</li>
+<li><strong>Logical-V</strong> is suitable for scenarios that prioritize resource conservation, have sufficient network bandwidth but allow longer failure recovery times.</li>
+</ul>
+<h2 id="implementation-considerations">Implementation Considerations</h2>
+<h3 id="1-log-management">1. Log Management</h3>
+<ul>
+<li>Implement efficient log storage and retrieval mechanisms</li>
+<li>Design proper log truncation policies</li>
+<li>Ensure atomic log operations</li>
+</ul>
+<h3 id="2-state-machine-design">2. State Machine Design</h3>
+<ul>
+<li>Implement deterministic state transitions</li>
+<li>Handle configuration changes gracefully</li>
+<li>Manage resource allocation efficiently</li>
+</ul>
+<h3 id="3-network-communication">3. Network Communication</h3>
+<ul>
+<li>Design robust RPC mechanisms</li>
+<li>Handle network partitions</li>
+<li>Implement efficient heartbeat mechanisms</li>
+</ul>
+<h3 id="4-failure-detection">4. Failure Detection</h3>
+<ul>
+<li>Implement reliable failure detection</li>
+<li>Handle false positives appropriately</li>
+<li>Design proper timeout mechanisms</li>
+</ul>
+<h3 id="5-recovery-procedures">5. Recovery Procedures</h3>
+<ul>
+<li>Implement efficient state transfer</li>
+<li>Design checkpoint management</li>
+<li>Handle partial failures</li>
+</ul>
+<h2 id="best-practices">Best Practices</h2>
+<ol>
+<li>
+<p><strong>Configuration Management</strong></p>
+<ul>
+<li>Keep configuration changes atomic</li>
+<li>Maintain version control</li>
+<li>Implement proper access control</li>
+</ul>
+</li>
+<li>
+<p><strong>Performance Optimization</strong></p>
+<ul>
+<li>Batch operations when possible</li>
+<li>Optimize network usage</li>
+<li>Implement efficient caching</li>
+</ul>
+</li>
+<li>
+<p><strong>Monitoring and Debugging</strong></p>
+<ul>
+<li>Implement comprehensive logging</li>
+<li>Monitor system metrics</li>
+<li>Provide debugging tools</li>
+</ul>
+</li>
+<li>
+<p><strong>Security Considerations</strong></p>
+<ul>
+<li>Implement authentication</li>
+<li>Secure communication channels</li>
+<li>Handle malicious requests</li>
+</ul>
+</li>
+</ol>
+<h2 id="conclusion">Conclusion</h2>
+<p>PacificA provides a practical framework for building distributed storage systems with strong consistency guarantees. Its design choices balance simplicity, reliability, and performance, making it suitable for various real-world applications. The protocol&rsquo;s flexibility in supporting different replication strategies allows systems to adapt to specific requirements while maintaining consistency guarantees.</p>
+]]></content>
+        </item>
+        
+        <item>
+            <title>Pika Master-Slave Consistency Based on PacificA Protocol</title>
+            <link>//localhost:1313/en/posts/en/pika/pacifica-consistency/</link>
+            <pubDate>Tue, 18 Feb 2025 19:42:02 +0800</pubDate>
+            
+            <guid>//localhost:1313/en/posts/en/pika/pacifica-consistency/</guid>
+            <description>&lt;h1 id=&#34;pacifica-protocol-overview&#34;&gt;PacificA Protocol Overview&lt;/h1&gt;
+&lt;p&gt;The &lt;a href=&#34;https://www.microsoft.com/en-us/research/wp-content/uploads/2008/02/tr-2008-25.pdf&#34;&gt;PacificA&lt;/a&gt; protocol consists of two main parts:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;- Data Replication&lt;/strong&gt;&lt;/p&gt;
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;Configuration Management&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;em&gt;In Pika, since configuration management is primarily handled by &lt;code&gt;pika_sentinel&lt;/code&gt;, this article focuses on data replication through master-slave mode and its coordination process with &lt;code&gt;pika_sentinel&lt;/code&gt;.&lt;/em&gt;&lt;/p&gt;
+&lt;h2 id=&#34;application-in-pika&#34;&gt;Application in Pika&lt;/h2&gt;
+&lt;p&gt;The implementation consists of three main parts:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Data consistency process in PacificA master-slave mode&lt;/li&gt;
+&lt;li&gt;Distributed log storage system design&lt;/li&gt;
+&lt;li&gt;State coordination after failure recovery&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;starting-pacifica&#34;&gt;Starting PacificA&lt;/h2&gt;
+&lt;p&gt;In Pika, the command to establish a regular master-slave connection is:&lt;/p&gt;</description>
+            <content type="html"><![CDATA[<h1 id="pacifica-protocol-overview">PacificA Protocol Overview</h1>
+<p>The <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2008/02/tr-2008-25.pdf">PacificA</a> protocol consists of two main parts:</p>
+<p><strong>- Data Replication</strong></p>
+<ol start="2">
+<li>Configuration Management</li>
+</ol>
+<p><em>In Pika, since configuration management is primarily handled by <code>pika_sentinel</code>, this article focuses on data replication through master-slave mode and its coordination process with <code>pika_sentinel</code>.</em></p>
+<h2 id="application-in-pika">Application in Pika</h2>
+<p>The implementation consists of three main parts:</p>
+<ol>
+<li>Data consistency process in PacificA master-slave mode</li>
+<li>Distributed log storage system design</li>
+<li>State coordination after failure recovery</li>
+</ol>
+<hr>
+<h2 id="starting-pacifica">Starting PacificA</h2>
+<p>In Pika, the command to establish a regular master-slave connection is:</p>
+<pre tabindex="0"><code>slaveof &lt;ip&gt; &lt;port&gt;
+</code></pre><p>To enable the PacificA protocol, add the strong parameter:</p>
+<pre tabindex="0"><code>slaveof &lt;ip&gt; &lt;port&gt; strong
+</code></pre><p>When a slave node executes this command, it triggers slaveofcmd, reads relevant parameters, and the pika_server saves this information, which is then asynchronously handled by the PikaAuxiliaryThread (PAT).
+PAT is the core auxiliary thread in the PacificA protocol, responsible for:</p>
+<pre><code>- State machine transitions
+- Heartbeat sending and timeout checking between master and slaves
+- Synchronization tasks between master and slaves
+</code></pre>
+<h2 id="data-consistency-flow-in-pacifica-master-slave-mode">Data Consistency Flow in PacificA Master-Slave Mode</h2>
+<h3 id="four-phases-of-master-slave-connection-establishment">Four Phases of Master-Slave Connection Establishment</h3>
+<ol>
+<li>MetaSync: Synchronization and verification of master-slave metadata</li>
+<li>TrySync: Data integrity assessment, choosing between full or incremental sync</li>
+<li>Candidate: Slave node as candidate, appending complete preparation list</li>
+<li>BinlogSync: Officially joining cluster, starting data replication</li>
+</ol>
+<p><img src="https://github.com/user-attachments/assets/11268449-19db-4d14-af3b-0aebd9e54a54" alt="image">
+Basic data structures:
+<img src="https://github.com/user-attachments/assets/d81d704d-34ce-4c8e-aaff-d4f137a45035" alt="image"></p>
+<h2 id="metasync-phase">MetaSync Phase</h2>
+<p><img src="https://github.com/user-attachments/assets/19e287da-0630-4381-b09e-75527ea76a20" alt="image"></p>
+<p>The slave node&rsquo;s PAT thread establishes connection with the master by sending MetaReq request, including is_consistency field indicating strong consistency request.
+When master receives the request with consistency flag set to true, it:</p>
+<ol>
+<li>Sets consistency flags for all databases</li>
+<li>Initializes context</li>
+<li>Determines if coordination state is needed</li>
+</ol>
+<p><img src="https://github.com/user-attachments/assets/0f54ef7b-661e-45de-96a9-d794ebb3840b" alt="image"></p>
+<p>Subsequently, the slave receives MetaSyncRes from master and:</p>
+<ol>
+<li>
+<p>Compares local and master database structures (db_structs)</p>
+</li>
+<li>
+<p>Performs full sync if local replication_id differs from master&rsquo;s and is empty; otherwise, incremental sync</p>
+</li>
+<li>
+<p>Updates slave state based on sync type:</p>
+<ul>
+<li>Full sync: Sets state to kTryDBSync</li>
+<li>Incremental sync: Sets state to kTryConnect</li>
+</ul>
+</li>
+</ol>
+<h2 id="trysync-phase">TrySync Phase</h2>
+<p><img src="https://github.com/user-attachments/assets/1e0b3450-e91f-4aeb-909f-1f6a4d6e4855" alt="image"></p>
+<p>After full sync, slave updates its committedID and preparedID, sends TrySyncReq with committedID to confirm log consistency.
+Master verifies and returns TrySyncRes containing master&rsquo;s preparedID, slave aligns its preparedID with master&rsquo;s, completing incremental sync.</p>
+<p>Process summary:</p>
+<ol>
+<li>
+<p>Slave sends TrySyncReq with committedID</p>
+</li>
+<li>
+<p>Master checks committedID:</p>
+<ul>
+<li>If master&rsquo;s committedID &gt; slave&rsquo;s: sync is normal</li>
+<li>If slave&rsquo;s committedID &gt; master&rsquo;s: leader election failed</li>
+</ul>
+</li>
+<li>
+<p>Master returns TrySyncRes with master&rsquo;s preparedID for slave alignment</p>
+</li>
+</ol>
+<h2 id="binlogsync-phase">BinlogSync Phase</h2>
+<p><img src="https://github.com/user-attachments/assets/44cf483f-102b-4f85-b79e-c786a8e60b2c" alt="image"></p>
+<p>Master sets slave as candidate upon receiving first binlog request, appending logs.
+Master notifies slaves through heartbeats and binlog data, writing logs in phases:</p>
+<ul>
+<li>Slave writes binlog upon receiving binlogSync, awaiting master&rsquo;s commit notification</li>
+<li>Master marks requests as committed after all slaves confirm, updates commit point ensuring consistency</li>
+</ul>
+<h2 id="distributed-log-storage-system-design">Distributed Log Storage System Design</h2>
+<p>PacificA employs logical replication including:</p>
+<ol>
+<li>State Consistency: All replicas maintain logically identical states, handling same types of updates and queries</li>
+<li>Log Recording: System writes updates to log first, ensuring data recovery capability</li>
+<li>Memory Structure Updates: After logging, updates are applied to in-memory data structures</li>
+<li>Periodic Checkpoints: Prevents memory overflow, regularly saves data snapshots to disk</li>
+<li>Log Truncation: Deletes logs stored in checkpoints, optimizing storage</li>
+</ol>
+<p><img src="https://github.com/user-attachments/assets/dcc12756-9217-4ba5-b5e3-36ac0d91283e" alt="image"></p>
+<h2 id="state-coordination-after-failure-recovery">State Coordination After Failure Recovery</h2>
+<p><img src="https://github.com/user-attachments/assets/1e6fb58b-dd02-48c3-bf11-52ae9e57f6d9" alt="image"></p>
+<h3 id="initial-state">Initial State</h3>
+<ul>
+<li>A is master, B, C, and D are replicas</li>
+<li>committedB is subset of committedA, committedA is subset of all replicas&rsquo; prepared</li>
+</ul>
+<h3 id="failure-recovery">Failure Recovery</h3>
+<h3 id="when-master-node-a-fails">When Master Node A Fails:</h3>
+<ol>
+<li>System reconfigures, promoting B as new master</li>
+<li>After B&rsquo;s coordination, new committedB matches old preparedB, all replicas&rsquo; preparedID align with new master&rsquo;s</li>
+</ol>
+<h2 id="write-request-operation-flow">Write Request Operation Flow</h2>
+<ol>
+<li>Write binlog: Execute database write after all slaves append logs</li>
+<li>Master processes binlog request:
+<ul>
+<li>Non-consistency mode: Execute traditional master-slave replication</li>
+<li>Consistency mode:</li>
+</ul>
+</li>
+<li>coordinator_ appends log and records offset</li>
+<li>Wait for slave sync, update master&rsquo;s committedID</li>
+<li>If sync fails (10s timeout), log info and exit</li>
+</ol>
+<p><img src="https://github.com/user-attachments/assets/41df6eae-f144-47c4-b554-c0bcf512b62a" alt="image"></p>
+]]></content>
+        </item>
+        
+    </channel>
+</rss>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="测试用例1：基础一致性测试 目的：验证主从复制的基本功能和数据一致性 步骤：
+向主节点写入数据 验证两个从节点的数据同步情况 检查所有节点的复制状态 预期结果：所有节点数据完全一致，复制状态正常 测试用例2：并发写入一致性测试 目的：确保并发写入时的数据一致性 步骤：
+向主节点并发写入10条数据 等待数据同步完成 验证两个从节点的所有数据 预期结果：所有并发写入的数据都正确同步到从节点 测试用例3：网络分区恢复测试 目的：测试网络分区后的一致性恢复 步骤：
+写入初始数据 断开从节点1连接（模拟网络分区） 向主节点写入新数据 恢复从节点1连接 验证数据一致性 预期结果：网络恢复后，断开的从节点应同步所有错过的数据 测试用例4：动态节点添加测试 目的：验证新增节点时的数据一致性 步骤：
+初始只启动主节点和一个从节点 写入一批初始数据 添加第二个从节点 写入新的数据 验证新旧数据的一致性 预期结果：新加入的从节点应正确接收所有历史数据和新数据 测试用例5：节点故障恢复测试 目的：测试节点故障和恢复时的系统行为 步骤：
+向所有节点写入初始数据 模拟从节点1故障 故障期间写入数据 恢复从节点1 写入新的数据 验证所有数据集 预期结果： 节点故障期间系统继续正常运行 故障节点恢复后能同步所有错过的数据 所有节点最终达到数据一致 测试环境 1个主节点（端口：9301） 2个从节点（端口：9302，9303） 启用强一致性模式 注意事项 每个测试用例都包含足够的等待时间，确保数据同步完成 所有测试都在强一致性模式下进行 测试过程中会验证数据的完整性和一致性 " />
+<meta name="keywords" content="Victor, 博客, 技术, 生活, Pika, PacificA, 分布式, 一致性" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="//localhost:1313/posts/zh/pika/pacifica-test-cases/" />
+
+
+    <title>
+        
+            PacificA 一致性测试用例说明 :: Victor的世界 
+        
+    </title>
+
+
+
+
+
+  <link rel="stylesheet" href="/main.min.244183cde1a38e0b08f82c11791181288f9aac1cc9618cd6f4e9e7710c5768ba.css" integrity="sha256-JEGDzeGjjgsI&#43;CwReRGBKI&#43;arBzJYYzW9OnncQxXaLo=" crossorigin="anonymous">
+
+
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="PacificA 一致性测试用例说明">
+  <meta itemprop="description" content="测试用例1：基础一致性测试 目的：验证主从复制的基本功能和数据一致性 步骤：
+向主节点写入数据 验证两个从节点的数据同步情况 检查所有节点的复制状态 预期结果：所有节点数据完全一致，复制状态正常 测试用例2：并发写入一致性测试 目的：确保并发写入时的数据一致性 步骤：
+向主节点并发写入10条数据 等待数据同步完成 验证两个从节点的所有数据 预期结果：所有并发写入的数据都正确同步到从节点 测试用例3：网络分区恢复测试 目的：测试网络分区后的一致性恢复 步骤：
+写入初始数据 断开从节点1连接（模拟网络分区） 向主节点写入新数据 恢复从节点1连接 验证数据一致性 预期结果：网络恢复后，断开的从节点应同步所有错过的数据 测试用例4：动态节点添加测试 目的：验证新增节点时的数据一致性 步骤：
+初始只启动主节点和一个从节点 写入一批初始数据 添加第二个从节点 写入新的数据 验证新旧数据的一致性 预期结果：新加入的从节点应正确接收所有历史数据和新数据 测试用例5：节点故障恢复测试 目的：测试节点故障和恢复时的系统行为 步骤：
+向所有节点写入初始数据 模拟从节点1故障 故障期间写入数据 恢复从节点1 写入新的数据 验证所有数据集 预期结果： 节点故障期间系统继续正常运行 故障节点恢复后能同步所有错过的数据 所有节点最终达到数据一致 测试环境 1个主节点（端口：9301） 2个从节点（端口：9302，9303） 启用强一致性模式 注意事项 每个测试用例都包含足够的等待时间，确保数据同步完成 所有测试都在强一致性模式下进行 测试过程中会验证数据的完整性和一致性">
+  <meta itemprop="datePublished" content="2025-02-18T19:42:02+08:00">
+  <meta itemprop="dateModified" content="2025-02-18T19:42:02+08:00">
+  <meta itemprop="wordCount" content="53">
+  <meta itemprop="keywords" content="Pika,PacificA,分布式,一致性">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="PacificA 一致性测试用例说明">
+  <meta name="twitter:description" content="测试用例1：基础一致性测试 目的：验证主从复制的基本功能和数据一致性 步骤：
+向主节点写入数据 验证两个从节点的数据同步情况 检查所有节点的复制状态 预期结果：所有节点数据完全一致，复制状态正常 测试用例2：并发写入一致性测试 目的：确保并发写入时的数据一致性 步骤：
+向主节点并发写入10条数据 等待数据同步完成 验证两个从节点的所有数据 预期结果：所有并发写入的数据都正确同步到从节点 测试用例3：网络分区恢复测试 目的：测试网络分区后的一致性恢复 步骤：
+写入初始数据 断开从节点1连接（模拟网络分区） 向主节点写入新数据 恢复从节点1连接 验证数据一致性 预期结果：网络恢复后，断开的从节点应同步所有错过的数据 测试用例4：动态节点添加测试 目的：验证新增节点时的数据一致性 步骤：
+初始只启动主节点和一个从节点 写入一批初始数据 添加第二个从节点 写入新的数据 验证新旧数据的一致性 预期结果：新加入的从节点应正确接收所有历史数据和新数据 测试用例5：节点故障恢复测试 目的：测试节点故障和恢复时的系统行为 步骤：
+向所有节点写入初始数据 模拟从节点1故障 故障期间写入数据 恢复从节点1 写入新的数据 验证所有数据集 预期结果： 节点故障期间系统继续正常运行 故障节点恢复后能同步所有错过的数据 所有节点最终达到数据一致 测试环境 1个主节点（端口：9301） 2个从节点（端口：9302，9303） 启用强一致性模式 注意事项 每个测试用例都包含足够的等待时间，确保数据同步完成 所有测试都在强一致性模式下进行 测试过程中会验证数据的完整性和一致性">
+
+
+
+    <meta property="og:url" content="//localhost:1313/posts/zh/pika/pacifica-test-cases/">
+  <meta property="og:site_name" content="Victor的世界">
+  <meta property="og:title" content="PacificA 一致性测试用例说明">
+  <meta property="og:description" content="测试用例1：基础一致性测试 目的：验证主从复制的基本功能和数据一致性 步骤：
+向主节点写入数据 验证两个从节点的数据同步情况 检查所有节点的复制状态 预期结果：所有节点数据完全一致，复制状态正常 测试用例2：并发写入一致性测试 目的：确保并发写入时的数据一致性 步骤：
+向主节点并发写入10条数据 等待数据同步完成 验证两个从节点的所有数据 预期结果：所有并发写入的数据都正确同步到从节点 测试用例3：网络分区恢复测试 目的：测试网络分区后的一致性恢复 步骤：
+写入初始数据 断开从节点1连接（模拟网络分区） 向主节点写入新数据 恢复从节点1连接 验证数据一致性 预期结果：网络恢复后，断开的从节点应同步所有错过的数据 测试用例4：动态节点添加测试 目的：验证新增节点时的数据一致性 步骤：
+初始只启动主节点和一个从节点 写入一批初始数据 添加第二个从节点 写入新的数据 验证新旧数据的一致性 预期结果：新加入的从节点应正确接收所有历史数据和新数据 测试用例5：节点故障恢复测试 目的：测试节点故障和恢复时的系统行为 步骤：
+向所有节点写入初始数据 模拟从节点1故障 故障期间写入数据 恢复从节点1 写入新的数据 验证所有数据集 预期结果： 节点故障期间系统继续正常运行 故障节点恢复后能同步所有错过的数据 所有节点最终达到数据一致 测试环境 1个主节点（端口：9301） 2个从节点（端口：9302，9303） 启用强一致性模式 注意事项 每个测试用例都包含足够的等待时间，确保数据同步完成 所有测试都在强一致性模式下进行 测试过程中会验证数据的完整性和一致性">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-02-18T19:42:02+08:00">
+    <meta property="article:modified_time" content="2025-02-18T19:42:02+08:00">
+    <meta property="article:tag" content="Pika">
+    <meta property="article:tag" content="PacificA">
+    <meta property="article:tag" content="分布式">
+    <meta property="article:tag" content="一致性">
+
+
+
+
+
+
+    <meta property="article:published_time" content="2025-02-18 19:42:02 &#43;0800 CST" />
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text ">
+                Victor的世界</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about">关于</a></li><li><a href="/posts">博客</a></li><li><a href="https://github.com/buzhimingyonghu">GitHub</a></li>
+        <ul class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">zh</a>
+                <div class="dropdown-content">
+                        
+                </div>
+            </li>
+        </ul>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        
+
+        
+      </p>
+
+      
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <a href="/posts/posts">Posts</a>
+      </p>
+      
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="//localhost:1313/posts/zh/pika/pacifica-test-cases/">PacificA 一致性测试用例说明</a>
+      </h1>
+
+      
+
+      
+
+      <div class="post-content">
+        <h2 id="测试用例1基础一致性测试">测试用例1：基础一致性测试</h2>
+<p><strong>目的</strong>：验证主从复制的基本功能和数据一致性
+<strong>步骤</strong>：</p>
+<ol>
+<li>向主节点写入数据</li>
+<li>验证两个从节点的数据同步情况</li>
+<li>检查所有节点的复制状态
+<strong>预期结果</strong>：所有节点数据完全一致，复制状态正常</li>
+</ol>
+<h2 id="测试用例2并发写入一致性测试">测试用例2：并发写入一致性测试</h2>
+<p><strong>目的</strong>：确保并发写入时的数据一致性
+<strong>步骤</strong>：</p>
+<ol>
+<li>向主节点并发写入10条数据</li>
+<li>等待数据同步完成</li>
+<li>验证两个从节点的所有数据
+<strong>预期结果</strong>：所有并发写入的数据都正确同步到从节点</li>
+</ol>
+<h2 id="测试用例3网络分区恢复测试">测试用例3：网络分区恢复测试</h2>
+<p><strong>目的</strong>：测试网络分区后的一致性恢复
+<strong>步骤</strong>：</p>
+<ol>
+<li>写入初始数据</li>
+<li>断开从节点1连接（模拟网络分区）</li>
+<li>向主节点写入新数据</li>
+<li>恢复从节点1连接</li>
+<li>验证数据一致性
+<strong>预期结果</strong>：网络恢复后，断开的从节点应同步所有错过的数据</li>
+</ol>
+<h2 id="测试用例4动态节点添加测试">测试用例4：动态节点添加测试</h2>
+<p><strong>目的</strong>：验证新增节点时的数据一致性
+<strong>步骤</strong>：</p>
+<ol>
+<li>初始只启动主节点和一个从节点</li>
+<li>写入一批初始数据</li>
+<li>添加第二个从节点</li>
+<li>写入新的数据</li>
+<li>验证新旧数据的一致性
+<strong>预期结果</strong>：新加入的从节点应正确接收所有历史数据和新数据</li>
+</ol>
+<h2 id="测试用例5节点故障恢复测试">测试用例5：节点故障恢复测试</h2>
+<p><strong>目的</strong>：测试节点故障和恢复时的系统行为
+<strong>步骤</strong>：</p>
+<ol>
+<li>向所有节点写入初始数据</li>
+<li>模拟从节点1故障</li>
+<li>故障期间写入数据</li>
+<li>恢复从节点1</li>
+<li>写入新的数据</li>
+<li>验证所有数据集
+<strong>预期结果</strong>：</li>
+</ol>
+<ul>
+<li>节点故障期间系统继续正常运行</li>
+<li>故障节点恢复后能同步所有错过的数据</li>
+<li>所有节点最终达到数据一致</li>
+</ul>
+<h2 id="测试环境">测试环境</h2>
+<ul>
+<li>1个主节点（端口：9301）</li>
+<li>2个从节点（端口：9302，9303）</li>
+<li>启用强一致性模式</li>
+</ul>
+<h2 id="注意事项">注意事项</h2>
+<ol>
+<li>每个测试用例都包含足够的等待时间，确保数据同步完成</li>
+<li>所有测试都在强一致性模式下进行</li>
+<li>测试过程中会验证数据的完整性和一致性</li>
+</ol>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="//localhost:1313/tags/pika/">Pika</a></span>
+        <span class="tag"><a href="//localhost:1313/tags/pacifica/">PacificA</a></span>
+        <span class="tag"><a href="//localhost:1313/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></span>
+        <span class="tag"><a href="//localhost:1313/tags/%E4%B8%80%E8%87%B4%E6%80%A7/">一致性</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2025-02-18 19:42
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="//localhost:1313/posts/zh/distributed/pacifica-test-cases/">
+                    <span class="button__text">PacificA解读</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.e89fda0f29b95d33f6f4224dd9e5cf69d84aff3818be2b0d73e731689cc374261b016d17d46f8381962fb4a1577ba3017b1f23509d894f6e66431f988c00889e.js" integrity="sha512-6J/aDym5XTP29CJN2eXPadhK/zgYvisNc&#43;cxaJzDdCYbAW0X1G&#43;DgZYvtKFXe6MBex8jUJ2JT25mQx&#43;YjACIng=="></script>
+
+
+
+
+    </body>
+</html>

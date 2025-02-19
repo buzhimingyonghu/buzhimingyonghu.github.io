@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="PacificA Protocol Overview The PacificA protocol consists of two main parts:
+- Data Replication
+Configuration Management In Pika, since configuration management is primarily handled by pika_sentinel, this article focuses on data replication through master-slave mode and its coordination process with pika_sentinel.
+Application in Pika The implementation consists of three main parts:
+Data consistency process in PacificA master-slave mode Distributed log storage system design State coordination after failure recovery Starting PacificA In Pika, the command to establish a regular master-slave connection is:
+" />
+<meta name="keywords" content="Victor, Blog, Tech, Life, Pika, PacificA, Distributed, Consistency" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="//localhost:1313/en/posts/en/pika/pacifica-consistency/" />
+
+
+    <title>
+        
+            Pika Master-Slave Consistency Based on PacificA Protocol :: Victor&#39;s World 
+        
+    </title>
+
+
+
+
+
+  <link rel="stylesheet" href="/main.min.244183cde1a38e0b08f82c11791181288f9aac1cc9618cd6f4e9e7710c5768ba.css" integrity="sha256-JEGDzeGjjgsI&#43;CwReRGBKI&#43;arBzJYYzW9OnncQxXaLo=" crossorigin="anonymous">
+
+
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="Pika Master-Slave Consistency Based on PacificA Protocol">
+  <meta itemprop="description" content="PacificA Protocol Overview The PacificA protocol consists of two main parts:
+- Data Replication
+Configuration Management In Pika, since configuration management is primarily handled by pika_sentinel, this article focuses on data replication through master-slave mode and its coordination process with pika_sentinel.
+Application in Pika The implementation consists of three main parts:
+Data consistency process in PacificA master-slave mode Distributed log storage system design State coordination after failure recovery Starting PacificA In Pika, the command to establish a regular master-slave connection is:">
+  <meta itemprop="datePublished" content="2025-02-18T19:42:02+08:00">
+  <meta itemprop="dateModified" content="2025-02-18T19:42:02+08:00">
+  <meta itemprop="wordCount" content="600">
+  <meta itemprop="keywords" content="Pika,PacificA,Distributed,Consistency">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Pika Master-Slave Consistency Based on PacificA Protocol">
+  <meta name="twitter:description" content="PacificA Protocol Overview The PacificA protocol consists of two main parts:
+- Data Replication
+Configuration Management In Pika, since configuration management is primarily handled by pika_sentinel, this article focuses on data replication through master-slave mode and its coordination process with pika_sentinel.
+Application in Pika The implementation consists of three main parts:
+Data consistency process in PacificA master-slave mode Distributed log storage system design State coordination after failure recovery Starting PacificA In Pika, the command to establish a regular master-slave connection is:">
+
+
+
+    <meta property="og:url" content="//localhost:1313/en/posts/en/pika/pacifica-consistency/">
+  <meta property="og:site_name" content="Victor&#39;s World">
+  <meta property="og:title" content="Pika Master-Slave Consistency Based on PacificA Protocol">
+  <meta property="og:description" content="PacificA Protocol Overview The PacificA protocol consists of two main parts:
+- Data Replication
+Configuration Management In Pika, since configuration management is primarily handled by pika_sentinel, this article focuses on data replication through master-slave mode and its coordination process with pika_sentinel.
+Application in Pika The implementation consists of three main parts:
+Data consistency process in PacificA master-slave mode Distributed log storage system design State coordination after failure recovery Starting PacificA In Pika, the command to establish a regular master-slave connection is:">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-02-18T19:42:02+08:00">
+    <meta property="article:modified_time" content="2025-02-18T19:42:02+08:00">
+    <meta property="article:tag" content="Pika">
+    <meta property="article:tag" content="PacificA">
+    <meta property="article:tag" content="Distributed">
+    <meta property="article:tag" content="Consistency">
+
+
+
+
+
+
+    <meta property="article:published_time" content="2025-02-18 19:42:02 &#43;0800 CST" />
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text ">
+                Victor&#39;s World</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/en/about">About</a></li><li><a href="/en/posts">Blog</a></li><li><a href="https://github.com/buzhimingyonghu">GitHub</a></li>
+        <ul class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">en</a>
+                <div class="dropdown-content">
+                        
+                </div>
+            </li>
+        </ul>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        3 minutes
+
+        
+      </p>
+
+      
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <a href="/en/posts/posts">Posts</a>
+      </p>
+      
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="//localhost:1313/en/posts/en/pika/pacifica-consistency/">Pika Master-Slave Consistency Based on PacificA Protocol</a>
+      </h1>
+
+      
+
+      
+
+      <div class="post-content">
+        <h1 id="pacifica-protocol-overview">PacificA Protocol Overview</h1>
+<p>The <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2008/02/tr-2008-25.pdf">PacificA</a> protocol consists of two main parts:</p>
+<p><strong>- Data Replication</strong></p>
+<ol start="2">
+<li>Configuration Management</li>
+</ol>
+<p><em>In Pika, since configuration management is primarily handled by <code>pika_sentinel</code>, this article focuses on data replication through master-slave mode and its coordination process with <code>pika_sentinel</code>.</em></p>
+<h2 id="application-in-pika">Application in Pika</h2>
+<p>The implementation consists of three main parts:</p>
+<ol>
+<li>Data consistency process in PacificA master-slave mode</li>
+<li>Distributed log storage system design</li>
+<li>State coordination after failure recovery</li>
+</ol>
+<hr>
+<h2 id="starting-pacifica">Starting PacificA</h2>
+<p>In Pika, the command to establish a regular master-slave connection is:</p>
+<pre tabindex="0"><code>slaveof &lt;ip&gt; &lt;port&gt;
+</code></pre><p>To enable the PacificA protocol, add the strong parameter:</p>
+<pre tabindex="0"><code>slaveof &lt;ip&gt; &lt;port&gt; strong
+</code></pre><p>When a slave node executes this command, it triggers slaveofcmd, reads relevant parameters, and the pika_server saves this information, which is then asynchronously handled by the PikaAuxiliaryThread (PAT).
+PAT is the core auxiliary thread in the PacificA protocol, responsible for:</p>
+<pre><code>- State machine transitions
+- Heartbeat sending and timeout checking between master and slaves
+- Synchronization tasks between master and slaves
+</code></pre>
+<h2 id="data-consistency-flow-in-pacifica-master-slave-mode">Data Consistency Flow in PacificA Master-Slave Mode</h2>
+<h3 id="four-phases-of-master-slave-connection-establishment">Four Phases of Master-Slave Connection Establishment</h3>
+<ol>
+<li>MetaSync: Synchronization and verification of master-slave metadata</li>
+<li>TrySync: Data integrity assessment, choosing between full or incremental sync</li>
+<li>Candidate: Slave node as candidate, appending complete preparation list</li>
+<li>BinlogSync: Officially joining cluster, starting data replication</li>
+</ol>
+<p><img src="https://github.com/user-attachments/assets/11268449-19db-4d14-af3b-0aebd9e54a54" alt="image">
+Basic data structures:
+<img src="https://github.com/user-attachments/assets/d81d704d-34ce-4c8e-aaff-d4f137a45035" alt="image"></p>
+<h2 id="metasync-phase">MetaSync Phase</h2>
+<p><img src="https://github.com/user-attachments/assets/19e287da-0630-4381-b09e-75527ea76a20" alt="image"></p>
+<p>The slave node&rsquo;s PAT thread establishes connection with the master by sending MetaReq request, including is_consistency field indicating strong consistency request.
+When master receives the request with consistency flag set to true, it:</p>
+<ol>
+<li>Sets consistency flags for all databases</li>
+<li>Initializes context</li>
+<li>Determines if coordination state is needed</li>
+</ol>
+<p><img src="https://github.com/user-attachments/assets/0f54ef7b-661e-45de-96a9-d794ebb3840b" alt="image"></p>
+<p>Subsequently, the slave receives MetaSyncRes from master and:</p>
+<ol>
+<li>
+<p>Compares local and master database structures (db_structs)</p>
+</li>
+<li>
+<p>Performs full sync if local replication_id differs from master&rsquo;s and is empty; otherwise, incremental sync</p>
+</li>
+<li>
+<p>Updates slave state based on sync type:</p>
+<ul>
+<li>Full sync: Sets state to kTryDBSync</li>
+<li>Incremental sync: Sets state to kTryConnect</li>
+</ul>
+</li>
+</ol>
+<h2 id="trysync-phase">TrySync Phase</h2>
+<p><img src="https://github.com/user-attachments/assets/1e0b3450-e91f-4aeb-909f-1f6a4d6e4855" alt="image"></p>
+<p>After full sync, slave updates its committedID and preparedID, sends TrySyncReq with committedID to confirm log consistency.
+Master verifies and returns TrySyncRes containing master&rsquo;s preparedID, slave aligns its preparedID with master&rsquo;s, completing incremental sync.</p>
+<p>Process summary:</p>
+<ol>
+<li>
+<p>Slave sends TrySyncReq with committedID</p>
+</li>
+<li>
+<p>Master checks committedID:</p>
+<ul>
+<li>If master&rsquo;s committedID &gt; slave&rsquo;s: sync is normal</li>
+<li>If slave&rsquo;s committedID &gt; master&rsquo;s: leader election failed</li>
+</ul>
+</li>
+<li>
+<p>Master returns TrySyncRes with master&rsquo;s preparedID for slave alignment</p>
+</li>
+</ol>
+<h2 id="binlogsync-phase">BinlogSync Phase</h2>
+<p><img src="https://github.com/user-attachments/assets/44cf483f-102b-4f85-b79e-c786a8e60b2c" alt="image"></p>
+<p>Master sets slave as candidate upon receiving first binlog request, appending logs.
+Master notifies slaves through heartbeats and binlog data, writing logs in phases:</p>
+<ul>
+<li>Slave writes binlog upon receiving binlogSync, awaiting master&rsquo;s commit notification</li>
+<li>Master marks requests as committed after all slaves confirm, updates commit point ensuring consistency</li>
+</ul>
+<h2 id="distributed-log-storage-system-design">Distributed Log Storage System Design</h2>
+<p>PacificA employs logical replication including:</p>
+<ol>
+<li>State Consistency: All replicas maintain logically identical states, handling same types of updates and queries</li>
+<li>Log Recording: System writes updates to log first, ensuring data recovery capability</li>
+<li>Memory Structure Updates: After logging, updates are applied to in-memory data structures</li>
+<li>Periodic Checkpoints: Prevents memory overflow, regularly saves data snapshots to disk</li>
+<li>Log Truncation: Deletes logs stored in checkpoints, optimizing storage</li>
+</ol>
+<p><img src="https://github.com/user-attachments/assets/dcc12756-9217-4ba5-b5e3-36ac0d91283e" alt="image"></p>
+<h2 id="state-coordination-after-failure-recovery">State Coordination After Failure Recovery</h2>
+<p><img src="https://github.com/user-attachments/assets/1e6fb58b-dd02-48c3-bf11-52ae9e57f6d9" alt="image"></p>
+<h3 id="initial-state">Initial State</h3>
+<ul>
+<li>A is master, B, C, and D are replicas</li>
+<li>committedB is subset of committedA, committedA is subset of all replicas&rsquo; prepared</li>
+</ul>
+<h3 id="failure-recovery">Failure Recovery</h3>
+<h3 id="when-master-node-a-fails">When Master Node A Fails:</h3>
+<ol>
+<li>System reconfigures, promoting B as new master</li>
+<li>After B&rsquo;s coordination, new committedB matches old preparedB, all replicas&rsquo; preparedID align with new master&rsquo;s</li>
+</ol>
+<h2 id="write-request-operation-flow">Write Request Operation Flow</h2>
+<ol>
+<li>Write binlog: Execute database write after all slaves append logs</li>
+<li>Master processes binlog request:
+<ul>
+<li>Non-consistency mode: Execute traditional master-slave replication</li>
+<li>Consistency mode:</li>
+</ul>
+</li>
+<li>coordinator_ appends log and records offset</li>
+<li>Wait for slave sync, update master&rsquo;s committedID</li>
+<li>If sync fails (10s timeout), log info and exit</li>
+</ol>
+<p><img src="https://github.com/user-attachments/assets/41df6eae-f144-47c4-b554-c0bcf512b62a" alt="image"></p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="//localhost:1313/en/tags/pika/">Pika</a></span>
+        <span class="tag"><a href="//localhost:1313/en/tags/pacifica/">PacificA</a></span>
+        <span class="tag"><a href="//localhost:1313/en/tags/distributed/">Distributed</a></span>
+        <span class="tag"><a href="//localhost:1313/en/tags/consistency/">Consistency</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2025-02-18 19:42
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+            <span class="button previous">
+                <a href="//localhost:1313/en/posts/en/distributed/pacifica-test-cases/">
+                    <span class="button__icon">←</span>
+                    <span class="button__text">Pacifica-Analysis</span>
+                </a>
+            </span>
+            
+
+            
+        </div>
+    </div>
+
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.e89fda0f29b95d33f6f4224dd9e5cf69d84aff3818be2b0d73e731689cc374261b016d17d46f8381962fb4a1577ba3017b1f23509d894f6e66431f988c00889e.js" integrity="sha512-6J/aDym5XTP29CJN2eXPadhK/zgYvisNc&#43;cxaJzDdCYbAW0X1G&#43;DgZYvtKFXe6MBex8jUJ2JT25mQx&#43;YjACIng=="></script>
+
+
+
+
+    </body>
+</html>

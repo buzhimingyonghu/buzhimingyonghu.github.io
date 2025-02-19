@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="👋 你好，我是 刘恒胜 来自西安财经大学 信息工程学院 网络工程专业
+💼 工作经历 奇虎360(北京总部) Pika是一个高性能、高容量、多租户的KV存储系统，支持数据持久化，完全兼容Redis协议，已在GitHub上获得超过5.9k stars。
+Pika 主从一致性开发： pika主从复制采用异步追赶复制，在遇到主节点故障后，重新选主后的主节点可能不具备完整的数据，故在对数据完整性要求高的场景，需要采用强一致性协议，在和团队成员讨论后，由我独立负责PacificA协议进行一致性开发。
+PacificA 主从数据一致性流程 :重新设计主从数据交互的全链路处理流程，包含进行主从元数据同步MetaSync，确保主从一致性标记、数据完整性检查TrySync、进行全量或增量同步、从作为Candidate、追加完整的准备列表、BinlogSync通过日志和心跳包确保数据复制四个核心阶段。
+采用逻辑复制方式:主节点负责日志追加并确保提交点前移，从节点按照提交点进行数据写入，保证主从一致性。
+分布式日志存储系统开发:先将数据写入日志，再更新内存数据结构，并定期创建检查点防止日志无限增长。创建检查点后进行日志截断，减少存储压力。在系统崩溃时，可利用日志回放机制恢复数据，保证高可用性。
+故障恢复与状态协调:重新选举新的主节点时，将所有副本的 preparedID 对齐新主节点的preparedID。新主节点提交所有已准备的日志，使 preparedID 和 committedID 一致，保证日志完整性。写请求流程：先写 binlog，等待所有从节点追加日志后，再执行数据库写入，确保数据不会丢失或回滚失败。超时则记录异常退出，保障系统在恢复后仍具备数据一致性和高可用性，确保在 n-1 节点故障时仍具备容错能力。
+Pika-Operator开发 Pika-Operator主要采用kubeblocks进行开发，提供了去中心化，模块化架构，并具有两种集群模式，集群部署，动态扩缩容。
+主从集群优化与升级:基于最新的Operator升级K8s集群，添加 Role 模块并优化 Pika 主从流程，解决部分 Pod 失效问题。 备份与恢复组件:学习Pika的Bgsave流程，完成BackupPolicy，并结合CSI配置并连接S3，实现了自动备份与恢复。 解决DBA线上遇到的BUG： 解决了ACl中普通用户无权限问题，开发pika-export版本管理，协助解决快慢命令时间统计问题。
+个人总结: 我深入研究了系统源码，对pika多线程模型，主从架构了清晰的认识，深入学习了Kubernetes，docker及Operator相关知识，研读并总结了微软的PacificA论文，并与团队成员积极讨论。
+🌟 开源贡献 腾讯犀牛鸟计划 - 负载均衡插件开发 issue描述：实现IP直连负载均衡插件 - 加权轮询算法，通过分配权重，将请求分配到不同服务器上，尽可能提高集群的处理请求量
+SWRR 通过在每轮分配时调整服务器权重，避免短时间内的负载集中，使得服务器的请求数量与其权重成比例。编写单元测试，通过了异步选择、以及动态端点的处理等场景.
+阿里天池云原生挑战赛 - OceanBase issue描述：oblogminer 在处理 obcdc 输出的结果时，对于无法判断的列值，通常会使用标记来表示这些列值可能不准确
+修复了源于日志LOB类型为NULL标记不准确，修复了MINIMAL模式下，其他列类型也可能产生不可靠的结果，代码现在检查每个列值的来源
+🚀 项目经历 Bustub Vectordb 向量数据库开发 2024.10 - 2024.11
+Bustub_Vectordb一个基于 CMU-DB 的 BusTub 系统，支持向量存储、相似检索的关系型数据库
+" />
+<meta name="keywords" content="Victor, 博客, 技术, 生活" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="//localhost:1313/about/" />
+
+
+    <title>
+        
+            关于我 :: Victor的世界 
+        
+    </title>
+
+
+
+
+
+  <link rel="stylesheet" href="/main.min.244183cde1a38e0b08f82c11791181288f9aac1cc9618cd6f4e9e7710c5768ba.css" integrity="sha256-JEGDzeGjjgsI&#43;CwReRGBKI&#43;arBzJYYzW9OnncQxXaLo=" crossorigin="anonymous">
+
+
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="关于我">
+  <meta itemprop="description" content="👋 你好，我是 刘恒胜 来自西安财经大学 信息工程学院 网络工程专业
+💼 工作经历 奇虎360(北京总部) Pika是一个高性能、高容量、多租户的KV存储系统，支持数据持久化，完全兼容Redis协议，已在GitHub上获得超过5.9k stars。
+Pika 主从一致性开发： pika主从复制采用异步追赶复制，在遇到主节点故障后，重新选主后的主节点可能不具备完整的数据，故在对数据完整性要求高的场景，需要采用强一致性协议，在和团队成员讨论后，由我独立负责PacificA协议进行一致性开发。
+PacificA 主从数据一致性流程 :重新设计主从数据交互的全链路处理流程，包含进行主从元数据同步MetaSync，确保主从一致性标记、数据完整性检查TrySync、进行全量或增量同步、从作为Candidate、追加完整的准备列表、BinlogSync通过日志和心跳包确保数据复制四个核心阶段。
+采用逻辑复制方式:主节点负责日志追加并确保提交点前移，从节点按照提交点进行数据写入，保证主从一致性。
+分布式日志存储系统开发:先将数据写入日志，再更新内存数据结构，并定期创建检查点防止日志无限增长。创建检查点后进行日志截断，减少存储压力。在系统崩溃时，可利用日志回放机制恢复数据，保证高可用性。
+故障恢复与状态协调:重新选举新的主节点时，将所有副本的 preparedID 对齐新主节点的preparedID。新主节点提交所有已准备的日志，使 preparedID 和 committedID 一致，保证日志完整性。写请求流程：先写 binlog，等待所有从节点追加日志后，再执行数据库写入，确保数据不会丢失或回滚失败。超时则记录异常退出，保障系统在恢复后仍具备数据一致性和高可用性，确保在 n-1 节点故障时仍具备容错能力。
+Pika-Operator开发 Pika-Operator主要采用kubeblocks进行开发，提供了去中心化，模块化架构，并具有两种集群模式，集群部署，动态扩缩容。
+主从集群优化与升级:基于最新的Operator升级K8s集群，添加 Role 模块并优化 Pika 主从流程，解决部分 Pod 失效问题。 备份与恢复组件:学习Pika的Bgsave流程，完成BackupPolicy，并结合CSI配置并连接S3，实现了自动备份与恢复。 解决DBA线上遇到的BUG： 解决了ACl中普通用户无权限问题，开发pika-export版本管理，协助解决快慢命令时间统计问题。
+个人总结: 我深入研究了系统源码，对pika多线程模型，主从架构了清晰的认识，深入学习了Kubernetes，docker及Operator相关知识，研读并总结了微软的PacificA论文，并与团队成员积极讨论。
+🌟 开源贡献 腾讯犀牛鸟计划 - 负载均衡插件开发 issue描述：实现IP直连负载均衡插件 - 加权轮询算法，通过分配权重，将请求分配到不同服务器上，尽可能提高集群的处理请求量
+SWRR 通过在每轮分配时调整服务器权重，避免短时间内的负载集中，使得服务器的请求数量与其权重成比例。编写单元测试，通过了异步选择、以及动态端点的处理等场景.
+阿里天池云原生挑战赛 - OceanBase issue描述：oblogminer 在处理 obcdc 输出的结果时，对于无法判断的列值，通常会使用标记来表示这些列值可能不准确
+修复了源于日志LOB类型为NULL标记不准确，修复了MINIMAL模式下，其他列类型也可能产生不可靠的结果，代码现在检查每个列值的来源
+🚀 项目经历 Bustub Vectordb 向量数据库开发 2024.10 - 2024.11
+Bustub_Vectordb一个基于 CMU-DB 的 BusTub 系统，支持向量存储、相似检索的关系型数据库">
+  <meta itemprop="datePublished" content="2024-03-21T00:00:00+00:00">
+  <meta itemprop="dateModified" content="2024-03-21T00:00:00+00:00">
+  <meta itemprop="wordCount" content="130">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="关于我">
+  <meta name="twitter:description" content="👋 你好，我是 刘恒胜 来自西安财经大学 信息工程学院 网络工程专业
+💼 工作经历 奇虎360(北京总部) Pika是一个高性能、高容量、多租户的KV存储系统，支持数据持久化，完全兼容Redis协议，已在GitHub上获得超过5.9k stars。
+Pika 主从一致性开发： pika主从复制采用异步追赶复制，在遇到主节点故障后，重新选主后的主节点可能不具备完整的数据，故在对数据完整性要求高的场景，需要采用强一致性协议，在和团队成员讨论后，由我独立负责PacificA协议进行一致性开发。
+PacificA 主从数据一致性流程 :重新设计主从数据交互的全链路处理流程，包含进行主从元数据同步MetaSync，确保主从一致性标记、数据完整性检查TrySync、进行全量或增量同步、从作为Candidate、追加完整的准备列表、BinlogSync通过日志和心跳包确保数据复制四个核心阶段。
+采用逻辑复制方式:主节点负责日志追加并确保提交点前移，从节点按照提交点进行数据写入，保证主从一致性。
+分布式日志存储系统开发:先将数据写入日志，再更新内存数据结构，并定期创建检查点防止日志无限增长。创建检查点后进行日志截断，减少存储压力。在系统崩溃时，可利用日志回放机制恢复数据，保证高可用性。
+故障恢复与状态协调:重新选举新的主节点时，将所有副本的 preparedID 对齐新主节点的preparedID。新主节点提交所有已准备的日志，使 preparedID 和 committedID 一致，保证日志完整性。写请求流程：先写 binlog，等待所有从节点追加日志后，再执行数据库写入，确保数据不会丢失或回滚失败。超时则记录异常退出，保障系统在恢复后仍具备数据一致性和高可用性，确保在 n-1 节点故障时仍具备容错能力。
+Pika-Operator开发 Pika-Operator主要采用kubeblocks进行开发，提供了去中心化，模块化架构，并具有两种集群模式，集群部署，动态扩缩容。
+主从集群优化与升级:基于最新的Operator升级K8s集群，添加 Role 模块并优化 Pika 主从流程，解决部分 Pod 失效问题。 备份与恢复组件:学习Pika的Bgsave流程，完成BackupPolicy，并结合CSI配置并连接S3，实现了自动备份与恢复。 解决DBA线上遇到的BUG： 解决了ACl中普通用户无权限问题，开发pika-export版本管理，协助解决快慢命令时间统计问题。
+个人总结: 我深入研究了系统源码，对pika多线程模型，主从架构了清晰的认识，深入学习了Kubernetes，docker及Operator相关知识，研读并总结了微软的PacificA论文，并与团队成员积极讨论。
+🌟 开源贡献 腾讯犀牛鸟计划 - 负载均衡插件开发 issue描述：实现IP直连负载均衡插件 - 加权轮询算法，通过分配权重，将请求分配到不同服务器上，尽可能提高集群的处理请求量
+SWRR 通过在每轮分配时调整服务器权重，避免短时间内的负载集中，使得服务器的请求数量与其权重成比例。编写单元测试，通过了异步选择、以及动态端点的处理等场景.
+阿里天池云原生挑战赛 - OceanBase issue描述：oblogminer 在处理 obcdc 输出的结果时，对于无法判断的列值，通常会使用标记来表示这些列值可能不准确
+修复了源于日志LOB类型为NULL标记不准确，修复了MINIMAL模式下，其他列类型也可能产生不可靠的结果，代码现在检查每个列值的来源
+🚀 项目经历 Bustub Vectordb 向量数据库开发 2024.10 - 2024.11
+Bustub_Vectordb一个基于 CMU-DB 的 BusTub 系统，支持向量存储、相似检索的关系型数据库">
+
+
+
+    <meta property="og:url" content="//localhost:1313/about/">
+  <meta property="og:site_name" content="Victor的世界">
+  <meta property="og:title" content="关于我">
+  <meta property="og:description" content="👋 你好，我是 刘恒胜 来自西安财经大学 信息工程学院 网络工程专业
+💼 工作经历 奇虎360(北京总部) Pika是一个高性能、高容量、多租户的KV存储系统，支持数据持久化，完全兼容Redis协议，已在GitHub上获得超过5.9k stars。
+Pika 主从一致性开发： pika主从复制采用异步追赶复制，在遇到主节点故障后，重新选主后的主节点可能不具备完整的数据，故在对数据完整性要求高的场景，需要采用强一致性协议，在和团队成员讨论后，由我独立负责PacificA协议进行一致性开发。
+PacificA 主从数据一致性流程 :重新设计主从数据交互的全链路处理流程，包含进行主从元数据同步MetaSync，确保主从一致性标记、数据完整性检查TrySync、进行全量或增量同步、从作为Candidate、追加完整的准备列表、BinlogSync通过日志和心跳包确保数据复制四个核心阶段。
+采用逻辑复制方式:主节点负责日志追加并确保提交点前移，从节点按照提交点进行数据写入，保证主从一致性。
+分布式日志存储系统开发:先将数据写入日志，再更新内存数据结构，并定期创建检查点防止日志无限增长。创建检查点后进行日志截断，减少存储压力。在系统崩溃时，可利用日志回放机制恢复数据，保证高可用性。
+故障恢复与状态协调:重新选举新的主节点时，将所有副本的 preparedID 对齐新主节点的preparedID。新主节点提交所有已准备的日志，使 preparedID 和 committedID 一致，保证日志完整性。写请求流程：先写 binlog，等待所有从节点追加日志后，再执行数据库写入，确保数据不会丢失或回滚失败。超时则记录异常退出，保障系统在恢复后仍具备数据一致性和高可用性，确保在 n-1 节点故障时仍具备容错能力。
+Pika-Operator开发 Pika-Operator主要采用kubeblocks进行开发，提供了去中心化，模块化架构，并具有两种集群模式，集群部署，动态扩缩容。
+主从集群优化与升级:基于最新的Operator升级K8s集群，添加 Role 模块并优化 Pika 主从流程，解决部分 Pod 失效问题。 备份与恢复组件:学习Pika的Bgsave流程，完成BackupPolicy，并结合CSI配置并连接S3，实现了自动备份与恢复。 解决DBA线上遇到的BUG： 解决了ACl中普通用户无权限问题，开发pika-export版本管理，协助解决快慢命令时间统计问题。
+个人总结: 我深入研究了系统源码，对pika多线程模型，主从架构了清晰的认识，深入学习了Kubernetes，docker及Operator相关知识，研读并总结了微软的PacificA论文，并与团队成员积极讨论。
+🌟 开源贡献 腾讯犀牛鸟计划 - 负载均衡插件开发 issue描述：实现IP直连负载均衡插件 - 加权轮询算法，通过分配权重，将请求分配到不同服务器上，尽可能提高集群的处理请求量
+SWRR 通过在每轮分配时调整服务器权重，避免短时间内的负载集中，使得服务器的请求数量与其权重成比例。编写单元测试，通过了异步选择、以及动态端点的处理等场景.
+阿里天池云原生挑战赛 - OceanBase issue描述：oblogminer 在处理 obcdc 输出的结果时，对于无法判断的列值，通常会使用标记来表示这些列值可能不准确
+修复了源于日志LOB类型为NULL标记不准确，修复了MINIMAL模式下，其他列类型也可能产生不可靠的结果，代码现在检查每个列值的来源
+🚀 项目经历 Bustub Vectordb 向量数据库开发 2024.10 - 2024.11
+Bustub_Vectordb一个基于 CMU-DB 的 BusTub 系统，支持向量存储、相似检索的关系型数据库">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2024-03-21T00:00:00+00:00">
+    <meta property="article:modified_time" content="2024-03-21T00:00:00+00:00">
+
+
+
+
+
+
+    <meta property="article:published_time" content="2024-03-21 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text ">
+                Victor的世界</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about">关于</a></li><li><a href="/posts">博客</a></li><li><a href="https://github.com/buzhimingyonghu">GitHub</a></li>
+        <ul class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">zh</a>
+                <div class="dropdown-content">
+                        
+                            <a title="en" href="//localhost:1313/en/about/">en</a>
+                        
+                </div>
+            </li>
+        </ul>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+    <main class="post">
+
+        <div class="post-info">
+            
+                
+                
+                    <a href="//localhost:1313/en/about/"><span class="flag fi fi-gb"></span></a>
+                
+            
+            </p>
+        </div>
+
+        <article>
+            <h2 class="post-title"><a href="//localhost:1313/about/">关于我</a></h2>
+
+            
+            
+            
+
+            <div class="post-content">
+                <h1 id="-你好我是-刘恒胜">👋 你好，我是 刘恒胜</h1>
+<p>来自西安财经大学 信息工程学院 网络工程专业</p>
+<h2 id="-工作经历">💼 工作经历</h2>
+<h3 id="奇虎360北京总部">奇虎360(北京总部)</h3>
+<p><em>Pika是一个高性能、高容量、多租户的KV存储系统，支持数据持久化，完全兼容Redis协议，已在GitHub上获得超过5.9k stars。</em></p>
+<h4 id="pika-主从一致性开发">Pika 主从一致性开发：</h4>
+<p><em>pika主从复制采用异步追赶复制，在遇到主节点故障后，重新选主后的主节点可能不具备完整的数据，故在对数据完整性要求高的场景，需要采用强一致性协议，在和团队成员讨论后，由我独立负责PacificA协议进行一致性开发。</em></p>
+<ul>
+<li>
+<p><strong>PacificA 主从数据一致性流程</strong> :重新设计主从数据交互的全链路处理流程，包含进行主从元数据同步MetaSync，确保主从一致性标记、数据完整性检查TrySync、进行全量或增量同步、从作为Candidate、追加完整的准备列表、BinlogSync通过日志和心跳包确保数据复制四个核心阶段。</p>
+</li>
+<li>
+<p><strong>采用逻辑复制方式</strong>:主节点负责日志追加并确保提交点前移，从节点按照提交点进行数据写入，保证主从一致性。</p>
+</li>
+<li>
+<p><strong>分布式日志存储系统开发</strong>:先将数据写入日志，再更新内存数据结构，并定期创建检查点防止日志无限增长。创建检查点后进行日志截断，减少存储压力。在系统崩溃时，可利用日志回放机制恢复数据，保证高可用性。</p>
+</li>
+<li>
+<p><strong>故障恢复与状态协调</strong>:重新选举新的主节点时，将所有副本的 preparedID 对齐新主节点的preparedID。新主节点提交所有已准备的日志，使 preparedID 和 committedID 一致，保证日志完整性。写请求流程：先写 binlog，等待所有从节点追加日志后，再执行数据库写入，确保数据不会丢失或回滚失败。超时则记录异常退出，保障系统在恢复后仍具备数据一致性和高可用性，确保在 n-1 节点故障时仍具备容错能力。</p>
+</li>
+</ul>
+<h4 id="pika-operator开发">Pika-Operator开发</h4>
+<p><em>Pika-Operator主要采用kubeblocks进行开发，提供了去中心化，模块化架构，并具有两种集群模式，集群部署，动态扩缩容。</em></p>
+<ul>
+<li><strong>主从集群优化与升级</strong>:基于最新的Operator升级K8s集群，添加 Role 模块并优化 Pika 主从流程，解决部分 Pod 失效问题。</li>
+<li><strong>备份与恢复组件</strong>:学习Pika的Bgsave流程，完成BackupPolicy，并结合CSI配置并连接S3，实现了自动备份与恢复。</li>
+</ul>
+<h4 id="解决dba线上遇到的bug">解决DBA线上遇到的BUG：</h4>
+<p>解决了ACl中普通用户无权限问题，开发pika-export版本管理，协助解决快慢命令时间统计问题。</p>
+<p><strong>个人总结</strong>: 我深入研究了系统源码，对pika多线程模型，主从架构了清晰的认识，深入学习了Kubernetes，docker及Operator相关知识，研读并总结了微软的PacificA论文，并与团队成员积极讨论。</p>
+<h2 id="-开源贡献">🌟 开源贡献</h2>
+<h3 id="腾讯犀牛鸟计划---负载均衡插件开发">腾讯犀牛鸟计划 - 负载均衡插件开发</h3>
+<p><em>issue描述：实现IP直连负载均衡插件 - 加权轮询算法，通过分配权重，将请求分配到不同服务器上，尽可能提高集群的处理请求量</em></p>
+<p>SWRR 通过在每轮分配时调整服务器权重，避免短时间内的负载集中，使得服务器的请求数量与其权重成比例。编写单元测试，通过了异步选择、以及动态端点的处理等场景.</p>
+<h3 id="阿里天池云原生挑战赛---oceanbase">阿里天池云原生挑战赛 - OceanBase</h3>
+<p><em>issue描述：oblogminer 在处理 obcdc 输出的结果时，对于无法判断的列值，通常会使用标记来表示这些列值可能不准确</em></p>
+<p>修复了源于日志LOB类型为NULL标记不准确，修复了MINIMAL模式下，其他列类型也可能产生不可靠的结果，代码现在检查每个列值的来源</p>
+<h2 id="-项目经历">🚀 项目经历</h2>
+<h3 id="bustub-vectordb-向量数据库开发">Bustub Vectordb 向量数据库开发</h3>
+<p><strong>2024.10 - 2024.11</strong></p>
+<p><em>Bustub_Vectordb一个基于 CMU-DB 的 BusTub 系统，支持向量存储、相似检索的关系型数据库</em></p>
+<ul>
+<li>
+<p><strong>向量存储相似度计算</strong>:实现Vector存储，支持L2、余弦相似度、负内积等向量距离计算，高效存储和查询大规模向量数据。</p>
+</li>
+<li>
+<p><strong>查询执行优化</strong>:实现SeqScanExecutor和InsertExecutor，支持基本的顺序扫描和数据插入。Naive k-NN搜索与TopNExecutor优化，快速获取相似向量。VectorIndexScanExecutor优化，支持向量索引查询。</p>
+</li>
+<li>
+<p><strong>IVFFlat索引</strong>:实现IVFFlat索引，基于K-means算法聚类，Vector分配到不同的簇，加速向量相似度搜索，以支持近似最近邻查询</p>
+</li>
+<li>
+<p><strong>HNSW索引</strong>:实现了基于分层结构的HNSW索引，在NSW基础上引入多层结构，通过从上层到下层的逐层搜索，由稀疏到密集每一层局部贪心搜索，大幅提升向量近似最近邻查询的效率</p>
+</li>
+</ul>
+<h3 id="mit-65840-分布式系统实现">MIT 6.5840 分布式系统实现</h3>
+<p><strong>2024.08 - 2024.09</strong>
+<em>6.5840主要内容是分布式系统的抽象概念和实现技术，涵盖容错、复制和一致性</em></p>
+<ul>
+<li>
+<p><strong>分布式 MapReduce</strong>:由一个Coordinator和多个Worker组成，通过封装Map/Reduce Task分发，实现了MapReduce过程在分布式系统中的高性能处理</p>
+</li>
+<li>
+<p><strong>Key/Value Server</strong>:处理三种 RPC 操作：Put，Append和Get，服务器内存中维护键值对，通过线性化（Linearizability），增强了服务端存储在高并发请求下的一致性和稳定性。</p>
+</li>
+<li>
+<p><strong>实现RequestVote RPC</strong>:用于初始选举、掉线后的重新选举以及心跳机制，确保每个任期最多只有一个 Leader。</p>
+</li>
+<li>
+<p><strong>实现AppendEntries RPC</strong>:让 Leader 向 Follower 追加日志，并在日志被多数节点接收后，将其标记为已提交。Leader 通过心跳通知 Follower 已提交的日志，并触发应用到服务器</p>
+</li>
+<li>
+<p><strong>实现持久化机制</strong>:确保即使在网络分区或节点重启后，Raft 仍能选出正确的 Leader，保持已提交日志的一致性</p>
+</li>
+<li>
+<p><strong>实现快照机制</strong>:当日志过长时，将其整合为快照，并实现 InstallSnapshot RPC 以处理 Follower 无法追加旧日志的情况。</p>
+</li>
+</ul>
+<h3 id="基于-simhash-的-psm-概率匹配系统">基于 Simhash 的 PSM 概率匹配系统</h3>
+<p><strong>2024.06 - 2024.07</strong></p>
+<p><em>概率性Simhash匹配系统是一种用于高效检测近似重复的算法系统。它利用Simhash技术，通过概率性匹配方法来快速识别和定位相似度较高的对象。</em></p>
+<ul>
+<li>
+<p><strong>高维特征向量映射</strong>:将高维特征向量映射到较短的二进制码，使用Simhash生成的哈希值计算之间的汉明距离来判断匹配度。</p>
+</li>
+<li>
+<p><strong>近似重复检测</strong>:通过对比样本之间的Simhash值的汉明距离，与设定的阈值进行比较，实现线性近似重复检测系统。</p>
+</li>
+<li>
+<p><strong>优化检测系统</strong>:为数据处理创建了索引，根据每个Simhash的前 p 位将其分成子列表。通过计算每个位权重来判断最容易翻转的位，使用位翻转概率生成前 k 个最弱位的组合。在1w条数据下，时间效率提升了48.90%。</p>
+</li>
+</ul>
+
+            </div>
+        </article>
+
+        <hr />
+
+        <div class="post-info">
+            
+            
+  		</div>
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.e89fda0f29b95d33f6f4224dd9e5cf69d84aff3818be2b0d73e731689cc374261b016d17d46f8381962fb4a1577ba3017b1f23509d894f6e66431f988c00889e.js" integrity="sha512-6J/aDym5XTP29CJN2eXPadhK/zgYvisNc&#43;cxaJzDdCYbAW0X1G&#43;DgZYvtKFXe6MBex8jUJ2JT25mQx&#43;YjACIng=="></script>
+
+
+
+
+    </body>
+</html>
