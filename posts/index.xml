@@ -1,19 +1,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Posts on Victor的世界</title>
-        <link>//localhost:1313/posts/</link>
+        <link>https://buzhimingyonghu.github.io/posts/</link>
         <description>Recent content in Posts on Victor的世界</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>zh</language>
         <lastBuildDate>Tue, 18 Feb 2025 19:42:02 +0800</lastBuildDate>
-        <atom:link href="//localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://buzhimingyonghu.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
         
         <item>
             <title>PacificA 一致性测试用例说明</title>
-            <link>//localhost:1313/posts/zh/pika/pacifica-test-cases/</link>
+            <link>https://buzhimingyonghu.github.io/posts/zh/pika/pacifica-test-cases/</link>
             <pubDate>Tue, 18 Feb 2025 19:42:02 +0800</pubDate>
             
-            <guid>//localhost:1313/posts/zh/pika/pacifica-test-cases/</guid>
+            <guid>https://buzhimingyonghu.github.io/posts/zh/pika/pacifica-test-cases/</guid>
             <description>&lt;h2 id=&#34;测试用例1基础一致性测试&#34;&gt;测试用例1：基础一致性测试&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;目的&lt;/strong&gt;：验证主从复制的基本功能和数据一致性
 &lt;strong&gt;步骤&lt;/strong&gt;：&lt;/p&gt;
@@ -157,10 +157,10 @@
         
         <item>
             <title>PacificA解读</title>
-            <link>//localhost:1313/posts/zh/distributed/pacifica-test-cases/</link>
+            <link>https://buzhimingyonghu.github.io/posts/zh/distributed/pacifica-test-cases/</link>
             <pubDate>Tue, 18 Feb 2025 19:42:02 +0800</pubDate>
             
-            <guid>//localhost:1313/posts/zh/distributed/pacifica-test-cases/</guid>
+            <guid>https://buzhimingyonghu.github.io/posts/zh/distributed/pacifica-test-cases/</guid>
             <description>&lt;h2 id=&#34;摘要&#34;&gt;摘要&lt;/h2&gt;
 &lt;p&gt;大规模分布式存储因数据量增长而广受关注，复制机制是实现高可用性和高吞吐的关键。尽管共识研究为复制协议奠定基础，但架构设计和工程实现仍具挑战。本文分享了PacificA协议基于日志的存储系统设计复制机制的经验，提出一种简单、实用、强一致的通用复制框架，展示其支持多种设计选择的灵活性。&lt;/p&gt;
 &lt;hr&gt;
@@ -507,10 +507,10 @@
         
         <item>
             <title>基于PacificA协议Pika主从一致性</title>
-            <link>//localhost:1313/posts/zh/pika/pacifica-consistency/</link>
+            <link>https://buzhimingyonghu.github.io/posts/zh/pika/pacifica-consistency/</link>
             <pubDate>Tue, 18 Feb 2025 19:42:02 +0800</pubDate>
             
-            <guid>//localhost:1313/posts/zh/pika/pacifica-consistency/</guid>
+            <guid>https://buzhimingyonghu.github.io/posts/zh/pika/pacifica-consistency/</guid>
             <description>&lt;h1 id=&#34;pacifica-协议概述&#34;&gt;PacificA 协议概述&lt;/h1&gt;
 &lt;p&gt;&lt;a href=&#34;https://www.microsoft.com/en-us/research/wp-content/uploads/2008/02/tr-2008-25.pdf&#34;&gt;PacificA &lt;/a&gt;协议简单来说分为两部分：&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;- 数据复制&lt;/strong&gt;&lt;/p&gt;

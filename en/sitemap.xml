@@ -2,124 +2,124 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>//localhost:1313/en/tags/consistency/</loc>
+    <loc>https://buzhimingyonghu.github.io/en/tags/consistency/</loc>
     <lastmod>2025-02-18T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/en/tags/distributed/</loc>
+    <loc>https://buzhimingyonghu.github.io/en/tags/distributed/</loc>
     <lastmod>2025-02-18T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/en/tags/distributed-systems/</loc>
+    <loc>https://buzhimingyonghu.github.io/en/tags/distributed-systems/</loc>
     <lastmod>2025-02-18T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/en/tags/pacifica/</loc>
-    <lastmod>2025-02-18T19:42:02+08:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh"
-                href="//localhost:1313/tags/pacifica/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="//localhost:1313/en/tags/pacifica/"
-                />
-  </url><url>
-    <loc>//localhost:1313/en/posts/en/pika/pacifica-test-cases/</loc>
-    <lastmod>2025-02-18T19:42:02+08:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/en/posts/en/distributed/pacifica-test-cases/</loc>
-    <lastmod>2025-02-18T19:42:02+08:00</lastmod>
-  </url><url>
-    <loc>//localhost:1313/en/tags/pika/</loc>
+    <loc>https://buzhimingyonghu.github.io/en/tags/pacifica/</loc>
     <lastmod>2025-02-18T19:42:02+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="//localhost:1313/tags/pika/"
+                href="https://buzhimingyonghu.github.io/tags/pacifica/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="//localhost:1313/en/tags/pika/"
+                href="https://buzhimingyonghu.github.io/en/tags/pacifica/"
                 />
   </url><url>
-    <loc>//localhost:1313/en/posts/en/pika/pacifica-consistency/</loc>
+    <loc>https://buzhimingyonghu.github.io/en/posts/en/pika/pacifica-test-cases/</loc>
     <lastmod>2025-02-18T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>//localhost:1313/en/posts/</loc>
+    <loc>https://buzhimingyonghu.github.io/en/posts/en/distributed/pacifica-test-cases/</loc>
     <lastmod>2025-02-18T19:42:02+08:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh"
-                href="//localhost:1313/posts/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="//localhost:1313/en/posts/"
-                />
   </url><url>
-    <loc>//localhost:1313/en/tags/</loc>
+    <loc>https://buzhimingyonghu.github.io/en/tags/pika/</loc>
     <lastmod>2025-02-18T19:42:02+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="//localhost:1313/tags/"
+                href="https://buzhimingyonghu.github.io/tags/pika/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="//localhost:1313/en/tags/"
+                href="https://buzhimingyonghu.github.io/en/tags/pika/"
                 />
   </url><url>
-    <loc>//localhost:1313/en/</loc>
+    <loc>https://buzhimingyonghu.github.io/en/posts/en/pika/pacifica-consistency/</loc>
+    <lastmod>2025-02-18T19:42:02+08:00</lastmod>
+  </url><url>
+    <loc>https://buzhimingyonghu.github.io/en/posts/</loc>
     <lastmod>2025-02-18T19:42:02+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="//localhost:1313/"
+                href="https://buzhimingyonghu.github.io/posts/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="//localhost:1313/en/"
+                href="https://buzhimingyonghu.github.io/en/posts/"
                 />
   </url><url>
-    <loc>//localhost:1313/en/about/</loc>
+    <loc>https://buzhimingyonghu.github.io/en/tags/</loc>
+    <lastmod>2025-02-18T19:42:02+08:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://buzhimingyonghu.github.io/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://buzhimingyonghu.github.io/en/tags/"
+                />
+  </url><url>
+    <loc>https://buzhimingyonghu.github.io/en/</loc>
+    <lastmod>2025-02-18T19:42:02+08:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://buzhimingyonghu.github.io/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://buzhimingyonghu.github.io/en/"
+                />
+  </url><url>
+    <loc>https://buzhimingyonghu.github.io/en/about/</loc>
     <lastmod>2024-03-21T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="//localhost:1313/about/"
+                href="https://buzhimingyonghu.github.io/about/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="//localhost:1313/en/about/"
+                href="https://buzhimingyonghu.github.io/en/about/"
                 />
   </url><url>
-    <loc>//localhost:1313/en/blog/</loc>
+    <loc>https://buzhimingyonghu.github.io/en/blog/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="//localhost:1313/blog/"
+                href="https://buzhimingyonghu.github.io/blog/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="//localhost:1313/en/blog/"
+                href="https://buzhimingyonghu.github.io/en/blog/"
                 />
   </url><url>
-    <loc>//localhost:1313/en/series/</loc>
+    <loc>https://buzhimingyonghu.github.io/en/series/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="//localhost:1313/series/"
+                href="https://buzhimingyonghu.github.io/series/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="//localhost:1313/en/series/"
+                href="https://buzhimingyonghu.github.io/en/series/"
                 />
   </url>
 </urlset>

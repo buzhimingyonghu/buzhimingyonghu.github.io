@@ -1,19 +1,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Posts on Victor&#39;s World</title>
-        <link>//localhost:1313/en/posts/</link>
+        <link>https://buzhimingyonghu.github.io/en/posts/</link>
         <description>Recent content in Posts on Victor&#39;s World</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <lastBuildDate>Tue, 18 Feb 2025 19:42:02 +0800</lastBuildDate>
-        <atom:link href="//localhost:1313/en/posts/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://buzhimingyonghu.github.io/en/posts/index.xml" rel="self" type="application/rss+xml" />
         
         <item>
             <title>PacificA Consistency Test Cases Description</title>
-            <link>//localhost:1313/en/posts/en/pika/pacifica-test-cases/</link>
+            <link>https://buzhimingyonghu.github.io/en/posts/en/pika/pacifica-test-cases/</link>
             <pubDate>Tue, 18 Feb 2025 19:42:02 +0800</pubDate>
             
-            <guid>//localhost:1313/en/posts/en/pika/pacifica-test-cases/</guid>
+            <guid>https://buzhimingyonghu.github.io/en/posts/en/pika/pacifica-test-cases/</guid>
             <description>&lt;h2 id=&#34;test-case-1-basic-consistency-test&#34;&gt;Test Case 1: Basic Consistency Test&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;Purpose&lt;/strong&gt;: Verify basic master-slave replication functionality and data consistency
 &lt;strong&gt;Steps&lt;/strong&gt;:&lt;/p&gt;
@@ -109,10 +109,10 @@
         
         <item>
             <title>Pacifica-Analysis</title>
-            <link>//localhost:1313/en/posts/en/distributed/pacifica-test-cases/</link>
+            <link>https://buzhimingyonghu.github.io/en/posts/en/distributed/pacifica-test-cases/</link>
             <pubDate>Tue, 18 Feb 2025 19:42:02 +0800</pubDate>
             
-            <guid>//localhost:1313/en/posts/en/distributed/pacifica-test-cases/</guid>
+            <guid>https://buzhimingyonghu.github.io/en/posts/en/distributed/pacifica-test-cases/</guid>
             <description>&lt;h2 id=&#34;abstract&#34;&gt;Abstract&lt;/h2&gt;
 &lt;p&gt;Large-scale distributed storage systems have gained attention due to increasing data volumes, with replication mechanisms being key to achieving high availability and throughput. While consensus research has laid foundations for replication protocols, architectural design and engineering implementation remain challenging. This article shares experiences in designing replication mechanisms for log-based storage systems using the PacificA protocol, proposing a simple, practical, strongly consistent general replication framework that demonstrates flexibility in supporting various design choices.&lt;/p&gt;</description>
             <content type="html"><![CDATA[<h2 id="abstract">Abstract</h2>
@@ -453,10 +453,10 @@
         
         <item>
             <title>Pika Master-Slave Consistency Based on PacificA Protocol</title>
-            <link>//localhost:1313/en/posts/en/pika/pacifica-consistency/</link>
+            <link>https://buzhimingyonghu.github.io/en/posts/en/pika/pacifica-consistency/</link>
             <pubDate>Tue, 18 Feb 2025 19:42:02 +0800</pubDate>
             
-            <guid>//localhost:1313/en/posts/en/pika/pacifica-consistency/</guid>
+            <guid>https://buzhimingyonghu.github.io/en/posts/en/pika/pacifica-consistency/</guid>
             <description>&lt;h1 id=&#34;pacifica-protocol-overview&#34;&gt;PacificA Protocol Overview&lt;/h1&gt;
 &lt;p&gt;The &lt;a href=&#34;https://www.microsoft.com/en-us/research/wp-content/uploads/2008/02/tr-2008-25.pdf&#34;&gt;PacificA&lt;/a&gt; protocol consists of two main parts:&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;- Data Replication&lt;/strong&gt;&lt;/p&gt;
