@@ -690,8 +690,16 @@ PAT 是 PacificA 协议中的核心辅助线程，负责：</p>
             
             <guid>//localhost:1313/posts/zh/vectordb/hnsw%E5%90%91%E9%87%8F%E7%B4%A2%E5%BC%95%E5%9C%A8bustub%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0/</guid>
             <description>&lt;p&gt;HNSW (Hierarchical Navigable Small World) 是一种高效的近似最近邻(ANN)搜索算法，特别适用于高维向量数据的相似度搜索，支持向量的插入和近邻搜索操作。
-&lt;img src=&#34;./images/1280X1280%281%29.PNG&#34; alt=&#34;HNSW&#34;&gt;
-&lt;img src=&#34;./images/1280X1280.PNG&#34; alt=&#34;HNSW&#34;&gt;&lt;/p&gt;
+&lt;figure&gt;&lt;img src=&#34;//localhost:1313/images/vectordb/1280X1280%281%29.PNG&#34;&gt;&lt;figcaption&gt;
+      &lt;h4&gt;HNSW结构示意图&lt;/h4&gt;
+    &lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;figure&gt;&lt;img src=&#34;//localhost:1313/images/vectordb/1280X1280.PNG&#34;&gt;&lt;figcaption&gt;
+      &lt;h4&gt;HNSW搜索过程&lt;/h4&gt;
+    &lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
 &lt;p&gt;本文主要从以下两个方面介绍HNSW的实现：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;核心数据结构和算法实现&lt;/li&gt;
@@ -860,8 +868,16 @@ PAT 是 PacificA 协议中的核心辅助线程，负责：</p>
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
             <content type="html"><![CDATA[<p>HNSW (Hierarchical Navigable Small World) 是一种高效的近似最近邻(ANN)搜索算法，特别适用于高维向量数据的相似度搜索，支持向量的插入和近邻搜索操作。
-<img src="./images/1280X1280%281%29.PNG" alt="HNSW">
-<img src="./images/1280X1280.PNG" alt="HNSW"></p>
+<figure><img src="/images/vectordb/1280X1280%281%29.PNG"><figcaption>
+      <h4>HNSW结构示意图</h4>
+    </figcaption>
+</figure>
+
+<figure><img src="/images/vectordb/1280X1280.PNG"><figcaption>
+      <h4>HNSW搜索过程</h4>
+    </figcaption>
+</figure>
+</p>
 <p>本文主要从以下两个方面介绍HNSW的实现：</p>
 <ol>
 <li>核心数据结构和算法实现</li>
@@ -1731,13 +1747,29 @@ Cluster K: [vec_1, vec_4, vec_8]
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><hr>
 <h2 id="测试结果">测试结果</h2>
-<p><strong>普通用户无密码登录 ✅</strong></p>
-<p><img src="./images/Pika-Acl%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7%E6%97%A0%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95.png" alt="Pika-Acl无权限BUG">
-<strong>管理员有密码登录 ✅</strong>
-<img src="./images/Pika-Acl%E7%AE%A1%E7%90%86%E5%91%98%E6%9C%89%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95.png" alt="Pika-Acl无权限BUG">
-<img src="./images/Pika-Acl%E7%AE%A1%E7%90%86%E5%91%98%E6%9C%89%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%952.png" alt="Pika-Acl无权限BUG"></p>
-<p><strong>limit 用户受限制 ✅</strong></p>
-<p><img src="./images/Pika-Acllimit%E7%94%A8%E6%88%B7%E5%8F%97%E9%99%90%E5%88%B6.png" alt="Pika-Acl无权限BUG"></p>
+<p><strong>普通用户无密码登录 ✅</strong>
+<figure><img src="/images/pika/Pika-Acl%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7%E6%97%A0%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95.png"><figcaption>
+      <h4>普通用户无密码登录测试</h4>
+    </figcaption>
+</figure>
+</p>
+<p><strong>管理员有密码登录 ✅</strong>
+<figure><img src="/images/pika/Pika-Acl%E7%AE%A1%E7%90%86%E5%91%98%E6%9C%89%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95.png"><figcaption>
+      <h4>管理员有密码登录测试1</h4>
+    </figcaption>
+</figure>
+
+<figure><img src="/images/pika/Pika-Acl%E7%AE%A1%E7%90%86%E5%91%98%E6%9C%89%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%952.png"><figcaption>
+      <h4>管理员有密码登录测试2</h4>
+    </figcaption>
+</figure>
+</p>
+<p><strong>limit 用户受限制 ✅</strong>
+<figure><img src="/images/pika/Pika-Acllimit%E7%94%A8%E6%88%B7%E5%8F%97%E9%99%90%E5%88%B6.png"><figcaption>
+      <h4>limit用户权限限制测试</h4>
+    </figcaption>
+</figure>
+</p>
 ]]></content>
         </item>
         
@@ -1749,7 +1781,7 @@ Cluster K: [vec_1, vec_4, vec_8]
             <guid>//localhost:1313/posts/zh/opensource/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A9%E6%B1%A0%E4%BA%91oceanbase%E5%AF%B9obcdc%E8%BE%93%E5%87%BA%E4%BF%A1%E6%81%AF%E9%87%8D%E6%96%B0%E6%89%93%E6%A0%87/</guid>
             <description>&lt;h1 id=&#34;1-项目概述&#34;&gt;1. 项目概述&lt;/h1&gt;
 &lt;h2 id=&#34;11-项目背景&#34;&gt;1.1 项目背景&lt;/h2&gt;
-&lt;p&gt;OceanBase 是自研的企业级原生分布式数据库，支持“数据零丢失”标准，兼容 Oracle/MySQL，提供无缝水平扩展，首创“三地五中心”城市级故障自动无损容灾新标准，刷新 TPC-C 标准测试，单集群规模超过 1500 节点，具有云原生、强一致性、高度兼容 Oracle/MySQL 等特性。采用高压缩引擎和多租户架构，显著降低存储和运维成本。支持实时交易和分析，确保数据一致性，同时具备完备的安全性，经过多年金融核心场景验证，自主研发保障代码可控和高可靠性。&lt;/p&gt;
+&lt;p&gt;OceanBase 是自研的企业级原生分布式数据库，支持&amp;quot;数据零丢失&amp;quot;标准，兼容 Oracle/MySQL，提供无缝水平扩展，首创&amp;quot;三地五中心&amp;quot;城市级故障自动无损容灾新标准，刷新 TPC-C 标准测试，单集群规模超过 1500 节点，具有云原生、强一致性、高度兼容 Oracle/MySQL 等特性。采用高压缩引擎和多租户架构，显著降低存储和运维成本。支持实时交易和分析，确保数据一致性，同时具备完备的安全性，经过多年金融核心场景验证，自主研发保障代码可控和高可靠性。&lt;/p&gt;
 &lt;h2 id=&#34;12-目前现状&#34;&gt;1.2 目前现状&lt;/h2&gt;
 &lt;p&gt;oblogminer 在处理 obcdc 输出的结果时，对于无法判断的列值，通常会使用标记 &lt;code&gt;/* POTENTIALLY INACCURATE */&lt;/code&gt; 来表示这些列值可能不准确。&lt;/p&gt;
 &lt;h2 id=&#34;13-预期目标&#34;&gt;1.3 预期目标&lt;/h2&gt;
@@ -1765,13 +1797,13 @@ Cluster K: [vec_1, vec_4, vec_8]
 &lt;p&gt;&lt;strong&gt;复现步骤：&lt;/strong&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;创建表 &lt;code&gt;t_blob_text&lt;/code&gt;，包含一个 &lt;code&gt;BLOB&lt;/code&gt; 列和一个 &lt;code&gt;TEXT&lt;/code&gt; 列。&lt;/li&gt;
-&lt;li&gt;插入一行数据，其中 &lt;code&gt;BLOB&lt;/code&gt; 列包含 16383 个“😂”字符，&lt;code&gt;TEXT&lt;/code&gt; 列包含 300 个“犇”字。&lt;/li&gt;
+&lt;li&gt;插入一行数据，其中 &lt;code&gt;BLOB&lt;/code&gt; 列包含 16383 个&amp;quot;😂&amp;ldquo;字符，&lt;code&gt;TEXT&lt;/code&gt; 列包含 300 个&amp;quot;犇&amp;quot;字。&lt;/li&gt;
 &lt;li&gt;执行 &lt;code&gt;delete&lt;/code&gt; 操作删除表中的所有数据。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;&lt;strong&gt;期望行为：&lt;/strong&gt;&lt;/p&gt;</description>
             <content type="html"><![CDATA[<h1 id="1-项目概述">1. 项目概述</h1>
 <h2 id="11-项目背景">1.1 项目背景</h2>
-<p>OceanBase 是自研的企业级原生分布式数据库，支持“数据零丢失”标准，兼容 Oracle/MySQL，提供无缝水平扩展，首创“三地五中心”城市级故障自动无损容灾新标准，刷新 TPC-C 标准测试，单集群规模超过 1500 节点，具有云原生、强一致性、高度兼容 Oracle/MySQL 等特性。采用高压缩引擎和多租户架构，显著降低存储和运维成本。支持实时交易和分析，确保数据一致性，同时具备完备的安全性，经过多年金融核心场景验证，自主研发保障代码可控和高可靠性。</p>
+<p>OceanBase 是自研的企业级原生分布式数据库，支持&quot;数据零丢失&quot;标准，兼容 Oracle/MySQL，提供无缝水平扩展，首创&quot;三地五中心&quot;城市级故障自动无损容灾新标准，刷新 TPC-C 标准测试，单集群规模超过 1500 节点，具有云原生、强一致性、高度兼容 Oracle/MySQL 等特性。采用高压缩引擎和多租户架构，显著降低存储和运维成本。支持实时交易和分析，确保数据一致性，同时具备完备的安全性，经过多年金融核心场景验证，自主研发保障代码可控和高可靠性。</p>
 <h2 id="12-目前现状">1.2 目前现状</h2>
 <p>oblogminer 在处理 obcdc 输出的结果时，对于无法判断的列值，通常会使用标记 <code>/* POTENTIALLY INACCURATE */</code> 来表示这些列值可能不准确。</p>
 <h2 id="13-预期目标">1.3 预期目标</h2>
@@ -1787,17 +1819,21 @@ Cluster K: [vec_1, vec_4, vec_8]
 <p><strong>复现步骤：</strong></p>
 <ol>
 <li>创建表 <code>t_blob_text</code>，包含一个 <code>BLOB</code> 列和一个 <code>TEXT</code> 列。</li>
-<li>插入一行数据，其中 <code>BLOB</code> 列包含 16383 个“😂”字符，<code>TEXT</code> 列包含 300 个“犇”字。</li>
+<li>插入一行数据，其中 <code>BLOB</code> 列包含 16383 个&quot;😂&ldquo;字符，<code>TEXT</code> 列包含 300 个&quot;犇&quot;字。</li>
 <li>执行 <code>delete</code> 操作删除表中的所有数据。</li>
 </ol>
 <p><strong>期望行为：</strong></p>
 <ul>
-<li>CDC 在处理 <code>delete</code> 操作后，<code>id1</code> 的值应该保留为 16383 个“😂”字符，而不是 <code>NULL</code>。</li>
+<li>CDC 在处理 <code>delete</code> 操作后，<code>id1</code> 的值应该保留为 16383 个&rdquo;😂&ldquo;字符，而不是 <code>NULL</code>。</li>
 </ul>
 <p><strong>实际行为：</strong></p>
 <ul>
-<li>CDC 返回的 <code>id1</code> 列的值为 <code>NULL</code>，<code>id2</code> 列的值为 300 个“犇”字。
-<img src="./images/obcdc.png" alt="obcdc"></li>
+<li>CDC 返回的 <code>id1</code> 列的值为 <code>NULL</code>，<code>id2</code> 列的值为 300 个&quot;犇&quot;字。
+<figure><img src="/images/opensource/obcdc.png"><figcaption>
+      <h4>OBCDC处理结果</h4>
+    </figcaption>
+</figure>
+</li>
 </ul>
 <hr>
 <h1 id="2-关键技术介绍">2. 关键技术介绍</h1>
@@ -1826,13 +1862,21 @@ Cluster K: [vec_1, vec_4, vec_8]
 <ul>
 <li><code>VALUE_ORIGIN::REDO</code> 代表日志来源，可信。</li>
 <li><code>VALUE_ORIGIN::PADDING</code> 代表 OBCDC 生成的列值，不代表真实值。
-<img src="./images/oblogmsg.png" alt="oblogmsg"></li>
+<figure><img src="/images/opensource/oblogmsg.png"><figcaption>
+      <h4>oblogmsg架构</h4>
+    </figcaption>
+</figure>
+</li>
 </ul>
 </li>
 </ul>
 <h2 id="22-oblogminer-概述">2.2 oblogminer 概述</h2>
 <p>OceanBase LogMiner（简称 <code>oblogminer</code>）是一款用于 OceanBase 数据库日志分析的命令行工具，支持在线及归档日志分析。
-<img src="./images/oblogminer.png" alt="oblogminer"></p>
+<figure><img src="/images/opensource/oblogminer.png"><figcaption>
+      <h4>oblogminer架构</h4>
+    </figcaption>
+</figure>
+</p>
 <h3 id="221-主要功能">2.2.1 主要功能</h3>
 <ul>
 <li><strong>自助服务</strong>：
@@ -1843,7 +1887,7 @@ Cluster K: [vec_1, vec_4, vec_8]
 </li>
 <li><strong>细粒度恢复</strong>：
 <ul>
-<li>可生成逆向回滚 SQL（UNDO SQL），实现“SQL 闪回”的细粒度恢复能力。</li>
+<li>可生成逆向回滚 SQL（UNDO SQL），实现&quot;SQL 闪回&quot;的细粒度恢复能力。</li>
 </ul>
 </li>
 <li><strong>数据分析</strong>：
@@ -1867,13 +1911,21 @@ Cluster K: [vec_1, vec_4, vec_8]
 <li><strong>原始输出（带标记）</strong>：
 <ul>
 <li>部分 <code>LOB</code> 列值被标记 <code>/* POTENTIALLY INACCURATE */</code>。
-<img src="./images/oblogminer1.png" alt="oblogminer"></li>
+<figure><img src="/images/opensource/oblogminer1.png"><figcaption>
+        <h4>原始输出</h4>
+      </figcaption>
+  </figure>
+</li>
 </ul>
 </li>
 <li><strong>优化后输出（取消标记）</strong>：
 <ul>
 <li><code>oblogminer</code> 依据 <code>obcdc</code> 的 <code>VALUE_ORIGIN</code> 进行判断，确保仅在不可信列值上追加标记。
-<img src="./images/oblogminer2.png" alt="oblogminer"></li>
+<figure><img src="/images/opensource/oblogminer2.png"><figcaption>
+        <h4>优化后输出</h4>
+      </figcaption>
+  </figure>
+</li>
 </ul>
 </li>
 </ul>
@@ -1894,7 +1946,7 @@ Cluster K: [vec_1, vec_4, vec_8]
 &lt;h2 id=&#34;二具体实现&#34;&gt;二、具体实现&lt;/h2&gt;
 &lt;p&gt;平滑加权轮询算法的目标是减少传统加权轮询算法中的不均衡现象，尤其是在请求到达不均匀或服务器负载变化的情况下。该算法通过以下方式来平滑负载分配：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;加权池&lt;/strong&gt;：服务器的权重决定了它们在加权池中的出现频率。平滑加权轮询算法会在轮询过程中根据权重动态调整每台服务器的“虚拟”权重，使得负载分配更均匀。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;加权池&lt;/strong&gt;：服务器的权重决定了它们在加权池中的出现频率。平滑加权轮询算法会在轮询过程中根据权重动态调整每台服务器的&amp;quot;虚拟&amp;quot;权重，使得负载分配更均匀。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;平滑处理&lt;/strong&gt;：算法会计算每台服务器的负载和权重，并在每次分配请求时，基于服务器的负载情况调整请求的分配。这种方式确保了高负载的服务器不会被过度分配请求，从而避免了负载过度集中。&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;动态调整&lt;/strong&gt;：当服务器的负载发生变化时，算法会动态调整权重值，以确保负载在服务器之间的分配更加合理。例如，如果某台服务器变得很繁忙，它的权重值可能会被降低，从而减少它接收请求的频率。&lt;/li&gt;
 &lt;/ul&gt;
@@ -1916,7 +1968,7 @@ C：1 + 1 = 2
 <h2 id="二具体实现">二、具体实现</h2>
 <p>平滑加权轮询算法的目标是减少传统加权轮询算法中的不均衡现象，尤其是在请求到达不均匀或服务器负载变化的情况下。该算法通过以下方式来平滑负载分配：</p>
 <ul>
-<li><strong>加权池</strong>：服务器的权重决定了它们在加权池中的出现频率。平滑加权轮询算法会在轮询过程中根据权重动态调整每台服务器的“虚拟”权重，使得负载分配更均匀。</li>
+<li><strong>加权池</strong>：服务器的权重决定了它们在加权池中的出现频率。平滑加权轮询算法会在轮询过程中根据权重动态调整每台服务器的&quot;虚拟&quot;权重，使得负载分配更均匀。</li>
 <li><strong>平滑处理</strong>：算法会计算每台服务器的负载和权重，并在每次分配请求时，基于服务器的负载情况调整请求的分配。这种方式确保了高负载的服务器不会被过度分配请求，从而避免了负载过度集中。</li>
 <li><strong>动态调整</strong>：当服务器的负载发生变化时，算法会动态调整权重值，以确保负载在服务器之间的分配更加合理。例如，如果某台服务器变得很繁忙，它的权重值可能会被降低，从而减少它接收请求的频率。</li>
 </ul>
@@ -1976,7 +2028,11 @@ C：2 + 1 = 3
 <h2 id="1-测试">1. 测试</h2>
 <h3 id="切换-test-分支">切换 test 分支</h3>
 <h3 id="服务端定义">服务端定义</h3>
-<p><img src="./images/image.png" alt="服务端定义">
+<p><figure><img src="/images/opensource/image.png"><figcaption>
+      <h4>服务端定义</h4>
+    </figcaption>
+</figure>
+
 创建 <code>trpc_cpp_fiber.yaml</code>, <code>trpc_cpp_fiber1.yaml</code>, <code>trpc_cpp_fiber2.yaml</code> 配置 3 个服务端，IP:Port 分别为：</p>
 <ul>
 <li><code>127.0.0.1:10000</code></li>
@@ -1988,7 +2044,11 @@ C：2 + 1 = 3
 </span></span><span style="display:flex;"><span>./bazel-bin/examples/helloworld/helloworld_svr --config<span style="color:#f92672">=</span>./examples/helloworld/conf/trpc_cpp_fiber1.yaml
 </span></span><span style="display:flex;"><span>./bazel-bin/examples/helloworld/helloworld_svr --config<span style="color:#f92672">=</span>./examples/helloworld/conf/trpc_cpp_fiber2.yaml
 </span></span></code></pre></div><h3 id="客户端配置">客户端配置</h3>
-<p><img src="./images/image%281%29.png" alt="客户端配置"></p>
+<figure><img src="/images/opensource/image%281%29.png"><figcaption>
+      <h4>客户端配置</h4>
+    </figcaption>
+</figure>
+
 <ol>
 <li><strong>注入插件</strong>：在 <code>client</code> 配置 <code>load_balance_name</code> 插件
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">load_balance_name</span>: <span style="color:#ae81ff">trpc_swround_robin_loadbalance</span>
@@ -1997,11 +2057,19 @@ C：2 + 1 = 3
 </ol>
 <h3 id="在-fiber_clientcc-文件中">在 <code>fiber_client.cc</code> 文件中</h3>
 <p>在 <code>run</code> 函数中，我创建了 <code>thread_count</code> 个线程，每个线程都会并发执行 RPC 调用。在每个线程内，我们执行了 <code>DoRpcCall</code> 函数 5 次，以确保对负载均衡插件进行充分的测试。
-<img src="./images/image%282%29.png" alt="在 fiber_client.cc 文件中"></p>
+<figure><img src="/images/opensource/image%282%29.png"><figcaption>
+      <h4>fiber_client.cc 文件</h4>
+    </figcaption>
+</figure>
+</p>
 <h3 id="启动客户端">启动客户端</h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>./bazel-bin/examples/helloworld/test/fiber_client --client_config<span style="color:#f92672">=</span>./examples/helloworld/test/conf/trpc_cpp_fiber.yaml
 </span></span></code></pre></div><h1 id="五测试结果与分析">五、测试结果与分析</h1>
-<p><img src="./images/image%283%29.png" alt="测试结果">
+<p><figure><img src="/images/opensource/image%283%29.png"><figcaption>
+      <h4>测试结果</h4>
+    </figcaption>
+</figure>
+
 根据结果，选择的服务基本符合权重的比例。</p>
 ]]></content>
         </item>
@@ -2014,9 +2082,13 @@ C：2 + 1 = 3
             <guid>//localhost:1313/posts/zh/opensource/%E5%9F%BA%E4%BA%8Esimhash%E5%AE%9E%E7%8E%B0psm%E6%A6%82%E7%8E%87%E6%80%A7%E5%8C%B9%E9%85%8D%E7%B3%BB%E7%BB%9F/</guid>
             <description>&lt;p&gt;&lt;strong&gt;基于Simhash实现PSM概率性匹配系统&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;PSM系统，即概率性&lt;strong&gt;Simhash匹配系统&lt;/strong&gt;（Probabilistic Simhash Matching System），是一种用于高效检测近似重复图像或文档的算法系统。它利用&lt;strong&gt;Simhash技术&lt;/strong&gt;，通过概率性匹配方法来快速识别和定位相似度较高的对象。
-&lt;img src=&#34;./images/1280X1280.PNG&#34; alt=&#34;simhash&#34;&gt;&lt;/p&gt;
+&lt;figure&gt;&lt;img src=&#34;//localhost:1313/images/opensource/1280X1280.PNG&#34;&gt;&lt;figcaption&gt;
+      &lt;h4&gt;Simhash系统架构&lt;/h4&gt;
+    &lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Simhash和汉明距离&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Simhash由Moses Charikar开发，并在他的论文“Similarity Estimation Techniques from Rounding Algorithms”中描述。Simhash的主要目的是将相似的项目哈希到相似的哈希值。相似性可以通过哈希值之间的位汉明距离来判断。&lt;/p&gt;
+&lt;p&gt;Simhash由Moses Charikar开发，并在他的论文&amp;quot;Similarity Estimation Techniques from Rounding Algorithms&amp;quot;中描述。Simhash的主要目的是将相似的项目哈希到相似的哈希值。相似性可以通过哈希值之间的位汉明距离来判断。&lt;/p&gt;
 &lt;p&gt;以下是将一个n维实数向量映射到一个f位Simhash的算法。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;算法1：计算实数向量的Simhash&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;输入：&lt;/strong&gt;&lt;/p&gt;
@@ -2037,7 +2109,7 @@ C：2 + 1 = 3
 &lt;p&gt;随着m的增长，完整线性扫描的时间成本将变得不可接受。事实上，大多数汉明距离计算是没有必要的，因为对于每个查询的Simhash，只有少数近似重复可以找到。已经提出了几种解决方案来减少比较的时间，例如Manku等人（2007年）。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;位翻转组合&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;我们考虑Sood和Luguinov提出的一种新方法，即概率性Simhash匹配（PSM）系统，该系统在不需要维护数据的多个副本以进行近似重复搜索的情况下，仍然保持了良好的召回率。对于给定的查询指纹，我们基于找到近似重复匹配的概率探索不同的现有指纹，并限制我们的尝试次数以实现良好的查询速度。&lt;/p&gt;
-&lt;p&gt;首先，我们可以对Si69521mhash数据库进行排序并建立一个索引。为了更好地理解这里的“索引”，假设所有的Simhash都是f位整数并按列表排序，我们根据每个Simhash的前p位将它们分成子列表，然后所有子列表中第一个元素的位置组成一个索引。例如，索引的第32767个元素表示Simhash列表中前p位等于0x7fff的最小元素的位置。由于汉明距离阈值h通常是2或3，我们可以轻松构建位翻转组合，这意味着查询Simhash的所有可能的前16位的近似重复。对于h=3和p=16的索引，我们需要扫描所有65536（2^16）个子列表进行完整线性扫描，但仅需要扫描C(p,0) + C(p,1) + C(p,2) + C(p,3) = 697个子列表，受益于位翻转组合。&lt;/p&gt;
+&lt;p&gt;首先，我们可以对Si69521mhash数据库进行排序并建立一个索引。为了更好地理解这里的&amp;quot;索引&amp;quot;，假设所有的Simhash都是f位整数并按列表排序，我们根据每个Simhash的前p位将它们分成子列表，然后所有子列表中第一个元素的位置组成一个索引。例如，索引的第32767个元素表示Simhash列表中前p位等于0x7fff的最小元素的位置。由于汉明距离阈值h通常是2或3，我们可以轻松构建位翻转组合，这意味着查询Simhash的所有可能的前16位的近似重复。对于h=3和p=16的索引，我们需要扫描所有65536（2^16）个子列表进行完整线性扫描，但仅需要扫描C(p,0) + C(p,1) + C(p,2) + C(p,3) = 697个子列表，受益于位翻转组合。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;计算Simhash&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Simhash 原理概述&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Simhash 的基本思想是通过特征向量的加权累加生成一个低维哈希值，进而用于判断相似性。对于文本来说，特征可以是单词或词组，对于实数向量来说，特征就是向量的每一个分量。&lt;/p&gt;
@@ -2047,14 +2119,16 @@ C：2 + 1 = 3
 &lt;p&gt;v[1..n]v[1..n]v[1..n]：输入的实数向量&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;输出：&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;sss：f 位 Simhash&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;步骤：&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;初始化向量&lt;/strong&gt;：&lt;/p&gt;
-&lt;p&gt;初始化一个长度为 f 的实数向量 t[1..f]t[1..f]t[1..f]，所有值设为 0。&lt;/p&gt;</description>
+&lt;p&gt;&lt;strong&gt;步骤：&lt;/strong&gt;&lt;/p&gt;</description>
             <content type="html"><![CDATA[<p><strong>基于Simhash实现PSM概率性匹配系统</strong></p>
 <p>PSM系统，即概率性<strong>Simhash匹配系统</strong>（Probabilistic Simhash Matching System），是一种用于高效检测近似重复图像或文档的算法系统。它利用<strong>Simhash技术</strong>，通过概率性匹配方法来快速识别和定位相似度较高的对象。
-<img src="./images/1280X1280.PNG" alt="simhash"></p>
+<figure><img src="/images/opensource/1280X1280.PNG"><figcaption>
+      <h4>Simhash系统架构</h4>
+    </figcaption>
+</figure>
+</p>
 <p><strong>Simhash和汉明距离</strong></p>
-<p>Simhash由Moses Charikar开发，并在他的论文“Similarity Estimation Techniques from Rounding Algorithms”中描述。Simhash的主要目的是将相似的项目哈希到相似的哈希值。相似性可以通过哈希值之间的位汉明距离来判断。</p>
+<p>Simhash由Moses Charikar开发，并在他的论文&quot;Similarity Estimation Techniques from Rounding Algorithms&quot;中描述。Simhash的主要目的是将相似的项目哈希到相似的哈希值。相似性可以通过哈希值之间的位汉明距离来判断。</p>
 <p>以下是将一个n维实数向量映射到一个f位Simhash的算法。</p>
 <p><strong>算法1：计算实数向量的Simhash</strong></p>
 <p><strong>输入：</strong></p>
@@ -2075,7 +2149,7 @@ C：2 + 1 = 3
 <p>随着m的增长，完整线性扫描的时间成本将变得不可接受。事实上，大多数汉明距离计算是没有必要的，因为对于每个查询的Simhash，只有少数近似重复可以找到。已经提出了几种解决方案来减少比较的时间，例如Manku等人（2007年）。</p>
 <p><strong>位翻转组合</strong></p>
 <p>我们考虑Sood和Luguinov提出的一种新方法，即概率性Simhash匹配（PSM）系统，该系统在不需要维护数据的多个副本以进行近似重复搜索的情况下，仍然保持了良好的召回率。对于给定的查询指纹，我们基于找到近似重复匹配的概率探索不同的现有指纹，并限制我们的尝试次数以实现良好的查询速度。</p>
-<p>首先，我们可以对Si69521mhash数据库进行排序并建立一个索引。为了更好地理解这里的“索引”，假设所有的Simhash都是f位整数并按列表排序，我们根据每个Simhash的前p位将它们分成子列表，然后所有子列表中第一个元素的位置组成一个索引。例如，索引的第32767个元素表示Simhash列表中前p位等于0x7fff的最小元素的位置。由于汉明距离阈值h通常是2或3，我们可以轻松构建位翻转组合，这意味着查询Simhash的所有可能的前16位的近似重复。对于h=3和p=16的索引，我们需要扫描所有65536（2^16）个子列表进行完整线性扫描，但仅需要扫描C(p,0) + C(p,1) + C(p,2) + C(p,3) = 697个子列表，受益于位翻转组合。</p>
+<p>首先，我们可以对Si69521mhash数据库进行排序并建立一个索引。为了更好地理解这里的&quot;索引&quot;，假设所有的Simhash都是f位整数并按列表排序，我们根据每个Simhash的前p位将它们分成子列表，然后所有子列表中第一个元素的位置组成一个索引。例如，索引的第32767个元素表示Simhash列表中前p位等于0x7fff的最小元素的位置。由于汉明距离阈值h通常是2或3，我们可以轻松构建位翻转组合，这意味着查询Simhash的所有可能的前16位的近似重复。对于h=3和p=16的索引，我们需要扫描所有65536（2^16）个子列表进行完整线性扫描，但仅需要扫描C(p,0) + C(p,1) + C(p,2) + C(p,3) = 697个子列表，受益于位翻转组合。</p>
 <p><strong>计算Simhash</strong></p>
 <p><strong>Simhash 原理概述</strong></p>
 <p>Simhash 的基本思想是通过特征向量的加权累加生成一个低维哈希值，进而用于判断相似性。对于文本来说，特征可以是单词或词组，对于实数向量来说，特征就是向量的每一个分量。</p>
@@ -2216,7 +2290,11 @@ C：2 + 1 = 3
 <p>为了计算位翻转的概率，我们关注位权重 Wj,dW_{j,d}Wj,d 与 0 的距离。直觉上，权重越接近 0，该位发生翻转的概率就越高。通过统计大量文档对的距离分布，可以证明这一直觉，即 distj,d−d′dist_{j,d-d&rsquo;}distj,d−d′ 通常遵循均值为 0 的正态分布。</p>
 <p><strong>数学表达</strong></p>
 <p>位翻转的概率可以通过以下公式来估算：
-<img src="./images/a0abd75a-9a48-42f3-a18f-67a607fe51e4.png" alt="位翻转概率"></p>
+<figure><img src="/images/opensource/a0abd75a-9a48-42f3-a18f-67a607fe51e4.png"><figcaption>
+      <h4>位翻转概率计算</h4>
+    </figcaption>
+</figure>
+</p>
 <p><strong>示例</strong></p>
 <p>假设我们有一个包含六个单词的文档，每个单词的哈希值和权重如下表所示：</p>
 <p><strong>点击图片可查看完整电子表格</strong></p>
@@ -2257,7 +2335,11 @@ C：2 + 1 = 3
 <p><strong>计算位翻转概率</strong></p>
 <p>将权重向量 WdW_dWd 中每个分量除以其模长 ∣Wd∣|W_d|∣Wd∣ 进行归一化，得到每个位的翻转概率：</p>
 <p>所以，每个位的翻转概率为：
-<img src="./images/754f08f6-0a2c-46a2-933c-4780f0cd17db.png" alt="翻转概率"></p>
+<figure><img src="/images/opensource/754f08f6-0a2c-46a2-933c-4780f0cd17db.png"><figcaption>
+      <h4>翻转概率示例</h4>
+    </figcaption>
+</figure>
+</p>
 <p>根据翻转概率，我们可以排序得到最容易翻转的位：</p>
 <p>第3位 (0.9451), 第2位 (0.7256), 第4位 (0.5059), 第1位 (0.1767)</p>
 <p>所以，按最容易翻转的位，我们可以生成前 k 个最弱的位组合，以用于高效处理近似重复数据。</p>

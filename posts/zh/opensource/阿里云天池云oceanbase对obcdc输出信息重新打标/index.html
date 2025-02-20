@@ -6,13 +6,13 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
-<meta name="description" content="1. 项目概述 1.1 项目背景 OceanBase 是自研的企业级原生分布式数据库，支持“数据零丢失”标准，兼容 Oracle/MySQL，提供无缝水平扩展，首创“三地五中心”城市级故障自动无损容灾新标准，刷新 TPC-C 标准测试，单集群规模超过 1500 节点，具有云原生、强一致性、高度兼容 Oracle/MySQL 等特性。采用高压缩引擎和多租户架构，显著降低存储和运维成本。支持实时交易和分析，确保数据一致性，同时具备完备的安全性，经过多年金融核心场景验证，自主研发保障代码可控和高可靠性。
+<meta name="description" content="1. 项目概述 1.1 项目背景 OceanBase 是自研的企业级原生分布式数据库，支持&quot;数据零丢失&quot;标准，兼容 Oracle/MySQL，提供无缝水平扩展，首创&quot;三地五中心&quot;城市级故障自动无损容灾新标准，刷新 TPC-C 标准测试，单集群规模超过 1500 节点，具有云原生、强一致性、高度兼容 Oracle/MySQL 等特性。采用高压缩引擎和多租户架构，显著降低存储和运维成本。支持实时交易和分析，确保数据一致性，同时具备完备的安全性，经过多年金融核心场景验证，自主研发保障代码可控和高可靠性。
 1.2 目前现状 oblogminer 在处理 obcdc 输出的结果时，对于无法判断的列值，通常会使用标记 /* POTENTIALLY INACCURATE */ 来表示这些列值可能不准确。
 1.3 预期目标 使 oblogminer 能够在 obcdc 4.3.1 版本及之后的版本中，正确识别列值的可信性，并根据 obcdc 的标记输出可信的列值，无需标记为 /* POTENTIALLY INACCURATE */。
 对于判断列值是否可信的场景：
 oblogmsg 库中 ValueOrigin.h 中的 enum 类型 VALUE_ORIGIN 代表了列值来源。 VALUE_ORIGIN::REDO 代表列值来源于日志，说明该列为可信的。 VALUE_ORIGIN::PADDING 代表列值来源于 OBCDC 自己生成的，不代表真实列值。 1.4 参考信息 在 delete 操作后，CDC 拿到的数据中，BLOB 类型的列值被设置为 NULL，而 TEXT 类型的列值则保留了原始数据。这导致从节点复制失败。CDC 应该能够处理 BLOB 列的正确值，而不是将其设为 NULL。
 复现步骤：
-创建表 t_blob_text，包含一个 BLOB 列和一个 TEXT 列。 插入一行数据，其中 BLOB 列包含 16383 个“😂”字符，TEXT 列包含 300 个“犇”字。 执行 delete 操作删除表中的所有数据。 期望行为：
+创建表 t_blob_text，包含一个 BLOB 列和一个 TEXT 列。 插入一行数据，其中 BLOB 列包含 16383 个&quot;😂&ldquo;字符，TEXT 列包含 300 个&quot;犇&quot;字。 执行 delete 操作删除表中的所有数据。 期望行为：
 " />
 <meta name="keywords" content="Victor, 博客, 技术, 生活, OceanBase, oblogminer, obcdc" />
 <meta name="robots" content="noodp" />
@@ -47,40 +47,40 @@ oblogmsg 库中 ValueOrigin.h 中的 enum 类型 VALUE_ORIGIN 代表了列值来
 
 
   <meta itemprop="name" content="阿里云天池云oceanbase对obcdc输出信息重新打标">
-  <meta itemprop="description" content="1. 项目概述 1.1 项目背景 OceanBase 是自研的企业级原生分布式数据库，支持“数据零丢失”标准，兼容 Oracle/MySQL，提供无缝水平扩展，首创“三地五中心”城市级故障自动无损容灾新标准，刷新 TPC-C 标准测试，单集群规模超过 1500 节点，具有云原生、强一致性、高度兼容 Oracle/MySQL 等特性。采用高压缩引擎和多租户架构，显著降低存储和运维成本。支持实时交易和分析，确保数据一致性，同时具备完备的安全性，经过多年金融核心场景验证，自主研发保障代码可控和高可靠性。
+  <meta itemprop="description" content="1. 项目概述 1.1 项目背景 OceanBase 是自研的企业级原生分布式数据库，支持&#34;数据零丢失&#34;标准，兼容 Oracle/MySQL，提供无缝水平扩展，首创&#34;三地五中心&#34;城市级故障自动无损容灾新标准，刷新 TPC-C 标准测试，单集群规模超过 1500 节点，具有云原生、强一致性、高度兼容 Oracle/MySQL 等特性。采用高压缩引擎和多租户架构，显著降低存储和运维成本。支持实时交易和分析，确保数据一致性，同时具备完备的安全性，经过多年金融核心场景验证，自主研发保障代码可控和高可靠性。
 1.2 目前现状 oblogminer 在处理 obcdc 输出的结果时，对于无法判断的列值，通常会使用标记 /* POTENTIALLY INACCURATE */ 来表示这些列值可能不准确。
 1.3 预期目标 使 oblogminer 能够在 obcdc 4.3.1 版本及之后的版本中，正确识别列值的可信性，并根据 obcdc 的标记输出可信的列值，无需标记为 /* POTENTIALLY INACCURATE */。
 对于判断列值是否可信的场景：
 oblogmsg 库中 ValueOrigin.h 中的 enum 类型 VALUE_ORIGIN 代表了列值来源。 VALUE_ORIGIN::REDO 代表列值来源于日志，说明该列为可信的。 VALUE_ORIGIN::PADDING 代表列值来源于 OBCDC 自己生成的，不代表真实列值。 1.4 参考信息 在 delete 操作后，CDC 拿到的数据中，BLOB 类型的列值被设置为 NULL，而 TEXT 类型的列值则保留了原始数据。这导致从节点复制失败。CDC 应该能够处理 BLOB 列的正确值，而不是将其设为 NULL。
 复现步骤：
-创建表 t_blob_text，包含一个 BLOB 列和一个 TEXT 列。 插入一行数据，其中 BLOB 列包含 16383 个“😂”字符，TEXT 列包含 300 个“犇”字。 执行 delete 操作删除表中的所有数据。 期望行为：">
+创建表 t_blob_text，包含一个 BLOB 列和一个 TEXT 列。 插入一行数据，其中 BLOB 列包含 16383 个&#34;😂“字符，TEXT 列包含 300 个&#34;犇&#34;字。 执行 delete 操作删除表中的所有数据。 期望行为：">
   <meta itemprop="datePublished" content="2024-08-20T19:42:02+08:00">
   <meta itemprop="dateModified" content="2024-08-20T19:42:02+08:00">
-  <meta itemprop="wordCount" content="283">
+  <meta itemprop="wordCount" content="288">
   <meta itemprop="keywords" content="OceanBase,Oblogminer,Obcdc">
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="阿里云天池云oceanbase对obcdc输出信息重新打标">
-  <meta name="twitter:description" content="1. 项目概述 1.1 项目背景 OceanBase 是自研的企业级原生分布式数据库，支持“数据零丢失”标准，兼容 Oracle/MySQL，提供无缝水平扩展，首创“三地五中心”城市级故障自动无损容灾新标准，刷新 TPC-C 标准测试，单集群规模超过 1500 节点，具有云原生、强一致性、高度兼容 Oracle/MySQL 等特性。采用高压缩引擎和多租户架构，显著降低存储和运维成本。支持实时交易和分析，确保数据一致性，同时具备完备的安全性，经过多年金融核心场景验证，自主研发保障代码可控和高可靠性。
+  <meta name="twitter:description" content="1. 项目概述 1.1 项目背景 OceanBase 是自研的企业级原生分布式数据库，支持&#34;数据零丢失&#34;标准，兼容 Oracle/MySQL，提供无缝水平扩展，首创&#34;三地五中心&#34;城市级故障自动无损容灾新标准，刷新 TPC-C 标准测试，单集群规模超过 1500 节点，具有云原生、强一致性、高度兼容 Oracle/MySQL 等特性。采用高压缩引擎和多租户架构，显著降低存储和运维成本。支持实时交易和分析，确保数据一致性，同时具备完备的安全性，经过多年金融核心场景验证，自主研发保障代码可控和高可靠性。
 1.2 目前现状 oblogminer 在处理 obcdc 输出的结果时，对于无法判断的列值，通常会使用标记 /* POTENTIALLY INACCURATE */ 来表示这些列值可能不准确。
 1.3 预期目标 使 oblogminer 能够在 obcdc 4.3.1 版本及之后的版本中，正确识别列值的可信性，并根据 obcdc 的标记输出可信的列值，无需标记为 /* POTENTIALLY INACCURATE */。
 对于判断列值是否可信的场景：
 oblogmsg 库中 ValueOrigin.h 中的 enum 类型 VALUE_ORIGIN 代表了列值来源。 VALUE_ORIGIN::REDO 代表列值来源于日志，说明该列为可信的。 VALUE_ORIGIN::PADDING 代表列值来源于 OBCDC 自己生成的，不代表真实列值。 1.4 参考信息 在 delete 操作后，CDC 拿到的数据中，BLOB 类型的列值被设置为 NULL，而 TEXT 类型的列值则保留了原始数据。这导致从节点复制失败。CDC 应该能够处理 BLOB 列的正确值，而不是将其设为 NULL。
 复现步骤：
-创建表 t_blob_text，包含一个 BLOB 列和一个 TEXT 列。 插入一行数据，其中 BLOB 列包含 16383 个“😂”字符，TEXT 列包含 300 个“犇”字。 执行 delete 操作删除表中的所有数据。 期望行为：">
+创建表 t_blob_text，包含一个 BLOB 列和一个 TEXT 列。 插入一行数据，其中 BLOB 列包含 16383 个&#34;😂“字符，TEXT 列包含 300 个&#34;犇&#34;字。 执行 delete 操作删除表中的所有数据。 期望行为：">
 
 
 
     <meta property="og:url" content="//localhost:1313/posts/zh/opensource/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A9%E6%B1%A0%E4%BA%91oceanbase%E5%AF%B9obcdc%E8%BE%93%E5%87%BA%E4%BF%A1%E6%81%AF%E9%87%8D%E6%96%B0%E6%89%93%E6%A0%87/">
   <meta property="og:site_name" content="Victor的世界">
   <meta property="og:title" content="阿里云天池云oceanbase对obcdc输出信息重新打标">
-  <meta property="og:description" content="1. 项目概述 1.1 项目背景 OceanBase 是自研的企业级原生分布式数据库，支持“数据零丢失”标准，兼容 Oracle/MySQL，提供无缝水平扩展，首创“三地五中心”城市级故障自动无损容灾新标准，刷新 TPC-C 标准测试，单集群规模超过 1500 节点，具有云原生、强一致性、高度兼容 Oracle/MySQL 等特性。采用高压缩引擎和多租户架构，显著降低存储和运维成本。支持实时交易和分析，确保数据一致性，同时具备完备的安全性，经过多年金融核心场景验证，自主研发保障代码可控和高可靠性。
+  <meta property="og:description" content="1. 项目概述 1.1 项目背景 OceanBase 是自研的企业级原生分布式数据库，支持&#34;数据零丢失&#34;标准，兼容 Oracle/MySQL，提供无缝水平扩展，首创&#34;三地五中心&#34;城市级故障自动无损容灾新标准，刷新 TPC-C 标准测试，单集群规模超过 1500 节点，具有云原生、强一致性、高度兼容 Oracle/MySQL 等特性。采用高压缩引擎和多租户架构，显著降低存储和运维成本。支持实时交易和分析，确保数据一致性，同时具备完备的安全性，经过多年金融核心场景验证，自主研发保障代码可控和高可靠性。
 1.2 目前现状 oblogminer 在处理 obcdc 输出的结果时，对于无法判断的列值，通常会使用标记 /* POTENTIALLY INACCURATE */ 来表示这些列值可能不准确。
 1.3 预期目标 使 oblogminer 能够在 obcdc 4.3.1 版本及之后的版本中，正确识别列值的可信性，并根据 obcdc 的标记输出可信的列值，无需标记为 /* POTENTIALLY INACCURATE */。
 对于判断列值是否可信的场景：
 oblogmsg 库中 ValueOrigin.h 中的 enum 类型 VALUE_ORIGIN 代表了列值来源。 VALUE_ORIGIN::REDO 代表列值来源于日志，说明该列为可信的。 VALUE_ORIGIN::PADDING 代表列值来源于 OBCDC 自己生成的，不代表真实列值。 1.4 参考信息 在 delete 操作后，CDC 拿到的数据中，BLOB 类型的列值被设置为 NULL，而 TEXT 类型的列值则保留了原始数据。这导致从节点复制失败。CDC 应该能够处理 BLOB 列的正确值，而不是将其设为 NULL。
 复现步骤：
-创建表 t_blob_text，包含一个 BLOB 列和一个 TEXT 列。 插入一行数据，其中 BLOB 列包含 16383 个“😂”字符，TEXT 列包含 300 个“犇”字。 执行 delete 操作删除表中的所有数据。 期望行为：">
+创建表 t_blob_text，包含一个 BLOB 列和一个 TEXT 列。 插入一行数据，其中 BLOB 列包含 16383 个&#34;😂“字符，TEXT 列包含 300 个&#34;犇&#34;字。 执行 delete 操作删除表中的所有数据。 期望行为：">
   <meta property="og:locale" content="zh">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
@@ -195,7 +195,7 @@ oblogmsg 库中 ValueOrigin.h 中的 enum 类型 VALUE_ORIGIN 代表了列值来
       <div class="post-content">
         <h1 id="1-项目概述">1. 项目概述</h1>
 <h2 id="11-项目背景">1.1 项目背景</h2>
-<p>OceanBase 是自研的企业级原生分布式数据库，支持“数据零丢失”标准，兼容 Oracle/MySQL，提供无缝水平扩展，首创“三地五中心”城市级故障自动无损容灾新标准，刷新 TPC-C 标准测试，单集群规模超过 1500 节点，具有云原生、强一致性、高度兼容 Oracle/MySQL 等特性。采用高压缩引擎和多租户架构，显著降低存储和运维成本。支持实时交易和分析，确保数据一致性，同时具备完备的安全性，经过多年金融核心场景验证，自主研发保障代码可控和高可靠性。</p>
+<p>OceanBase 是自研的企业级原生分布式数据库，支持&quot;数据零丢失&quot;标准，兼容 Oracle/MySQL，提供无缝水平扩展，首创&quot;三地五中心&quot;城市级故障自动无损容灾新标准，刷新 TPC-C 标准测试，单集群规模超过 1500 节点，具有云原生、强一致性、高度兼容 Oracle/MySQL 等特性。采用高压缩引擎和多租户架构，显著降低存储和运维成本。支持实时交易和分析，确保数据一致性，同时具备完备的安全性，经过多年金融核心场景验证，自主研发保障代码可控和高可靠性。</p>
 <h2 id="12-目前现状">1.2 目前现状</h2>
 <p>oblogminer 在处理 obcdc 输出的结果时，对于无法判断的列值，通常会使用标记 <code>/* POTENTIALLY INACCURATE */</code> 来表示这些列值可能不准确。</p>
 <h2 id="13-预期目标">1.3 预期目标</h2>
@@ -211,17 +211,21 @@ oblogmsg 库中 ValueOrigin.h 中的 enum 类型 VALUE_ORIGIN 代表了列值来
 <p><strong>复现步骤：</strong></p>
 <ol>
 <li>创建表 <code>t_blob_text</code>，包含一个 <code>BLOB</code> 列和一个 <code>TEXT</code> 列。</li>
-<li>插入一行数据，其中 <code>BLOB</code> 列包含 16383 个“😂”字符，<code>TEXT</code> 列包含 300 个“犇”字。</li>
+<li>插入一行数据，其中 <code>BLOB</code> 列包含 16383 个&quot;😂&ldquo;字符，<code>TEXT</code> 列包含 300 个&quot;犇&quot;字。</li>
 <li>执行 <code>delete</code> 操作删除表中的所有数据。</li>
 </ol>
 <p><strong>期望行为：</strong></p>
 <ul>
-<li>CDC 在处理 <code>delete</code> 操作后，<code>id1</code> 的值应该保留为 16383 个“😂”字符，而不是 <code>NULL</code>。</li>
+<li>CDC 在处理 <code>delete</code> 操作后，<code>id1</code> 的值应该保留为 16383 个&rdquo;😂&ldquo;字符，而不是 <code>NULL</code>。</li>
 </ul>
 <p><strong>实际行为：</strong></p>
 <ul>
-<li>CDC 返回的 <code>id1</code> 列的值为 <code>NULL</code>，<code>id2</code> 列的值为 300 个“犇”字。
-<img src="./images/obcdc.png" alt="obcdc"></li>
+<li>CDC 返回的 <code>id1</code> 列的值为 <code>NULL</code>，<code>id2</code> 列的值为 300 个&quot;犇&quot;字。
+<figure><img src="/images/opensource/obcdc.png"><figcaption>
+      <h4>OBCDC处理结果</h4>
+    </figcaption>
+</figure>
+</li>
 </ul>
 <hr>
 <h1 id="2-关键技术介绍">2. 关键技术介绍</h1>
@@ -250,13 +254,21 @@ oblogmsg 库中 ValueOrigin.h 中的 enum 类型 VALUE_ORIGIN 代表了列值来
 <ul>
 <li><code>VALUE_ORIGIN::REDO</code> 代表日志来源，可信。</li>
 <li><code>VALUE_ORIGIN::PADDING</code> 代表 OBCDC 生成的列值，不代表真实值。
-<img src="./images/oblogmsg.png" alt="oblogmsg"></li>
+<figure><img src="/images/opensource/oblogmsg.png"><figcaption>
+      <h4>oblogmsg架构</h4>
+    </figcaption>
+</figure>
+</li>
 </ul>
 </li>
 </ul>
 <h2 id="22-oblogminer-概述">2.2 oblogminer 概述</h2>
 <p>OceanBase LogMiner（简称 <code>oblogminer</code>）是一款用于 OceanBase 数据库日志分析的命令行工具，支持在线及归档日志分析。
-<img src="./images/oblogminer.png" alt="oblogminer"></p>
+<figure><img src="/images/opensource/oblogminer.png"><figcaption>
+      <h4>oblogminer架构</h4>
+    </figcaption>
+</figure>
+</p>
 <h3 id="221-主要功能">2.2.1 主要功能</h3>
 <ul>
 <li><strong>自助服务</strong>：
@@ -267,7 +279,7 @@ oblogmsg 库中 ValueOrigin.h 中的 enum 类型 VALUE_ORIGIN 代表了列值来
 </li>
 <li><strong>细粒度恢复</strong>：
 <ul>
-<li>可生成逆向回滚 SQL（UNDO SQL），实现“SQL 闪回”的细粒度恢复能力。</li>
+<li>可生成逆向回滚 SQL（UNDO SQL），实现&quot;SQL 闪回&quot;的细粒度恢复能力。</li>
 </ul>
 </li>
 <li><strong>数据分析</strong>：
@@ -291,13 +303,21 @@ oblogmsg 库中 ValueOrigin.h 中的 enum 类型 VALUE_ORIGIN 代表了列值来
 <li><strong>原始输出（带标记）</strong>：
 <ul>
 <li>部分 <code>LOB</code> 列值被标记 <code>/* POTENTIALLY INACCURATE */</code>。
-<img src="./images/oblogminer1.png" alt="oblogminer"></li>
+<figure><img src="/images/opensource/oblogminer1.png"><figcaption>
+        <h4>原始输出</h4>
+      </figcaption>
+  </figure>
+</li>
 </ul>
 </li>
 <li><strong>优化后输出（取消标记）</strong>：
 <ul>
 <li><code>oblogminer</code> 依据 <code>obcdc</code> 的 <code>VALUE_ORIGIN</code> 进行判断，确保仅在不可信列值上追加标记。
-<img src="./images/oblogminer2.png" alt="oblogminer"></li>
+<figure><img src="/images/opensource/oblogminer2.png"><figcaption>
+        <h4>优化后输出</h4>
+      </figcaption>
+  </figure>
+</li>
 </ul>
 </li>
 </ul>
