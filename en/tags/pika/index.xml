@@ -2,24 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Pika on Victor&#39;s World</title>
-    <link>//localhost:1313/en/tags/pika/</link>
+    <link>http://localhost:1313/en/tags/pika/</link>
     <description>Recent content in Pika on Victor&#39;s World</description>
     <generator>Hugo</generator>
     <language>en</language>
     <lastBuildDate>Tue, 18 Feb 2025 19:42:02 +0800</lastBuildDate>
-    <atom:link href="//localhost:1313/en/tags/pika/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/en/tags/pika/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>PacificA Consistency Test Cases Description</title>
-      <link>//localhost:1313/en/posts/en/pika/pacifica-test-cases/</link>
+      <link>http://localhost:1313/en/posts/en/pika/pacifica-test-cases/</link>
       <pubDate>Tue, 18 Feb 2025 19:42:02 +0800</pubDate>
-      <guid>//localhost:1313/en/posts/en/pika/pacifica-test-cases/</guid>
+      <guid>http://localhost:1313/en/posts/en/pika/pacifica-test-cases/</guid>
       <description>&lt;h2 id=&#34;test-case-1-basic-consistency-test&#34;&gt;Test Case 1: Basic Consistency Test&lt;/h2&gt;&#xA;&lt;p&gt;&lt;strong&gt;Purpose&lt;/strong&gt;: Verify basic master-slave replication functionality and data consistency&#xA;&lt;strong&gt;Steps&lt;/strong&gt;:&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;Write data to master node&lt;/li&gt;&#xA;&lt;li&gt;Verify data synchronization on both slave nodes&lt;/li&gt;&#xA;&lt;li&gt;Check replication status of all nodes&#xA;&lt;strong&gt;Expected Results&lt;/strong&gt;: Complete data consistency across all nodes, normal replication status&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;h2 id=&#34;test-case-2-concurrent-write-consistency-test&#34;&gt;Test Case 2: Concurrent Write Consistency Test&lt;/h2&gt;&#xA;&lt;p&gt;&lt;strong&gt;Purpose&lt;/strong&gt;: Ensure data consistency during concurrent writes&#xA;&lt;strong&gt;Steps&lt;/strong&gt;:&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;Concurrently write 10 data entries to master node&lt;/li&gt;&#xA;&lt;li&gt;Wait for data synchronization completion&lt;/li&gt;&#xA;&lt;li&gt;Verify all data on both slave nodes&#xA;&lt;strong&gt;Expected Results&lt;/strong&gt;: All concurrent writes correctly synchronized to slave nodes&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;h2 id=&#34;test-case-3-network-partition-recovery-test&#34;&gt;Test Case 3: Network Partition Recovery Test&lt;/h2&gt;&#xA;&lt;p&gt;&lt;strong&gt;Purpose&lt;/strong&gt;: Test consistency recovery after network partition&#xA;&lt;strong&gt;Steps&lt;/strong&gt;:&lt;/p&gt;</description>
     </item>
     <item>
       <title>Pika Master-Slave Consistency Based on PacificA Protocol</title>
-      <link>//localhost:1313/en/posts/en/pika/pacifica-consistency/</link>
+      <link>http://localhost:1313/en/posts/en/pika/pacifica-consistency/</link>
       <pubDate>Tue, 18 Feb 2025 19:42:02 +0800</pubDate>
-      <guid>//localhost:1313/en/posts/en/pika/pacifica-consistency/</guid>
+      <guid>http://localhost:1313/en/posts/en/pika/pacifica-consistency/</guid>
       <description>&lt;h1 id=&#34;pacifica-protocol-overview&#34;&gt;PacificA Protocol Overview&lt;/h1&gt;&#xA;&lt;p&gt;The &lt;a href=&#34;https://www.microsoft.com/en-us/research/wp-content/uploads/2008/02/tr-2008-25.pdf&#34;&gt;PacificA&lt;/a&gt; protocol consists of two main parts:&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;- Data Replication&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;ol start=&#34;2&#34;&gt;&#xA;&lt;li&gt;Configuration Management&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;p&gt;&lt;em&gt;In Pika, since configuration management is primarily handled by &lt;code&gt;pika_sentinel&lt;/code&gt;, this article focuses on data replication through master-slave mode and its coordination process with &lt;code&gt;pika_sentinel&lt;/code&gt;.&lt;/em&gt;&lt;/p&gt;&#xA;&lt;h2 id=&#34;application-in-pika&#34;&gt;Application in Pika&lt;/h2&gt;&#xA;&lt;p&gt;The implementation consists of three main parts:&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;Data consistency process in PacificA master-slave mode&lt;/li&gt;&#xA;&lt;li&gt;Distributed log storage system design&lt;/li&gt;&#xA;&lt;li&gt;State coordination after failure recovery&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;starting-pacifica&#34;&gt;Starting PacificA&lt;/h2&gt;&#xA;&lt;p&gt;In Pika, the command to establish a regular master-slave connection is:&lt;/p&gt;</description>
     </item>
   </channel>
