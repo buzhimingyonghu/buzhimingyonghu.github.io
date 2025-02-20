@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="基于Simhash实现PSM概率性匹配系统
+PSM系统，即概率性Simhash匹配系统（Probabilistic Simhash Matching System），是一种用于高效检测近似重复图像或文档的算法系统。它利用Simhash技术，通过概率性匹配方法来快速识别和定位相似度较高的对象。 Simhash和汉明距离
+Simhash由Moses Charikar开发，并在他的论文“Similarity Estimation Techniques from Rounding Algorithms”中描述。Simhash的主要目的是将相似的项目哈希到相似的哈希值。相似性可以通过哈希值之间的位汉明距离来判断。
+以下是将一个n维实数向量映射到一个f位Simhash的算法。
+算法1：计算实数向量的Simhash
+输入：
+v[1..n]：输入实数向量
+输出：
+s：f位Simhash
+初始化一个实数向量t[1..f]为0
+生成n个f位随机整数r[1..n]
+对于i从1到n，执行以下步骤：
+对于j从1到f，执行以下步骤：
+如果r[i]的第j位是1，则t[j] ← t[j] &#43; v[i]
+否则，t[j] ← t[j] − v[i]
+对于i从1到f，执行以下步骤：
+如果t[i] ≥ 0，则将s的第i位设为1
+否则，将s的第i位设为0
+近似重复检测
+一般来说，如果两个Simhash的汉明距离不超过h（h是一个经验阈值），我们可以认为它们是近似重复的。要在一个包含m个Simhash的数据库中找到一个Simhash的所有近似重复，最简单的方法是进行一次完整的线性扫描，这需要计算m次汉明距离。
+随着m的增长，完整线性扫描的时间成本将变得不可接受。事实上，大多数汉明距离计算是没有必要的，因为对于每个查询的Simhash，只有少数近似重复可以找到。已经提出了几种解决方案来减少比较的时间，例如Manku等人（2007年）。
+位翻转组合
+我们考虑Sood和Luguinov提出的一种新方法，即概率性Simhash匹配（PSM）系统，该系统在不需要维护数据的多个副本以进行近似重复搜索的情况下，仍然保持了良好的召回率。对于给定的查询指纹，我们基于找到近似重复匹配的概率探索不同的现有指纹，并限制我们的尝试次数以实现良好的查询速度。
+首先，我们可以对Si69521mhash数据库进行排序并建立一个索引。为了更好地理解这里的“索引”，假设所有的Simhash都是f位整数并按列表排序，我们根据每个Simhash的前p位将它们分成子列表，然后所有子列表中第一个元素的位置组成一个索引。例如，索引的第32767个元素表示Simhash列表中前p位等于0x7fff的最小元素的位置。由于汉明距离阈值h通常是2或3，我们可以轻松构建位翻转组合，这意味着查询Simhash的所有可能的前16位的近似重复。对于h=3和p=16的索引，我们需要扫描所有65536（2^16）个子列表进行完整线性扫描，但仅需要扫描C(p,0) &#43; C(p,1) &#43; C(p,2) &#43; C(p,3) = 697个子列表，受益于位翻转组合。
+计算Simhash
+Simhash 原理概述
+Simhash 的基本思想是通过特征向量的加权累加生成一个低维哈希值，进而用于判断相似性。对于文本来说，特征可以是单词或词组，对于实数向量来说，特征就是向量的每一个分量。
+将实数向量映射到 Simhash 的过程
+对于文本，我们通常将每个单词哈希为一个固定长度的位串，并根据单词的权重对这些位串进行加权累加。而对于实数向量，我们可以使用类似的过程，将每个向量分量视为一个特征，进行加权累加。具体步骤如下：
+输入：
+v[1..n]v[1..n]v[1..n]：输入的实数向量
+输出：
+sss：f 位 Simhash
+步骤：
+初始化向量：
+初始化一个长度为 f 的实数向量 t[1..f]t[1..f]t[1..f]，所有值设为 0。
+" />
+<meta name="keywords" content="Victor, 博客, 技术, 生活, Simhash, PSM, 概率性匹配" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="//localhost:1313/posts/zh/opensource/%E5%9F%BA%E4%BA%8Esimhash%E5%AE%9E%E7%8E%B0psm%E6%A6%82%E7%8E%87%E6%80%A7%E5%8C%B9%E9%85%8D%E7%B3%BB%E7%BB%9F/" />
+
+
+    <title>
+        
+            基于Simhash实现PSM概率性匹配系统 :: Victor的世界 
+        
+    </title>
+
+
+
+
+
+  <link rel="stylesheet" href="/main.min.244183cde1a38e0b08f82c11791181288f9aac1cc9618cd6f4e9e7710c5768ba.css" integrity="sha256-JEGDzeGjjgsI&#43;CwReRGBKI&#43;arBzJYYzW9OnncQxXaLo=" crossorigin="anonymous">
+
+
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="基于Simhash实现PSM概率性匹配系统">
+  <meta itemprop="description" content="基于Simhash实现PSM概率性匹配系统
+PSM系统，即概率性Simhash匹配系统（Probabilistic Simhash Matching System），是一种用于高效检测近似重复图像或文档的算法系统。它利用Simhash技术，通过概率性匹配方法来快速识别和定位相似度较高的对象。 Simhash和汉明距离
+Simhash由Moses Charikar开发，并在他的论文“Similarity Estimation Techniques from Rounding Algorithms”中描述。Simhash的主要目的是将相似的项目哈希到相似的哈希值。相似性可以通过哈希值之间的位汉明距离来判断。
+以下是将一个n维实数向量映射到一个f位Simhash的算法。
+算法1：计算实数向量的Simhash
+输入：
+v[1..n]：输入实数向量
+输出：
+s：f位Simhash
+初始化一个实数向量t[1..f]为0
+生成n个f位随机整数r[1..n]
+对于i从1到n，执行以下步骤：
+对于j从1到f，执行以下步骤：
+如果r[i]的第j位是1，则t[j] ← t[j] &#43; v[i]
+否则，t[j] ← t[j] − v[i]
+对于i从1到f，执行以下步骤：
+如果t[i] ≥ 0，则将s的第i位设为1
+否则，将s的第i位设为0
+近似重复检测
+一般来说，如果两个Simhash的汉明距离不超过h（h是一个经验阈值），我们可以认为它们是近似重复的。要在一个包含m个Simhash的数据库中找到一个Simhash的所有近似重复，最简单的方法是进行一次完整的线性扫描，这需要计算m次汉明距离。
+随着m的增长，完整线性扫描的时间成本将变得不可接受。事实上，大多数汉明距离计算是没有必要的，因为对于每个查询的Simhash，只有少数近似重复可以找到。已经提出了几种解决方案来减少比较的时间，例如Manku等人（2007年）。
+位翻转组合
+我们考虑Sood和Luguinov提出的一种新方法，即概率性Simhash匹配（PSM）系统，该系统在不需要维护数据的多个副本以进行近似重复搜索的情况下，仍然保持了良好的召回率。对于给定的查询指纹，我们基于找到近似重复匹配的概率探索不同的现有指纹，并限制我们的尝试次数以实现良好的查询速度。
+首先，我们可以对Si69521mhash数据库进行排序并建立一个索引。为了更好地理解这里的“索引”，假设所有的Simhash都是f位整数并按列表排序，我们根据每个Simhash的前p位将它们分成子列表，然后所有子列表中第一个元素的位置组成一个索引。例如，索引的第32767个元素表示Simhash列表中前p位等于0x7fff的最小元素的位置。由于汉明距离阈值h通常是2或3，我们可以轻松构建位翻转组合，这意味着查询Simhash的所有可能的前16位的近似重复。对于h=3和p=16的索引，我们需要扫描所有65536（2^16）个子列表进行完整线性扫描，但仅需要扫描C(p,0) &#43; C(p,1) &#43; C(p,2) &#43; C(p,3) = 697个子列表，受益于位翻转组合。
+计算Simhash
+Simhash 原理概述
+Simhash 的基本思想是通过特征向量的加权累加生成一个低维哈希值，进而用于判断相似性。对于文本来说，特征可以是单词或词组，对于实数向量来说，特征就是向量的每一个分量。
+将实数向量映射到 Simhash 的过程
+对于文本，我们通常将每个单词哈希为一个固定长度的位串，并根据单词的权重对这些位串进行加权累加。而对于实数向量，我们可以使用类似的过程，将每个向量分量视为一个特征，进行加权累加。具体步骤如下：
+输入：
+v[1..n]v[1..n]v[1..n]：输入的实数向量
+输出：
+sss：f 位 Simhash
+步骤：
+初始化向量：
+初始化一个长度为 f 的实数向量 t[1..f]t[1..f]t[1..f]，所有值设为 0。">
+  <meta itemprop="datePublished" content="2024-06-20T19:42:02+08:00">
+  <meta itemprop="dateModified" content="2024-06-20T19:42:02+08:00">
+  <meta itemprop="wordCount" content="1085">
+  <meta itemprop="keywords" content="Simhash,PSM,概率性匹配">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="基于Simhash实现PSM概率性匹配系统">
+  <meta name="twitter:description" content="基于Simhash实现PSM概率性匹配系统
+PSM系统，即概率性Simhash匹配系统（Probabilistic Simhash Matching System），是一种用于高效检测近似重复图像或文档的算法系统。它利用Simhash技术，通过概率性匹配方法来快速识别和定位相似度较高的对象。 Simhash和汉明距离
+Simhash由Moses Charikar开发，并在他的论文“Similarity Estimation Techniques from Rounding Algorithms”中描述。Simhash的主要目的是将相似的项目哈希到相似的哈希值。相似性可以通过哈希值之间的位汉明距离来判断。
+以下是将一个n维实数向量映射到一个f位Simhash的算法。
+算法1：计算实数向量的Simhash
+输入：
+v[1..n]：输入实数向量
+输出：
+s：f位Simhash
+初始化一个实数向量t[1..f]为0
+生成n个f位随机整数r[1..n]
+对于i从1到n，执行以下步骤：
+对于j从1到f，执行以下步骤：
+如果r[i]的第j位是1，则t[j] ← t[j] &#43; v[i]
+否则，t[j] ← t[j] − v[i]
+对于i从1到f，执行以下步骤：
+如果t[i] ≥ 0，则将s的第i位设为1
+否则，将s的第i位设为0
+近似重复检测
+一般来说，如果两个Simhash的汉明距离不超过h（h是一个经验阈值），我们可以认为它们是近似重复的。要在一个包含m个Simhash的数据库中找到一个Simhash的所有近似重复，最简单的方法是进行一次完整的线性扫描，这需要计算m次汉明距离。
+随着m的增长，完整线性扫描的时间成本将变得不可接受。事实上，大多数汉明距离计算是没有必要的，因为对于每个查询的Simhash，只有少数近似重复可以找到。已经提出了几种解决方案来减少比较的时间，例如Manku等人（2007年）。
+位翻转组合
+我们考虑Sood和Luguinov提出的一种新方法，即概率性Simhash匹配（PSM）系统，该系统在不需要维护数据的多个副本以进行近似重复搜索的情况下，仍然保持了良好的召回率。对于给定的查询指纹，我们基于找到近似重复匹配的概率探索不同的现有指纹，并限制我们的尝试次数以实现良好的查询速度。
+首先，我们可以对Si69521mhash数据库进行排序并建立一个索引。为了更好地理解这里的“索引”，假设所有的Simhash都是f位整数并按列表排序，我们根据每个Simhash的前p位将它们分成子列表，然后所有子列表中第一个元素的位置组成一个索引。例如，索引的第32767个元素表示Simhash列表中前p位等于0x7fff的最小元素的位置。由于汉明距离阈值h通常是2或3，我们可以轻松构建位翻转组合，这意味着查询Simhash的所有可能的前16位的近似重复。对于h=3和p=16的索引，我们需要扫描所有65536（2^16）个子列表进行完整线性扫描，但仅需要扫描C(p,0) &#43; C(p,1) &#43; C(p,2) &#43; C(p,3) = 697个子列表，受益于位翻转组合。
+计算Simhash
+Simhash 原理概述
+Simhash 的基本思想是通过特征向量的加权累加生成一个低维哈希值，进而用于判断相似性。对于文本来说，特征可以是单词或词组，对于实数向量来说，特征就是向量的每一个分量。
+将实数向量映射到 Simhash 的过程
+对于文本，我们通常将每个单词哈希为一个固定长度的位串，并根据单词的权重对这些位串进行加权累加。而对于实数向量，我们可以使用类似的过程，将每个向量分量视为一个特征，进行加权累加。具体步骤如下：
+输入：
+v[1..n]v[1..n]v[1..n]：输入的实数向量
+输出：
+sss：f 位 Simhash
+步骤：
+初始化向量：
+初始化一个长度为 f 的实数向量 t[1..f]t[1..f]t[1..f]，所有值设为 0。">
+
+
+
+    <meta property="og:url" content="//localhost:1313/posts/zh/opensource/%E5%9F%BA%E4%BA%8Esimhash%E5%AE%9E%E7%8E%B0psm%E6%A6%82%E7%8E%87%E6%80%A7%E5%8C%B9%E9%85%8D%E7%B3%BB%E7%BB%9F/">
+  <meta property="og:site_name" content="Victor的世界">
+  <meta property="og:title" content="基于Simhash实现PSM概率性匹配系统">
+  <meta property="og:description" content="基于Simhash实现PSM概率性匹配系统
+PSM系统，即概率性Simhash匹配系统（Probabilistic Simhash Matching System），是一种用于高效检测近似重复图像或文档的算法系统。它利用Simhash技术，通过概率性匹配方法来快速识别和定位相似度较高的对象。 Simhash和汉明距离
+Simhash由Moses Charikar开发，并在他的论文“Similarity Estimation Techniques from Rounding Algorithms”中描述。Simhash的主要目的是将相似的项目哈希到相似的哈希值。相似性可以通过哈希值之间的位汉明距离来判断。
+以下是将一个n维实数向量映射到一个f位Simhash的算法。
+算法1：计算实数向量的Simhash
+输入：
+v[1..n]：输入实数向量
+输出：
+s：f位Simhash
+初始化一个实数向量t[1..f]为0
+生成n个f位随机整数r[1..n]
+对于i从1到n，执行以下步骤：
+对于j从1到f，执行以下步骤：
+如果r[i]的第j位是1，则t[j] ← t[j] &#43; v[i]
+否则，t[j] ← t[j] − v[i]
+对于i从1到f，执行以下步骤：
+如果t[i] ≥ 0，则将s的第i位设为1
+否则，将s的第i位设为0
+近似重复检测
+一般来说，如果两个Simhash的汉明距离不超过h（h是一个经验阈值），我们可以认为它们是近似重复的。要在一个包含m个Simhash的数据库中找到一个Simhash的所有近似重复，最简单的方法是进行一次完整的线性扫描，这需要计算m次汉明距离。
+随着m的增长，完整线性扫描的时间成本将变得不可接受。事实上，大多数汉明距离计算是没有必要的，因为对于每个查询的Simhash，只有少数近似重复可以找到。已经提出了几种解决方案来减少比较的时间，例如Manku等人（2007年）。
+位翻转组合
+我们考虑Sood和Luguinov提出的一种新方法，即概率性Simhash匹配（PSM）系统，该系统在不需要维护数据的多个副本以进行近似重复搜索的情况下，仍然保持了良好的召回率。对于给定的查询指纹，我们基于找到近似重复匹配的概率探索不同的现有指纹，并限制我们的尝试次数以实现良好的查询速度。
+首先，我们可以对Si69521mhash数据库进行排序并建立一个索引。为了更好地理解这里的“索引”，假设所有的Simhash都是f位整数并按列表排序，我们根据每个Simhash的前p位将它们分成子列表，然后所有子列表中第一个元素的位置组成一个索引。例如，索引的第32767个元素表示Simhash列表中前p位等于0x7fff的最小元素的位置。由于汉明距离阈值h通常是2或3，我们可以轻松构建位翻转组合，这意味着查询Simhash的所有可能的前16位的近似重复。对于h=3和p=16的索引，我们需要扫描所有65536（2^16）个子列表进行完整线性扫描，但仅需要扫描C(p,0) &#43; C(p,1) &#43; C(p,2) &#43; C(p,3) = 697个子列表，受益于位翻转组合。
+计算Simhash
+Simhash 原理概述
+Simhash 的基本思想是通过特征向量的加权累加生成一个低维哈希值，进而用于判断相似性。对于文本来说，特征可以是单词或词组，对于实数向量来说，特征就是向量的每一个分量。
+将实数向量映射到 Simhash 的过程
+对于文本，我们通常将每个单词哈希为一个固定长度的位串，并根据单词的权重对这些位串进行加权累加。而对于实数向量，我们可以使用类似的过程，将每个向量分量视为一个特征，进行加权累加。具体步骤如下：
+输入：
+v[1..n]v[1..n]v[1..n]：输入的实数向量
+输出：
+sss：f 位 Simhash
+步骤：
+初始化向量：
+初始化一个长度为 f 的实数向量 t[1..f]t[1..f]t[1..f]，所有值设为 0。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-06-20T19:42:02+08:00">
+    <meta property="article:modified_time" content="2024-06-20T19:42:02+08:00">
+    <meta property="article:tag" content="Simhash">
+    <meta property="article:tag" content="PSM">
+    <meta property="article:tag" content="概率性匹配">
+
+
+
+
+
+
+    <meta property="article:published_time" content="2024-06-20 19:42:02 &#43;0800 CST" />
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text ">
+                Victor的世界</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about">关于</a></li><li><a href="/posts">博客</a></li><li><a href="https://github.com/buzhimingyonghu">GitHub</a></li>
+        <ul class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">zh</a>
+                <div class="dropdown-content">
+                        
+                </div>
+            </li>
+        </ul>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        
+
+        
+      </p>
+
+      
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <a href="/posts/posts">Posts</a>
+      </p>
+      
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="//localhost:1313/posts/zh/opensource/%E5%9F%BA%E4%BA%8Esimhash%E5%AE%9E%E7%8E%B0psm%E6%A6%82%E7%8E%87%E6%80%A7%E5%8C%B9%E9%85%8D%E7%B3%BB%E7%BB%9F/">基于Simhash实现PSM概率性匹配系统</a>
+      </h1>
+
+      
+
+      
+
+      <div class="post-content">
+        <p><strong>基于Simhash实现PSM概率性匹配系统</strong></p>
+<p>PSM系统，即概率性<strong>Simhash匹配系统</strong>（Probabilistic Simhash Matching System），是一种用于高效检测近似重复图像或文档的算法系统。它利用<strong>Simhash技术</strong>，通过概率性匹配方法来快速识别和定位相似度较高的对象。
+<img src="./images/1280X1280.PNG" alt="simhash"></p>
+<p><strong>Simhash和汉明距离</strong></p>
+<p>Simhash由Moses Charikar开发，并在他的论文“Similarity Estimation Techniques from Rounding Algorithms”中描述。Simhash的主要目的是将相似的项目哈希到相似的哈希值。相似性可以通过哈希值之间的位汉明距离来判断。</p>
+<p>以下是将一个n维实数向量映射到一个f位Simhash的算法。</p>
+<p><strong>算法1：计算实数向量的Simhash</strong></p>
+<p><strong>输入：</strong></p>
+<p>v[1..n]：输入实数向量</p>
+<p><strong>输出：</strong></p>
+<p>s：f位Simhash</p>
+<p>初始化一个实数向量t[1..f]为0</p>
+<p>生成n个f位随机整数r[1..n]</p>
+<p>对于i从1到n，执行以下步骤：</p>
+<p>对于j从1到f，执行以下步骤：</p>
+<p>如果r[i]的第j位是1，则t[j] ← t[j] + v[i]</p>
+<p>否则，t[j] ← t[j] − v[i]</p>
+<p>对于i从1到f，执行以下步骤：</p>
+<p>如果t[i] ≥ 0，则将s的第i位设为1</p>
+<p>否则，将s的第i位设为0</p>
+<p><strong>近似重复检测</strong></p>
+<p>一般来说，如果两个Simhash的汉明距离不超过h（h是一个经验阈值），我们可以认为它们是近似重复的。要在一个包含m个Simhash的数据库中找到一个Simhash的所有近似重复，最简单的方法是进行一次完整的线性扫描，这需要计算m次汉明距离。</p>
+<p>随着m的增长，完整线性扫描的时间成本将变得不可接受。事实上，大多数汉明距离计算是没有必要的，因为对于每个查询的Simhash，只有少数近似重复可以找到。已经提出了几种解决方案来减少比较的时间，例如Manku等人（2007年）。</p>
+<p><strong>位翻转组合</strong></p>
+<p>我们考虑Sood和Luguinov提出的一种新方法，即概率性Simhash匹配（PSM）系统，该系统在不需要维护数据的多个副本以进行近似重复搜索的情况下，仍然保持了良好的召回率。对于给定的查询指纹，我们基于找到近似重复匹配的概率探索不同的现有指纹，并限制我们的尝试次数以实现良好的查询速度。</p>
+<p>首先，我们可以对Si69521mhash数据库进行排序并建立一个索引。为了更好地理解这里的“索引”，假设所有的Simhash都是f位整数并按列表排序，我们根据每个Simhash的前p位将它们分成子列表，然后所有子列表中第一个元素的位置组成一个索引。例如，索引的第32767个元素表示Simhash列表中前p位等于0x7fff的最小元素的位置。由于汉明距离阈值h通常是2或3，我们可以轻松构建位翻转组合，这意味着查询Simhash的所有可能的前16位的近似重复。对于h=3和p=16的索引，我们需要扫描所有65536（2^16）个子列表进行完整线性扫描，但仅需要扫描C(p,0) + C(p,1) + C(p,2) + C(p,3) = 697个子列表，受益于位翻转组合。</p>
+<p><strong>计算Simhash</strong></p>
+<p><strong>Simhash 原理概述</strong></p>
+<p>Simhash 的基本思想是通过特征向量的加权累加生成一个低维哈希值，进而用于判断相似性。对于文本来说，特征可以是单词或词组，对于实数向量来说，特征就是向量的每一个分量。</p>
+<p><strong>将实数向量映射到 Simhash 的过程</strong></p>
+<p>对于文本，我们通常将每个单词哈希为一个固定长度的位串，并根据单词的权重对这些位串进行加权累加。而对于实数向量，我们可以使用类似的过程，将每个向量分量视为一个特征，进行加权累加。具体步骤如下：</p>
+<p><strong>输入：</strong></p>
+<p>v[1..n]v[1..n]v[1..n]：输入的实数向量</p>
+<p><strong>输出：</strong></p>
+<p>sss：f 位 Simhash</p>
+<p><strong>步骤：</strong></p>
+<p><strong>初始化向量</strong>：</p>
+<p>初始化一个长度为 f 的实数向量 t[1..f]t[1..f]t[1..f]，所有值设为 0。</p>
+<p><strong>生成随机整数</strong>：</p>
+<p>生成 n 个 f 位的随机整数 r[1..n]r[1..n]r[1..n]。</p>
+<p><strong>累加权重</strong>：</p>
+<p>对于每个向量分量 v[i]v[i]v[i]，根据对应的随机整数 r[i]r[i]r[i] 的每一位来调整 ttt 向量。</p>
+<p>如果 r[i]r[i]r[i] 的第 j 位是 1，则增加 t[j]t[j]t[j] 的值；否则，减少 t[j]t[j]t[j] 的值。</p>
+<p><strong>生成 Simhash</strong>：</p>
+<p>最后，根据 ttt 的值生成 Simhash sss。如果 t[j]≥0t[j] \geq 0t[j]≥0，则 sss 的第 j 位设为 1，否则设为 0。</p>
+<p><strong>详细解释</strong></p>
+<p><strong>初始化</strong>：</p>
+<p>创建一个长度为 f 的向量 ttt，并将它初始化为 0。这个向量用于临时存储每一位的累加结果。</p>
+<p><strong>生成随机整数</strong>：</p>
+<p>生成 n 个随机整数 rrr，每个整数是 f 位的二进制数。这些随机整数用于确定如何调整实数向量中的每个值。</p>
+<p><strong>累加向量值</strong>：</p>
+<p>对于实数向量 vvv 中的每个元素 v[i]v[i]v[i]，根据 r[i]r[i]r[i] 的二进制位来调整 ttt 的对应位。如果 r[i]r[i]r[i] 的第 j 位是 1，你就增加 t[j]t[j]t[j] 的值，否则就减少 t[j]t[j]t[j] 的值。</p>
+<p><strong>生成 Simhash</strong>：</p>
+<p>根据 ttt 的值来决定 Simhash sss 的每一位。如果 t[i]≥0t[i] \geq 0t[i]≥0，则 sss 的第 i 位为 1，否则为 0。</p>
+<p><strong>举例说明</strong></p>
+<p>假设你有一个 3 维实数向量 v=[0.5,−0.3,0.8]v = [0.5, -0.3, 0.8]v=[0.5,−0.3,0.8]，你想生成一个 4 位的 Simhash。</p>
+<p><strong>初始化</strong> ttt 为 [0, 0, 0, 0]。</p>
+<p><strong>生成随机整数</strong> rrr，例如：</p>
+<p>r[1]=1101r[1] = 1101r[1]=1101</p>
+<p>r[2]=0110r[2] = 0110r[2]=0110</p>
+<p>r[3]=1010r[3] = 1010r[3]=1010</p>
+<p><strong>累加向量值</strong>：</p>
+<p>对于 v[1]=0.5v[1] = 0.5v[1]=0.5:</p>
+<p>如果 r[1]r[1]r[1] 的第 1 位是 1，则 t[1]+=0.5t[1] += 0.5t[1]+=0.5 -&gt; t=[0.5,0,0,0]t = [0.5, 0, 0, 0]t=[0.5,0,0,0]</p>
+<p>如果 r[1]r[1]r[1] 的第 2 位是 1，则 t[2]+=0.5t[2] += 0.5t[2]+=0.5 -&gt; t=[0.5,0.5,0,0]t = [0.5, 0.5, 0, 0]t=[0.5,0.5,0,0]</p>
+<p>如果 r[1]r[1]r[1] 的第 3 位是 0，则 t[3]−=0.5t[3] -= 0.5t[3]−=0.5 -&gt; t=[0.5,0.5,−0.5,0]t = [0.5, 0.5, -0.5, 0]t=[0.5,0.5,−0.5,0]</p>
+<p>如果 r[1]r[1]r[1] 的第 4 位是 1，则 t[4]+=0.5t[4] += 0.5t[4]+=0.5 -&gt; t=[0.5,0.5,−0.5,0.5]t = [0.5, 0.5, -0.5, 0.5]t=[0.5,0.5,−0.5,0.5]</p>
+<p>对于 v[2]=−0.3v[2] = -0.3v[2]=−0.3:</p>
+<p>如果 r[2]r[2]r[2] 的第 1 位是 0，则 t[1]−=−0.3t[1] -= -0.3t[1]−=−0.3 -&gt; t=[0.2,0.5,−0.5,0.5]t = [0.2, 0.5, -0.5, 0.5]t=[0.2,0.5,−0.5,0.5]</p>
+<p>如果 r[2]r[2]r[2] 的第 2 位是 1，则 t[2]+=−0.3t[2] += -0.3t[2]+=−0.3 -&gt; t=[0.2,0.8,−0.5,0.5]t = [0.2, 0.8, -0.5, 0.5]t=[0.2,0.8,−0.5,0.5]</p>
+<p>如果 r[2]r[2]r[2] 的第 3 位是 1，则 t[3]+=−0.3t[3] += -0.3t[3]+=−0.3 -&gt; t=[0.2,0.8,−0.2,0.5]t = [0.2, 0.8, -0.2, 0.5]t=[0.2,0.8,−0.2,0.5]</p>
+<p>如果 r[2]r[2]r[2] 的第 4 位是 0，则 t[4]−=−0.3t[4] -= -0.3t[4]−=−0.3 -&gt; t=[0.2,0.8,−0.2,0.2]t = [0.2, 0.8, -0.2, 0.2]t=[0.2,0.8,−0.2,0.2]</p>
+<p>对于 v[3]=0.8v[3] = 0.8v[3]=0.8:</p>
+<p>如果 r[3]r[3]r[3] 的第 1 位是 1，则 t[1]+=0.8t[1] += 0.8t[1]+=0.8 -&gt; t=[1,0.8,−0.2,0.2]t = [1, 0.8, -0.2, 0.2]t=[1,0.8,−0.2,0.2]</p>
+<p>如果 r[3]r[3]r[3] 的第 2 位是 0，则 t[2]−=0.8t[2] -= 0.8t[2]−=0.8 -&gt; t=[1,0,−0.2,0.2]t = [1, 0, -0.2, 0.2]t=[1,0,−0.2,0.2]</p>
+<p>如果 r[3]r[3]r[3] 的第 3 位是 1，则 t[3]+=0.8t[3] += 0.8t[3]+=0.8 -&gt; t=[1,0,0.6,0.2]t = [1, 0, 0.6, 0.2]t=[1,0,0.6,0.2]</p>
+<p>如果 r[3]r[3]r[3] 的第 4 位是 0，则 t[4]−=0.8t[4] -= 0.8t[4]−=0.8 -&gt; t=[1,0,0.6,−0.6]t = [1, 0, 0.6, -0.6]t=[1,0,0.6,−0.6]</p>
+<p><strong>生成 Simhash</strong>：</p>
+<p>对于 t[1]=1t[1] = 1t[1]=1，第 1 位设为 1</p>
+<p>对于 t[2]=0t[2] = 0t[2]=0，第 2 位设为 1</p>
+<p>对于 t[3]=0.6t[3] = 0.6t[3]=0.6，第 3 位设为 1</p>
+<p>对于 t[4]=−0.6t[4] = -0.6t[4]=−0.6，第 4 位设为 0</p>
+<p>最终生成的 4 位 Simhash 为 1110。</p>
+<p><strong>Simhash 原理概述</strong></p>
+<p>Simhash 的基本思想是通过特征向量的加权累加生成一个低维哈希值，进而用于判断相似性。对于文本来说，特征可以是单词或词组，对于实数向量来说，特征就是向量的每一个分量。</p>
+<p><strong>将实数向量映射到 Simhash 的过程</strong></p>
+<p>对于文本，我们通常将每个单词哈希为一个固定长度的位串，并根据单词的权重对这些位串进行加权累加。而对于实数向量，我们可以使用类似的过程，将每个向量分量视为一个特征，进行加权累加。具体步骤如下：</p>
+<p><strong>输入：</strong></p>
+<p>v[1..n]v[1..n]v[1..n]：输入的实数向量</p>
+<p><strong>输出：</strong></p>
+<p>sss：f 位 Simhash</p>
+<p><strong>步骤：</strong></p>
+<p><strong>初始化向量</strong>：</p>
+<p>初始化一个长度为 f 的实数向量 t[1..f]t[1..f]t[1..f]，所有值设为 0。</p>
+<p><strong>生成随机整数</strong>：</p>
+<p>生成 n 个 f 位的随机整数 r[1..n]r[1..n]r[1..n]。</p>
+<p><strong>累加权重</strong>：</p>
+<p>对于每个向量分量 v[i]v[i]v[i]，根据对应的随机整数 r[i]r[i]r[i] 的每一位来调整 ttt 向量。</p>
+<p>如果 r[i]r[i]r[i] 的第 j 位是 1，则增加 t[j]t[j]t[j] 的值；否则，减少 t[j]t[j]t[j] 的值。</p>
+<p><strong>生成 Simhash</strong>：</p>
+<p>最后，根据 ttt 的值生成 Simhash sss。如果 t[j]≥0t[j] \geq 0t[j]≥0，则 sss 的第 j 位设为 1，否则设为 0。</p>
+<p><strong>详细解释</strong></p>
+<p><strong>初始化</strong>：</p>
+<p>创建一个长度为 f 的向量 ttt，并将它初始化为 0。这个向量用于临时存储每一位的累加结果。</p>
+<p><strong>生成随机整数</strong>：</p>
+<p>生成 n 个随机整数 rrr，每个整数是 f 位的二进制数。这些随机整数用于确定如何调整实数向量中的每个值。</p>
+<p><strong>累加向量值</strong>：</p>
+<p>对于实数向量 vvv 中的每个元素 v[i]v[i]v[i]，根据 r[i]r[i]r[i] 的二进制位来调整 ttt 的对应位。如果 r[i]r[i]r[i] 的第 j 位是 1，你就增加 t[j]t[j]t[j] 的值，否则就减少 t[j]t[j]t[j] 的值。</p>
+<p><strong>生成 Simhash</strong>：</p>
+<p>根据 ttt 的值来决定 Simhash sss 的每一位。如果 t[i]≥0t[i] \geq 0t[i]≥0，则 sss 的第 i 位为 1，否则为 0。</p>
+<p><strong>举例说明</strong></p>
+<p>假设你有一个 3 维实数向量 v=[0.5,−0.3,0.8]v = [0.5, -0.3, 0.8]v=[0.5,−0.3,0.8]，你想生成一个 4 位的 Simhash。</p>
+<p><strong>初始化</strong> ttt 为 [0, 0, 0, 0]。</p>
+<p><strong>生成随机整数</strong> rrr，例如：</p>
+<p>r[1]=1101r[1] = 1101r[1]=1101</p>
+<p>r[2]=0110r[2] = 0110r[2]=0110</p>
+<p>r[3]=1010r[3] = 1010r[3]=1010</p>
+<p><strong>累加向量值</strong>：</p>
+<p>对于 v[1]=0.5v[1] = 0.5v[1]=0.5:</p>
+<p>如果 r[1]r[1]r[1] 的第 1 位是 1，则 t[1]+=0.5t[1] += 0.5t[1]+=0.5 -&gt; t=[0.5,0,0,0]t = [0.5, 0, 0, 0]t=[0.5,0,0,0]</p>
+<p>如果 r[1]r[1]r[1] 的第 2 位是 1，则 t[2]+=0.5t[2] += 0.5t[2]+=0.5 -&gt; t=[0.5,0.5,0,0]t = [0.5, 0.5, 0, 0]t=[0.5,0.5,0,0]</p>
+<p>如果 r[1]r[1]r[1] 的第 3 位是 0，则 t[3]−=0.5t[3] -= 0.5t[3]−=0.5 -&gt; t=[0.5,0.5,−0.5,0]t = [0.5, 0.5, -0.5, 0]t=[0.5,0.5,−0.5,0]</p>
+<p>如果 r[1]r[1]r[1] 的第 4 位是 1，则 t[4]+=0.5t[4] += 0.5t[4]+=0.5 -&gt; t=[0.5,0.5,−0.5,0.5]t = [0.5, 0.5, -0.5, 0.5]t=[0.5,0.5,−0.5,0.5]</p>
+<p>对于 v[2]=−0.3v[2] = -0.3v[2]=−0.3:</p>
+<p>如果 r[2]r[2]r[2] 的第 1 位是 0，则 t[1]−=−0.3t[1] -= -0.3t[1]−=−0.3 -&gt; t=[0.2,0.5,−0.5,0.5]t = [0.2, 0.5, -0.5, 0.5]t=[0.2,0.5,−0.5,0.5]</p>
+<p>如果 r[2]r[2]r[2] 的第 2 位是 1，则 t[2]+=−0.3t[2] += -0.3t[2]+=−0.3 -&gt; t=[0.2,0.8,−0.5,0.5]t = [0.2, 0.8, -0.5, 0.5]t=[0.2,0.8,−0.5,0.5]</p>
+<p>如果 r[2]r[2]r[2] 的第 3 位是 1，则 t[3]+=−0.3t[3] += -0.3t[3]+=−0.3 -&gt; t=[0.2,0.8,−0.2,0.5]t = [0.2, 0.8, -0.2, 0.5]t=[0.2,0.8,−0.2,0.5]</p>
+<p>如果 r[2]r[2]r[2] 的第 4 位是 0，则 t[4]−=−0.3t[4] -= -0.3t[4]−=−0.3 -&gt; t=[0.2,0.8,−0.2,0.2]t = [0.2, 0.8, -0.2, 0.2]t=[0.2,0.8,−0.2,0.2]</p>
+<p>对于 v[3]=0.8v[3] = 0.8v[3]=0.8:</p>
+<p>如果 r[3]r[3]r[3] 的第 1 位是 1，则 t[1]+=0.8t[1] += 0.8t[1]+=0.8 -&gt; t=[1,0.8,−0.2,0.2]t = [1, 0.8, -0.2, 0.2]t=[1,0.8,−0.2,0.2]</p>
+<p>如果 r[3]r[3]r[3] 的第 2 位是 0，则 t[2]−=0.8t[2] -= 0.8t[2]−=0.8 -&gt; t=[1,0,−0.2,0.2]t = [1, 0, -0.2, 0.2]t=[1,0,−0.2,0.2]</p>
+<p>如果 r[3]r[3]r[3] 的第 3 位是 1，则 t[3]+=0.8t[3] += 0.8t[3]+=0.8 -&gt; t=[1,0,0.6,0.2]t = [1, 0, 0.6, 0.2]t=[1,0,0.6,0.2]</p>
+<p>如果 r[3]r[3]r[3] 的第 4 位是 0，则 t[4]−=0.8t[4] -= 0.8t[4]−=0.8 -&gt; t=[1,0,0.6,−0.6]t = [1, 0, 0.6, -0.6]t=[1,0,0.6,−0.6]</p>
+<p><strong>生成 Simhash</strong>：</p>
+<p>对于 t[1]=1t[1] = 1t[1]=1，第 1 位设为 1</p>
+<p>对于 t[2]=0t[2] = 0t[2]=0，第 2 位设为 1</p>
+<p>对于 t[3]=0.6t[3] = 0.6t[3]=0.6，第 3 位设为 1</p>
+<p>对于 t[4]=−0.6t[4] = -0.6t[4]=−0.6，第 4 位设为 0</p>
+<p>最终生成的 4 位 Simhash 为 1110。</p>
+<p><strong>计算两个64位整数的汉明距离</strong></p>
+<p>汉明距离是一种用于衡量两个相同长度的字符串或数字之间差异的指标。在处理64位整数时，我们可以将其视为64位长的二进制字符串。汉明距离即为两个二进制字符串中不同位数的数量。</p>
+<p><strong>具体步骤：</strong></p>
+<p><strong>异或操作</strong>：将两个64位整数进行<strong>异或操作</strong>。<strong>异或操作</strong>符 ^ 对应位相同则结果为0，不同则结果为1。因此，异或的结果中，1的位表示两个整数在该位上不同。</p>
+<p><strong>统计1的个数</strong>：对异或操作的结果逐位检查，统计其中1的个数。这可以通过不断右移和检查最低位来实现。</p>
+<p><strong>实现方法：</strong></p>
+<p><strong>异或操作</strong>：</p>
+<p>对输入的两个64位整数 x 和 y 进行异或操作，得到结果 z。</p>
+<p>异或操作的结果 z 中，每个1的位表示 x 和 y 在该位上不同。</p>
+<p><strong>统计1的个数</strong>：</p>
+<p>初始化一个计数器 dist 为0。</p>
+<p>使用一个循环，逐位检查 z 中的每一位：</p>
+<p>检查 z 的最低位是否为1（使用 z &amp; 1），如果是则计数器 dist 加1。</p>
+<p>将 z 右移一位（使用 z &raquo;= 1），继续检查下一位，直到 z 变为0。</p>
+<p>这个过程结束后，计数器 dist 中的值即为 x 和 y 之间的汉明距离。</p>
+<p><strong>从文件中读取图像特征数据库</strong></p>
+<p><strong>位翻转概率</strong></p>
+<p><strong>位翻转概率的计算与解释</strong></p>
+<p><strong>背景与计算步骤</strong></p>
+<p>Simhash 是一种用于相似性检测的哈希算法，通过将文档的特征映射到哈希值来判断相似性。在计算 Simhash 时，我们首先会得到一个权重向量 WdW_dWd，其每一维对应一个特定的哈希位。这些权重由文档特征的哈希值和相应的权重通过加减操作生成。</p>
+<p><strong>计算位翻转概率</strong></p>
+<p>Simhash 是一种用于相似性检测的哈希算法，通过将文档的特征映射到哈希值来判断相似性。在计算 Simhash 时，我们首先会得到一个权重向量 WdW_dWd，其每一维对应一个特定的哈希位。这些权重由文档特征的哈希值和相应的权重通过加减操作生成。</p>
+<p><strong>计算位翻转概率</strong></p>
+<p>在处理近似重复数据时，我们会关注两个近似重复文档 ddd 和 d′d&rsquo;d′ 的权重向量之间的差异。 是文档 ddd 和 d′d&rsquo;d′ 在第 j 位的权重，则它们的差异可以表示为：</p>
+<p>为了计算位翻转的概率，我们关注位权重 Wj,dW_{j,d}Wj,d 与 0 的距离。直觉上，权重越接近 0，该位发生翻转的概率就越高。通过统计大量文档对的距离分布，可以证明这一直觉，即 distj,d−d′dist_{j,d-d&rsquo;}distj,d−d′ 通常遵循均值为 0 的正态分布。</p>
+<p><strong>数学表达</strong></p>
+<p>位翻转的概率可以通过以下公式来估算：
+<img src="./images/a0abd75a-9a48-42f3-a18f-67a607fe51e4.png" alt="位翻转概率"></p>
+<p><strong>示例</strong></p>
+<p>假设我们有一个包含六个单词的文档，每个单词的哈希值和权重如下表所示：</p>
+<p><strong>点击图片可查看完整电子表格</strong></p>
+<p>我们要计算这个文档的4位Simhash，并计算每个位的翻转概率。</p>
+<p><strong>计算步骤</strong></p>
+<p><strong>初始化权重向量 WdW_dWd</strong>： Wd=[0,0,0,0]W_d = [0, 0, 0, 0]Wd=[0,0,0,0]</p>
+<p><strong>根据哈希值和权重更新权重向量 WdW_dWd</strong>：</p>
+<p>对于 word1 (哈希值: 0101, 权重: 0.05)：</p>
+<p>第1位：0 -&gt; -0.05</p>
+<p>第2位：1 -&gt; +0.05</p>
+<p>第3位：0 -&gt; -0.05</p>
+<p>第4位：1 -&gt; +0.05 Wd=[−0.05,+0.05,−0.05,+0.05]W_d = [-0.05, +0.05, -0.05, +0.05]Wd=[−0.05,+0.05,−0.05,+0.05]</p>
+<p>对于 word2 (哈希值: 1101, 权重: 0.02)：</p>
+<p>第1位：1 -&gt; +0.02</p>
+<p>第2位：1 -&gt; +0.02</p>
+<p>第3位：0 -&gt; -0.02</p>
+<p>第4位：1 -&gt; +0.02 Wd=[−0.03,+0.07,−0.07,+0.07]W_d = [-0.03, +0.07, -0.07, +0.07]Wd=[−0.03,+0.07,−0.07,+0.07]</p>
+<p>对于 word3 (哈希值: 0001, 权重: 0.01)：</p>
+<p>第1位：0 -&gt; -0.01</p>
+<p>第2位：0 -&gt; -0.01</p>
+<p>第3位：0 -&gt; -0.01</p>
+<p>第4位：1 -&gt; +0.01 Wd=[−0.04,+0.06,−0.08,+0.08]W_d = [-0.04, +0.06, -0.08, +0.08]Wd=[−0.04,+0.06,−0.08,+0.08]</p>
+<p>对于 word4 (哈希值: 1110, 权重: 0.03)：</p>
+<p>第1位：1 -&gt; +0.03</p>
+<p>第2位：1 -&gt; +0.03</p>
+<p>第3位：1 -&gt; +0.03</p>
+<p>第4位：0 -&gt; -0.03 Wd=[−0.01,+0.09,−0.05,+0.05]W_d = [-0.01, +0.09, -0.05, +0.05]Wd=[−0.01,+0.09,−0.05,+0.05]</p>
+<p>对于 word5 (哈希值: 0100, 权重: 0.05)：</p>
+<p>第1位：0 -&gt; -0.05</p>
+<p>第2位：1 -&gt; +0.05</p>
+<p>第3位：0 -&gt; -0.05</p>
+<p>第4位：0 -&gt; -0.05 Wd=[−0.06,+0.14,−0.10,+0.00]W_d = [-0.06, +0.14, -0.10, +0.00]Wd=[−0.06,+0.14,−0.10,+0.00]</p>
+<p>对于 word6 (哈希值: 0011, 权重: 0.09)：</p>
+<p>第1位：0 -&gt; -0.09</p>
+<p>第2位：0 -&gt; -0.09</p>
+<p>第3位：1 -&gt; +0.09</p>
+<p>第4位：1 -&gt; +0.09 Wd=[−0.15,+0.05,−0.01,+0.09]W_d = [-0.15, +0.05, -0.01, +0.09]Wd=[−0.15,+0.05,−0.01,+0.09]</p>
+<p><strong>计算位翻转概率</strong></p>
+<p>将权重向量 WdW_dWd 中每个分量除以其模长 ∣Wd∣|W_d|∣Wd∣ 进行归一化，得到每个位的翻转概率：</p>
+<p>所以，每个位的翻转概率为：
+<img src="./images/754f08f6-0a2c-46a2-933c-4780f0cd17db.png" alt="翻转概率"></p>
+<p>根据翻转概率，我们可以排序得到最容易翻转的位：</p>
+<p>第3位 (0.9451), 第2位 (0.7256), 第4位 (0.5059), 第1位 (0.1767)</p>
+<p>所以，按最容易翻转的位，我们可以生成前 k 个最弱的位组合，以用于高效处理近似重复数据。</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="//localhost:1313/tags/simhash/">Simhash</a></span>
+        <span class="tag"><a href="//localhost:1313/tags/psm/">PSM</a></span>
+        <span class="tag"><a href="//localhost:1313/tags/%E6%A6%82%E7%8E%87%E6%80%A7%E5%8C%B9%E9%85%8D/">概率性匹配</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2024-06-20 19:42
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+            <span class="button previous">
+                <a href="//localhost:1313/posts/zh/opensource/%E8%85%BE%E8%AE%AF%E7%8A%80%E7%89%9B%E9%B8%9F%E5%BC%80%E6%BA%90%E5%8A%A0%E6%9D%83%E8%BD%AE%E8%AF%A2%E7%AE%97%E6%B3%95/">
+                    <span class="button__icon">←</span>
+                    <span class="button__text">腾讯犀牛鸟开源-加权轮询算法</span>
+                </a>
+            </span>
+            
+
+            
+        </div>
+    </div>
+
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.e89fda0f29b95d33f6f4224dd9e5cf69d84aff3818be2b0d73e731689cc374261b016d17d46f8381962fb4a1577ba3017b1f23509d894f6e66431f988c00889e.js" integrity="sha512-6J/aDym5XTP29CJN2eXPadhK/zgYvisNc&#43;cxaJzDdCYbAW0X1G&#43;DgZYvtKFXe6MBex8jUJ2JT25mQx&#43;YjACIng=="></script>
+
+
+
+
+    </body>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="HNSW (Hierarchical Navigable Small World) 是一种高效的近似最近邻(ANN)搜索算法，特别适用于高维向量数据的相似度搜索，支持向量的插入和近邻搜索操作。 本文主要从以下两个方面介绍HNSW的实现：
+核心数据结构和算法实现 向量检索和插入流程示例 核心数据结构和算法实现 1. 核心数据结构 1.1 NSW (Navigable Small World) struct NSW { std::vector&lt;Vector&gt; &amp;vertices_; // 所有向量数据 std::unordered_map&lt;size_t, std::vector&lt;size_t&gt;&gt; edges_; // 邻接表 std::vector&lt;size_t&gt; in_vertices_; // 该层包含的顶点 VectorExpressionType dist_fn_; // 距离计算函数 size_t m_max_; // 最大边数限制 } 1.2 HNSWIndex class HNSWIndex { std::unique_ptr&lt;std::vector&lt;Vector&gt;&gt; vertices_; // 向量数据 std::vector&lt;RID&gt; rids_; // 记录ID std::vector&lt;NSW&gt; layers_; // 多层图结构 // 配置参数 size_t m_; // 每个节点的邻居数 size_t ef_construction_; // 构建时的候选集大小 size_t ef_search_; // 搜索时的候选集大小 double m_l_; // 层级计算参数 } 2. 核心算法实现 2.1 搜索算法 auto NSW::SearchLayer(const vector&lt;double&gt; &amp;query, size_t limit, const vector&lt;size_t&gt; &amp;entry_points) 采用贪心搜索策略 使用优先队列维护候选集和结果集 通过距离比较进行剪枝优化 搜索过程： 从入口点开始搜索 遍历当前节点的邻居 更新候选集和结果集 当候选集最小距离大于结果集最大距离时终止 2.2 插入算法 void HNSWIndex::InsertVectorEntry(const vector&lt;double&gt; &amp;key, RID rid) 插入步骤： 生成随机层级 从最高层开始搜索合适的插入位置 在目标层及以下建立连接 优化各层的邻居连接 必要时创建新层 3. 重要参数说明 m：每个节点的最大邻居数 ef_construction：构建索引时的候选集大小 ef_search：查询时的候选集大小 m_max_：非底层的最大边数 m_max_0_：底层的最大边数（= m * m） 向量检索和插入流程示例 索引结构: 层级3: o---o (稀疏连接) 层级2: o---o---o (中等密度连接) 层级1: o---o---o---o (较密连接) 层级0: o---o---o---o---o---o (最密连接，包含所有节点) 插入流程 (InsertVectorEntry): void HNSWIndex::InsertVectorEntry(const std::vector&lt;double&gt; &amp;key, RID rid) { // 1. 随机决定新节点的最高层级 int target_level = GenerateRandomLevel(); // 2. 将向量数据和RID添加到存储中 auto vertex_id = AddVertex(key, rid); // 3. 自顶向下插入过程 if (!layers_[0].in_vertices_.empty()) { // 3.1 从最高层开始搜索 std::vector&lt;size_t&gt; entry_points = {最高层的入口点}; // 3.2 在高于目标层的层中只更新entry_points for (level = max_level; level &gt; target_level; level--) { 找到当前层最近的节点; 将这些节点作为下一层的入口点; } // 3.3 在目标层及以下的层中建立连接 for (; level &gt;= 0; level--) { 找到当前层最近的ef_construction个节点; 选择最近的m个作为邻居; 建立双向连接; 优化邻居的连接(确保不超过最大连接数); } } // 4. 如果需要，创建新的层 while (layers_.size() &lt;= target_level) { 创建新层并添加当前节点; } } 搜索流程 (ScanVectorKey): auto HNSWIndex::ScanVectorKey(const std::vector&lt;double&gt; &amp;query, size_t k) { // 1. 从最高层开始 entry_points = {最高层的入口点}; // 2. 逐层向下搜索 for (level = max_level; level &gt; 0; level--) { // 在当前层找到最近的节点 entry_points = layers_[level].SearchLayer(query, k, entry_points); } // 3. 在底层进行最终搜索 final_results = layers_[0].SearchLayer(query, k, entry_points); // 4. 转换结果为RID并返回 return 转换为RID列表; } 单层搜索流程 (SearchLayer): auto NSW::SearchLayer(const vector&lt;double&gt; &amp;query, size_t k, const vector&lt;size_t&gt; &amp;entry_points) { // 1. 初始化搜索状态 candidate_queue = 空队列; result_set = 空优先队列; visited = 空集合; // 2. 将入口点加入候选集 for (entry_point : entry_points) { 计算距离; 加入候选队列和结果集; } // 3. 贪心搜索 while (!candidate_queue.empty()) { current = candidate_queue.front(); // 3.1 获取当前节点的邻居 neighbors = edges_[current]; // 3.2 处理每个未访问的邻居 for (neighbor : neighbors) { if (已访问) continue; 计算距离; 更新结果集; 加入候选队列; } // 3.3 提前终止检查 if (候选集中最近距离 &gt; 结果集中最远距离) { break; } } // 4. 返回结果 return 最近的k个节点; } " />
+<meta name="keywords" content="Victor, 博客, 技术, 生活, HNSW, 向量索引, ANN" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="//localhost:1313/posts/zh/vectordb/hnsw%E5%90%91%E9%87%8F%E7%B4%A2%E5%BC%95%E5%9C%A8bustub%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0/" />
+
+
+    <title>
+        
+            HNSW向量索引在Bustub中的实现 :: Victor的世界 
+        
+    </title>
+
+
+
+
+
+  <link rel="stylesheet" href="/main.min.244183cde1a38e0b08f82c11791181288f9aac1cc9618cd6f4e9e7710c5768ba.css" integrity="sha256-JEGDzeGjjgsI&#43;CwReRGBKI&#43;arBzJYYzW9OnncQxXaLo=" crossorigin="anonymous">
+
+
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="HNSW向量索引在Bustub中的实现">
+  <meta itemprop="description" content="HNSW (Hierarchical Navigable Small World) 是一种高效的近似最近邻(ANN)搜索算法，特别适用于高维向量数据的相似度搜索，支持向量的插入和近邻搜索操作。 本文主要从以下两个方面介绍HNSW的实现：
+核心数据结构和算法实现 向量检索和插入流程示例 核心数据结构和算法实现 1. 核心数据结构 1.1 NSW (Navigable Small World) struct NSW { std::vector&lt;Vector&gt; &amp;vertices_; // 所有向量数据 std::unordered_map&lt;size_t, std::vector&lt;size_t&gt;&gt; edges_; // 邻接表 std::vector&lt;size_t&gt; in_vertices_; // 该层包含的顶点 VectorExpressionType dist_fn_; // 距离计算函数 size_t m_max_; // 最大边数限制 } 1.2 HNSWIndex class HNSWIndex { std::unique_ptr&lt;std::vector&lt;Vector&gt;&gt; vertices_; // 向量数据 std::vector&lt;RID&gt; rids_; // 记录ID std::vector&lt;NSW&gt; layers_; // 多层图结构 // 配置参数 size_t m_; // 每个节点的邻居数 size_t ef_construction_; // 构建时的候选集大小 size_t ef_search_; // 搜索时的候选集大小 double m_l_; // 层级计算参数 } 2. 核心算法实现 2.1 搜索算法 auto NSW::SearchLayer(const vector&lt;double&gt; &amp;query, size_t limit, const vector&lt;size_t&gt; &amp;entry_points) 采用贪心搜索策略 使用优先队列维护候选集和结果集 通过距离比较进行剪枝优化 搜索过程： 从入口点开始搜索 遍历当前节点的邻居 更新候选集和结果集 当候选集最小距离大于结果集最大距离时终止 2.2 插入算法 void HNSWIndex::InsertVectorEntry(const vector&lt;double&gt; &amp;key, RID rid) 插入步骤： 生成随机层级 从最高层开始搜索合适的插入位置 在目标层及以下建立连接 优化各层的邻居连接 必要时创建新层 3. 重要参数说明 m：每个节点的最大邻居数 ef_construction：构建索引时的候选集大小 ef_search：查询时的候选集大小 m_max_：非底层的最大边数 m_max_0_：底层的最大边数（= m * m） 向量检索和插入流程示例 索引结构: 层级3: o---o (稀疏连接) 层级2: o---o---o (中等密度连接) 层级1: o---o---o---o (较密连接) 层级0: o---o---o---o---o---o (最密连接，包含所有节点) 插入流程 (InsertVectorEntry): void HNSWIndex::InsertVectorEntry(const std::vector&lt;double&gt; &amp;key, RID rid) { // 1. 随机决定新节点的最高层级 int target_level = GenerateRandomLevel(); // 2. 将向量数据和RID添加到存储中 auto vertex_id = AddVertex(key, rid); // 3. 自顶向下插入过程 if (!layers_[0].in_vertices_.empty()) { // 3.1 从最高层开始搜索 std::vector&lt;size_t&gt; entry_points = {最高层的入口点}; // 3.2 在高于目标层的层中只更新entry_points for (level = max_level; level &gt; target_level; level--) { 找到当前层最近的节点; 将这些节点作为下一层的入口点; } // 3.3 在目标层及以下的层中建立连接 for (; level &gt;= 0; level--) { 找到当前层最近的ef_construction个节点; 选择最近的m个作为邻居; 建立双向连接; 优化邻居的连接(确保不超过最大连接数); } } // 4. 如果需要，创建新的层 while (layers_.size() &lt;= target_level) { 创建新层并添加当前节点; } } 搜索流程 (ScanVectorKey): auto HNSWIndex::ScanVectorKey(const std::vector&lt;double&gt; &amp;query, size_t k) { // 1. 从最高层开始 entry_points = {最高层的入口点}; // 2. 逐层向下搜索 for (level = max_level; level &gt; 0; level--) { // 在当前层找到最近的节点 entry_points = layers_[level].SearchLayer(query, k, entry_points); } // 3. 在底层进行最终搜索 final_results = layers_[0].SearchLayer(query, k, entry_points); // 4. 转换结果为RID并返回 return 转换为RID列表; } 单层搜索流程 (SearchLayer): auto NSW::SearchLayer(const vector&lt;double&gt; &amp;query, size_t k, const vector&lt;size_t&gt; &amp;entry_points) { // 1. 初始化搜索状态 candidate_queue = 空队列; result_set = 空优先队列; visited = 空集合; // 2. 将入口点加入候选集 for (entry_point : entry_points) { 计算距离; 加入候选队列和结果集; } // 3. 贪心搜索 while (!candidate_queue.empty()) { current = candidate_queue.front(); // 3.1 获取当前节点的邻居 neighbors = edges_[current]; // 3.2 处理每个未访问的邻居 for (neighbor : neighbors) { if (已访问) continue; 计算距离; 更新结果集; 加入候选队列; } // 3.3 提前终止检查 if (候选集中最近距离 &gt; 结果集中最远距离) { break; } } // 4. 返回结果 return 最近的k个节点; }">
+  <meta itemprop="datePublished" content="2024-12-02T19:42:02+08:00">
+  <meta itemprop="dateModified" content="2024-12-02T19:42:02+08:00">
+  <meta itemprop="wordCount" content="347">
+  <meta itemprop="keywords" content="HNSW,向量索引,ANN">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="HNSW向量索引在Bustub中的实现">
+  <meta name="twitter:description" content="HNSW (Hierarchical Navigable Small World) 是一种高效的近似最近邻(ANN)搜索算法，特别适用于高维向量数据的相似度搜索，支持向量的插入和近邻搜索操作。 本文主要从以下两个方面介绍HNSW的实现：
+核心数据结构和算法实现 向量检索和插入流程示例 核心数据结构和算法实现 1. 核心数据结构 1.1 NSW (Navigable Small World) struct NSW { std::vector&lt;Vector&gt; &amp;vertices_; // 所有向量数据 std::unordered_map&lt;size_t, std::vector&lt;size_t&gt;&gt; edges_; // 邻接表 std::vector&lt;size_t&gt; in_vertices_; // 该层包含的顶点 VectorExpressionType dist_fn_; // 距离计算函数 size_t m_max_; // 最大边数限制 } 1.2 HNSWIndex class HNSWIndex { std::unique_ptr&lt;std::vector&lt;Vector&gt;&gt; vertices_; // 向量数据 std::vector&lt;RID&gt; rids_; // 记录ID std::vector&lt;NSW&gt; layers_; // 多层图结构 // 配置参数 size_t m_; // 每个节点的邻居数 size_t ef_construction_; // 构建时的候选集大小 size_t ef_search_; // 搜索时的候选集大小 double m_l_; // 层级计算参数 } 2. 核心算法实现 2.1 搜索算法 auto NSW::SearchLayer(const vector&lt;double&gt; &amp;query, size_t limit, const vector&lt;size_t&gt; &amp;entry_points) 采用贪心搜索策略 使用优先队列维护候选集和结果集 通过距离比较进行剪枝优化 搜索过程： 从入口点开始搜索 遍历当前节点的邻居 更新候选集和结果集 当候选集最小距离大于结果集最大距离时终止 2.2 插入算法 void HNSWIndex::InsertVectorEntry(const vector&lt;double&gt; &amp;key, RID rid) 插入步骤： 生成随机层级 从最高层开始搜索合适的插入位置 在目标层及以下建立连接 优化各层的邻居连接 必要时创建新层 3. 重要参数说明 m：每个节点的最大邻居数 ef_construction：构建索引时的候选集大小 ef_search：查询时的候选集大小 m_max_：非底层的最大边数 m_max_0_：底层的最大边数（= m * m） 向量检索和插入流程示例 索引结构: 层级3: o---o (稀疏连接) 层级2: o---o---o (中等密度连接) 层级1: o---o---o---o (较密连接) 层级0: o---o---o---o---o---o (最密连接，包含所有节点) 插入流程 (InsertVectorEntry): void HNSWIndex::InsertVectorEntry(const std::vector&lt;double&gt; &amp;key, RID rid) { // 1. 随机决定新节点的最高层级 int target_level = GenerateRandomLevel(); // 2. 将向量数据和RID添加到存储中 auto vertex_id = AddVertex(key, rid); // 3. 自顶向下插入过程 if (!layers_[0].in_vertices_.empty()) { // 3.1 从最高层开始搜索 std::vector&lt;size_t&gt; entry_points = {最高层的入口点}; // 3.2 在高于目标层的层中只更新entry_points for (level = max_level; level &gt; target_level; level--) { 找到当前层最近的节点; 将这些节点作为下一层的入口点; } // 3.3 在目标层及以下的层中建立连接 for (; level &gt;= 0; level--) { 找到当前层最近的ef_construction个节点; 选择最近的m个作为邻居; 建立双向连接; 优化邻居的连接(确保不超过最大连接数); } } // 4. 如果需要，创建新的层 while (layers_.size() &lt;= target_level) { 创建新层并添加当前节点; } } 搜索流程 (ScanVectorKey): auto HNSWIndex::ScanVectorKey(const std::vector&lt;double&gt; &amp;query, size_t k) { // 1. 从最高层开始 entry_points = {最高层的入口点}; // 2. 逐层向下搜索 for (level = max_level; level &gt; 0; level--) { // 在当前层找到最近的节点 entry_points = layers_[level].SearchLayer(query, k, entry_points); } // 3. 在底层进行最终搜索 final_results = layers_[0].SearchLayer(query, k, entry_points); // 4. 转换结果为RID并返回 return 转换为RID列表; } 单层搜索流程 (SearchLayer): auto NSW::SearchLayer(const vector&lt;double&gt; &amp;query, size_t k, const vector&lt;size_t&gt; &amp;entry_points) { // 1. 初始化搜索状态 candidate_queue = 空队列; result_set = 空优先队列; visited = 空集合; // 2. 将入口点加入候选集 for (entry_point : entry_points) { 计算距离; 加入候选队列和结果集; } // 3. 贪心搜索 while (!candidate_queue.empty()) { current = candidate_queue.front(); // 3.1 获取当前节点的邻居 neighbors = edges_[current]; // 3.2 处理每个未访问的邻居 for (neighbor : neighbors) { if (已访问) continue; 计算距离; 更新结果集; 加入候选队列; } // 3.3 提前终止检查 if (候选集中最近距离 &gt; 结果集中最远距离) { break; } } // 4. 返回结果 return 最近的k个节点; }">
+
+
+
+    <meta property="og:url" content="//localhost:1313/posts/zh/vectordb/hnsw%E5%90%91%E9%87%8F%E7%B4%A2%E5%BC%95%E5%9C%A8bustub%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0/">
+  <meta property="og:site_name" content="Victor的世界">
+  <meta property="og:title" content="HNSW向量索引在Bustub中的实现">
+  <meta property="og:description" content="HNSW (Hierarchical Navigable Small World) 是一种高效的近似最近邻(ANN)搜索算法，特别适用于高维向量数据的相似度搜索，支持向量的插入和近邻搜索操作。 本文主要从以下两个方面介绍HNSW的实现：
+核心数据结构和算法实现 向量检索和插入流程示例 核心数据结构和算法实现 1. 核心数据结构 1.1 NSW (Navigable Small World) struct NSW { std::vector&lt;Vector&gt; &amp;vertices_; // 所有向量数据 std::unordered_map&lt;size_t, std::vector&lt;size_t&gt;&gt; edges_; // 邻接表 std::vector&lt;size_t&gt; in_vertices_; // 该层包含的顶点 VectorExpressionType dist_fn_; // 距离计算函数 size_t m_max_; // 最大边数限制 } 1.2 HNSWIndex class HNSWIndex { std::unique_ptr&lt;std::vector&lt;Vector&gt;&gt; vertices_; // 向量数据 std::vector&lt;RID&gt; rids_; // 记录ID std::vector&lt;NSW&gt; layers_; // 多层图结构 // 配置参数 size_t m_; // 每个节点的邻居数 size_t ef_construction_; // 构建时的候选集大小 size_t ef_search_; // 搜索时的候选集大小 double m_l_; // 层级计算参数 } 2. 核心算法实现 2.1 搜索算法 auto NSW::SearchLayer(const vector&lt;double&gt; &amp;query, size_t limit, const vector&lt;size_t&gt; &amp;entry_points) 采用贪心搜索策略 使用优先队列维护候选集和结果集 通过距离比较进行剪枝优化 搜索过程： 从入口点开始搜索 遍历当前节点的邻居 更新候选集和结果集 当候选集最小距离大于结果集最大距离时终止 2.2 插入算法 void HNSWIndex::InsertVectorEntry(const vector&lt;double&gt; &amp;key, RID rid) 插入步骤： 生成随机层级 从最高层开始搜索合适的插入位置 在目标层及以下建立连接 优化各层的邻居连接 必要时创建新层 3. 重要参数说明 m：每个节点的最大邻居数 ef_construction：构建索引时的候选集大小 ef_search：查询时的候选集大小 m_max_：非底层的最大边数 m_max_0_：底层的最大边数（= m * m） 向量检索和插入流程示例 索引结构: 层级3: o---o (稀疏连接) 层级2: o---o---o (中等密度连接) 层级1: o---o---o---o (较密连接) 层级0: o---o---o---o---o---o (最密连接，包含所有节点) 插入流程 (InsertVectorEntry): void HNSWIndex::InsertVectorEntry(const std::vector&lt;double&gt; &amp;key, RID rid) { // 1. 随机决定新节点的最高层级 int target_level = GenerateRandomLevel(); // 2. 将向量数据和RID添加到存储中 auto vertex_id = AddVertex(key, rid); // 3. 自顶向下插入过程 if (!layers_[0].in_vertices_.empty()) { // 3.1 从最高层开始搜索 std::vector&lt;size_t&gt; entry_points = {最高层的入口点}; // 3.2 在高于目标层的层中只更新entry_points for (level = max_level; level &gt; target_level; level--) { 找到当前层最近的节点; 将这些节点作为下一层的入口点; } // 3.3 在目标层及以下的层中建立连接 for (; level &gt;= 0; level--) { 找到当前层最近的ef_construction个节点; 选择最近的m个作为邻居; 建立双向连接; 优化邻居的连接(确保不超过最大连接数); } } // 4. 如果需要，创建新的层 while (layers_.size() &lt;= target_level) { 创建新层并添加当前节点; } } 搜索流程 (ScanVectorKey): auto HNSWIndex::ScanVectorKey(const std::vector&lt;double&gt; &amp;query, size_t k) { // 1. 从最高层开始 entry_points = {最高层的入口点}; // 2. 逐层向下搜索 for (level = max_level; level &gt; 0; level--) { // 在当前层找到最近的节点 entry_points = layers_[level].SearchLayer(query, k, entry_points); } // 3. 在底层进行最终搜索 final_results = layers_[0].SearchLayer(query, k, entry_points); // 4. 转换结果为RID并返回 return 转换为RID列表; } 单层搜索流程 (SearchLayer): auto NSW::SearchLayer(const vector&lt;double&gt; &amp;query, size_t k, const vector&lt;size_t&gt; &amp;entry_points) { // 1. 初始化搜索状态 candidate_queue = 空队列; result_set = 空优先队列; visited = 空集合; // 2. 将入口点加入候选集 for (entry_point : entry_points) { 计算距离; 加入候选队列和结果集; } // 3. 贪心搜索 while (!candidate_queue.empty()) { current = candidate_queue.front(); // 3.1 获取当前节点的邻居 neighbors = edges_[current]; // 3.2 处理每个未访问的邻居 for (neighbor : neighbors) { if (已访问) continue; 计算距离; 更新结果集; 加入候选队列; } // 3.3 提前终止检查 if (候选集中最近距离 &gt; 结果集中最远距离) { break; } } // 4. 返回结果 return 最近的k个节点; }">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-12-02T19:42:02+08:00">
+    <meta property="article:modified_time" content="2024-12-02T19:42:02+08:00">
+    <meta property="article:tag" content="HNSW">
+    <meta property="article:tag" content="向量索引">
+    <meta property="article:tag" content="ANN">
+
+
+
+
+
+
+    <meta property="article:published_time" content="2024-12-02 19:42:02 &#43;0800 CST" />
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text ">
+                Victor的世界</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about">关于</a></li><li><a href="/posts">博客</a></li><li><a href="https://github.com/buzhimingyonghu">GitHub</a></li>
+        <ul class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">zh</a>
+                <div class="dropdown-content">
+                        
+                </div>
+            </li>
+        </ul>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        
+
+        
+      </p>
+
+      
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <a href="/posts/posts">Posts</a>
+      </p>
+      
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="//localhost:1313/posts/zh/vectordb/hnsw%E5%90%91%E9%87%8F%E7%B4%A2%E5%BC%95%E5%9C%A8bustub%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0/">HNSW向量索引在Bustub中的实现</a>
+      </h1>
+
+      
+
+      
+
+      <div class="post-content">
+        <p>HNSW (Hierarchical Navigable Small World) 是一种高效的近似最近邻(ANN)搜索算法，特别适用于高维向量数据的相似度搜索，支持向量的插入和近邻搜索操作。
+<img src="./images/1280X1280%281%29.PNG" alt="HNSW">
+<img src="./images/1280X1280.PNG" alt="HNSW"></p>
+<p>本文主要从以下两个方面介绍HNSW的实现：</p>
+<ol>
+<li>核心数据结构和算法实现</li>
+<li>向量检索和插入流程示例</li>
+</ol>
+<h2 id="核心数据结构和算法实现">核心数据结构和算法实现</h2>
+<h3 id="1-核心数据结构">1. 核心数据结构</h3>
+<h4 id="11-nsw-navigable-small-world">1.1 NSW (Navigable Small World)</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">NSW</span> {
+</span></span><span style="display:flex;"><span>  std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>Vector<span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>vertices_;         <span style="color:#75715e">// 所有向量数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>unordered_map<span style="color:#f92672">&lt;</span>size_t, std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>size_t<span style="color:#f92672">&gt;&gt;</span> edges_;  <span style="color:#75715e">// 邻接表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>size_t<span style="color:#f92672">&gt;</span> in_vertices_;       <span style="color:#75715e">// 该层包含的顶点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  VectorExpressionType dist_fn_;          <span style="color:#75715e">// 距离计算函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  size_t m_max_;                         <span style="color:#75715e">// 最大边数限制
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><h4 id="12-hnswindex">1.2 HNSWIndex</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HNSWIndex</span> {
+</span></span><span style="display:flex;"><span>  std<span style="color:#f92672">::</span>unique_ptr<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>Vector<span style="color:#f92672">&gt;&gt;</span> vertices_;  <span style="color:#75715e">// 向量数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>RID<span style="color:#f92672">&gt;</span> rids_;                         <span style="color:#75715e">// 记录ID
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>NSW<span style="color:#f92672">&gt;</span> layers_;                       <span style="color:#75715e">// 多层图结构
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 配置参数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  size_t m_;                <span style="color:#75715e">// 每个节点的邻居数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  size_t ef_construction_;  <span style="color:#75715e">// 构建时的候选集大小
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  size_t ef_search_;       <span style="color:#75715e">// 搜索时的候选集大小
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">double</span> m_l_;             <span style="color:#75715e">// 层级计算参数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><h3 id="2-核心算法实现">2. 核心算法实现</h3>
+<h4 id="21-搜索算法">2.1 搜索算法</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">auto</span> NSW<span style="color:#f92672">::</span>SearchLayer(<span style="color:#66d9ef">const</span> vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>query, size_t limit, <span style="color:#66d9ef">const</span> vector<span style="color:#f92672">&lt;</span>size_t<span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>entry_points)
+</span></span></code></pre></div><ul>
+<li>采用贪心搜索策略</li>
+<li>使用优先队列维护候选集和结果集</li>
+<li>通过距离比较进行剪枝优化</li>
+<li>搜索过程：
+<ol>
+<li>从入口点开始搜索</li>
+<li>遍历当前节点的邻居</li>
+<li>更新候选集和结果集</li>
+<li>当候选集最小距离大于结果集最大距离时终止</li>
+</ol>
+</li>
+</ul>
+<h4 id="22-插入算法">2.2 插入算法</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> HNSWIndex<span style="color:#f92672">::</span>InsertVectorEntry(<span style="color:#66d9ef">const</span> vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>key, RID rid)
+</span></span></code></pre></div><ul>
+<li>插入步骤：
+<ol>
+<li>生成随机层级</li>
+<li>从最高层开始搜索合适的插入位置</li>
+<li>在目标层及以下建立连接</li>
+<li>优化各层的邻居连接</li>
+<li>必要时创建新层</li>
+</ol>
+</li>
+</ul>
+<h3 id="3-重要参数说明">3. 重要参数说明</h3>
+<ul>
+<li><code>m</code>：每个节点的最大邻居数</li>
+<li><code>ef_construction</code>：构建索引时的候选集大小</li>
+<li><code>ef_search</code>：查询时的候选集大小</li>
+<li><code>m_max_</code>：非底层的最大边数</li>
+<li><code>m_max_0_</code>：底层的最大边数（= m * m）</li>
+</ul>
+<h2 id="向量检索和插入流程示例">向量检索和插入流程示例</h2>
+<ol>
+<li><strong>索引结构</strong>:</li>
+</ol>
+<pre tabindex="0"><code>层级3:   o---o  (稀疏连接)
+层级2:   o---o---o  (中等密度连接)
+层级1:   o---o---o---o  (较密连接)
+层级0:   o---o---o---o---o---o  (最密连接，包含所有节点)
+</code></pre><ol start="2">
+<li><strong>插入流程</strong> (<code>InsertVectorEntry</code>):</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> HNSWIndex<span style="color:#f92672">::</span>InsertVectorEntry(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>key, RID rid) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 1. 随机决定新节点的最高层级
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> target_level <span style="color:#f92672">=</span> GenerateRandomLevel();
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 2. 将向量数据和RID添加到存储中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">auto</span> vertex_id <span style="color:#f92672">=</span> AddVertex(key, rid);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 3. 自顶向下插入过程
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>layers_[<span style="color:#ae81ff">0</span>].in_vertices_.empty()) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 3.1 从最高层开始搜索
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>size_t<span style="color:#f92672">&gt;</span> entry_points <span style="color:#f92672">=</span> {<span style="color:#960050;background-color:#1e0010">最高层的入口点</span>};
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 3.2 在高于目标层的层中只更新entry_points
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> (level <span style="color:#f92672">=</span> max_level; level <span style="color:#f92672">&gt;</span> target_level; level<span style="color:#f92672">--</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#960050;background-color:#1e0010">找到当前层最近的节点</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#960050;background-color:#1e0010">将这些节点作为下一层的入口点</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 3.3 在目标层及以下的层中建立连接
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> (; level <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>; level<span style="color:#f92672">--</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#960050;background-color:#1e0010">找到当前层最近的</span>ef_construction个节点;
+</span></span><span style="display:flex;"><span>      <span style="color:#960050;background-color:#1e0010">选择最近的</span>m个作为邻居;
+</span></span><span style="display:flex;"><span>      <span style="color:#960050;background-color:#1e0010">建立双向连接</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#960050;background-color:#1e0010">优化邻居的连接</span>(<span style="color:#960050;background-color:#1e0010">确保不超过最大连接数</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 4. 如果需要，创建新的层
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">while</span> (layers_.size() <span style="color:#f92672">&lt;=</span> target_level) {
+</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">创建新层并添加当前节点</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ol start="3">
+<li><strong>搜索流程</strong> (<code>ScanVectorKey</code>):</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">auto</span> HNSWIndex<span style="color:#f92672">::</span>ScanVectorKey(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>query, size_t k) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 1. 从最高层开始
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  entry_points <span style="color:#f92672">=</span> {<span style="color:#960050;background-color:#1e0010">最高层的入口点</span>};
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 2. 逐层向下搜索
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">for</span> (level <span style="color:#f92672">=</span> max_level; level <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>; level<span style="color:#f92672">--</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 在当前层找到最近的节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    entry_points <span style="color:#f92672">=</span> layers_[level].SearchLayer(query, k, entry_points);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 3. 在底层进行最终搜索
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  final_results <span style="color:#f92672">=</span> layers_[<span style="color:#ae81ff">0</span>].SearchLayer(query, k, entry_points);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 4. 转换结果为RID并返回
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> <span style="color:#960050;background-color:#1e0010">转换为</span>RID列表;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ol start="4">
+<li><strong>单层搜索流程</strong> (<code>SearchLayer</code>):</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">auto</span> NSW<span style="color:#f92672">::</span>SearchLayer(<span style="color:#66d9ef">const</span> vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>query, size_t k, <span style="color:#66d9ef">const</span> vector<span style="color:#f92672">&lt;</span>size_t<span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>entry_points) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 1. 初始化搜索状态
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  candidate_queue <span style="color:#f92672">=</span> <span style="color:#960050;background-color:#1e0010">空队列</span>;
+</span></span><span style="display:flex;"><span>  result_set <span style="color:#f92672">=</span> <span style="color:#960050;background-color:#1e0010">空优先队列</span>;
+</span></span><span style="display:flex;"><span>  visited <span style="color:#f92672">=</span> <span style="color:#960050;background-color:#1e0010">空集合</span>;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 2. 将入口点加入候选集
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">for</span> (entry_point : entry_points) {
+</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">计算距离</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">加入候选队列和结果集</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 3. 贪心搜索
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">while</span> (<span style="color:#f92672">!</span>candidate_queue.empty()) {
+</span></span><span style="display:flex;"><span>    current <span style="color:#f92672">=</span> candidate_queue.front();
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 3.1 获取当前节点的邻居
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    neighbors <span style="color:#f92672">=</span> edges_[current];
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 3.2 处理每个未访问的邻居
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> (neighbor : neighbors) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> (<span style="color:#960050;background-color:#1e0010">已访问</span>) <span style="color:#66d9ef">continue</span>;
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>      <span style="color:#960050;background-color:#1e0010">计算距离</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#960050;background-color:#1e0010">更新结果集</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#960050;background-color:#1e0010">加入候选队列</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 3.3 提前终止检查
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (<span style="color:#960050;background-color:#1e0010">候选集中最近距离</span> <span style="color:#f92672">&gt;</span> <span style="color:#960050;background-color:#1e0010">结果集中最远距离</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 4. 返回结果
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> <span style="color:#960050;background-color:#1e0010">最近的</span>k个节点;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="//localhost:1313/tags/hnsw/">HNSW</a></span>
+        <span class="tag"><a href="//localhost:1313/tags/%E5%90%91%E9%87%8F%E7%B4%A2%E5%BC%95/">向量索引</a></span>
+        <span class="tag"><a href="//localhost:1313/tags/ann/">ANN</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2024-12-02 19:42
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+            <span class="button previous">
+                <a href="//localhost:1313/posts/zh/pika/pacifica-consistency/">
+                    <span class="button__icon">←</span>
+                    <span class="button__text">基于PacificA协议Pika主从一致性</span>
+                </a>
+            </span>
+            
+
+            
+            <span class="button next">
+                <a href="//localhost:1313/posts/zh/vectordb/ivfflat%E7%B4%A2%E5%BC%95%E5%9C%A8bustub%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0/">
+                    <span class="button__text">IVFFlat索引在Bustub中的实现</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.e89fda0f29b95d33f6f4224dd9e5cf69d84aff3818be2b0d73e731689cc374261b016d17d46f8381962fb4a1577ba3017b1f23509d894f6e66431f988c00889e.js" integrity="sha512-6J/aDym5XTP29CJN2eXPadhK/zgYvisNc&#43;cxaJzDdCYbAW0X1G&#43;DgZYvtKFXe6MBex8jUJ2JT25mQx&#43;YjACIng=="></script>
+
+
+
+
+    </body>
+</html>

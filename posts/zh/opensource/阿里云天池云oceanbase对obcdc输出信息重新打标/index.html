@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="1. 项目概述 1.1 项目背景 OceanBase 是自研的企业级原生分布式数据库，支持“数据零丢失”标准，兼容 Oracle/MySQL，提供无缝水平扩展，首创“三地五中心”城市级故障自动无损容灾新标准，刷新 TPC-C 标准测试，单集群规模超过 1500 节点，具有云原生、强一致性、高度兼容 Oracle/MySQL 等特性。采用高压缩引擎和多租户架构，显著降低存储和运维成本。支持实时交易和分析，确保数据一致性，同时具备完备的安全性，经过多年金融核心场景验证，自主研发保障代码可控和高可靠性。
+1.2 目前现状 oblogminer 在处理 obcdc 输出的结果时，对于无法判断的列值，通常会使用标记 /* POTENTIALLY INACCURATE */ 来表示这些列值可能不准确。
+1.3 预期目标 使 oblogminer 能够在 obcdc 4.3.1 版本及之后的版本中，正确识别列值的可信性，并根据 obcdc 的标记输出可信的列值，无需标记为 /* POTENTIALLY INACCURATE */。
+对于判断列值是否可信的场景：
+oblogmsg 库中 ValueOrigin.h 中的 enum 类型 VALUE_ORIGIN 代表了列值来源。 VALUE_ORIGIN::REDO 代表列值来源于日志，说明该列为可信的。 VALUE_ORIGIN::PADDING 代表列值来源于 OBCDC 自己生成的，不代表真实列值。 1.4 参考信息 在 delete 操作后，CDC 拿到的数据中，BLOB 类型的列值被设置为 NULL，而 TEXT 类型的列值则保留了原始数据。这导致从节点复制失败。CDC 应该能够处理 BLOB 列的正确值，而不是将其设为 NULL。
+复现步骤：
+创建表 t_blob_text，包含一个 BLOB 列和一个 TEXT 列。 插入一行数据，其中 BLOB 列包含 16383 个“😂”字符，TEXT 列包含 300 个“犇”字。 执行 delete 操作删除表中的所有数据。 期望行为：
+" />
+<meta name="keywords" content="Victor, 博客, 技术, 生活, OceanBase, oblogminer, obcdc" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="//localhost:1313/posts/zh/opensource/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A9%E6%B1%A0%E4%BA%91oceanbase%E5%AF%B9obcdc%E8%BE%93%E5%87%BA%E4%BF%A1%E6%81%AF%E9%87%8D%E6%96%B0%E6%89%93%E6%A0%87/" />
+
+
+    <title>
+        
+            阿里云天池云oceanbase对obcdc输出信息重新打标 :: Victor的世界 
+        
+    </title>
+
+
+
+
+
+  <link rel="stylesheet" href="/main.min.244183cde1a38e0b08f82c11791181288f9aac1cc9618cd6f4e9e7710c5768ba.css" integrity="sha256-JEGDzeGjjgsI&#43;CwReRGBKI&#43;arBzJYYzW9OnncQxXaLo=" crossorigin="anonymous">
+
+
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="阿里云天池云oceanbase对obcdc输出信息重新打标">
+  <meta itemprop="description" content="1. 项目概述 1.1 项目背景 OceanBase 是自研的企业级原生分布式数据库，支持“数据零丢失”标准，兼容 Oracle/MySQL，提供无缝水平扩展，首创“三地五中心”城市级故障自动无损容灾新标准，刷新 TPC-C 标准测试，单集群规模超过 1500 节点，具有云原生、强一致性、高度兼容 Oracle/MySQL 等特性。采用高压缩引擎和多租户架构，显著降低存储和运维成本。支持实时交易和分析，确保数据一致性，同时具备完备的安全性，经过多年金融核心场景验证，自主研发保障代码可控和高可靠性。
+1.2 目前现状 oblogminer 在处理 obcdc 输出的结果时，对于无法判断的列值，通常会使用标记 /* POTENTIALLY INACCURATE */ 来表示这些列值可能不准确。
+1.3 预期目标 使 oblogminer 能够在 obcdc 4.3.1 版本及之后的版本中，正确识别列值的可信性，并根据 obcdc 的标记输出可信的列值，无需标记为 /* POTENTIALLY INACCURATE */。
+对于判断列值是否可信的场景：
+oblogmsg 库中 ValueOrigin.h 中的 enum 类型 VALUE_ORIGIN 代表了列值来源。 VALUE_ORIGIN::REDO 代表列值来源于日志，说明该列为可信的。 VALUE_ORIGIN::PADDING 代表列值来源于 OBCDC 自己生成的，不代表真实列值。 1.4 参考信息 在 delete 操作后，CDC 拿到的数据中，BLOB 类型的列值被设置为 NULL，而 TEXT 类型的列值则保留了原始数据。这导致从节点复制失败。CDC 应该能够处理 BLOB 列的正确值，而不是将其设为 NULL。
+复现步骤：
+创建表 t_blob_text，包含一个 BLOB 列和一个 TEXT 列。 插入一行数据，其中 BLOB 列包含 16383 个“😂”字符，TEXT 列包含 300 个“犇”字。 执行 delete 操作删除表中的所有数据。 期望行为：">
+  <meta itemprop="datePublished" content="2024-08-20T19:42:02+08:00">
+  <meta itemprop="dateModified" content="2024-08-20T19:42:02+08:00">
+  <meta itemprop="wordCount" content="283">
+  <meta itemprop="keywords" content="OceanBase,Oblogminer,Obcdc">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="阿里云天池云oceanbase对obcdc输出信息重新打标">
+  <meta name="twitter:description" content="1. 项目概述 1.1 项目背景 OceanBase 是自研的企业级原生分布式数据库，支持“数据零丢失”标准，兼容 Oracle/MySQL，提供无缝水平扩展，首创“三地五中心”城市级故障自动无损容灾新标准，刷新 TPC-C 标准测试，单集群规模超过 1500 节点，具有云原生、强一致性、高度兼容 Oracle/MySQL 等特性。采用高压缩引擎和多租户架构，显著降低存储和运维成本。支持实时交易和分析，确保数据一致性，同时具备完备的安全性，经过多年金融核心场景验证，自主研发保障代码可控和高可靠性。
+1.2 目前现状 oblogminer 在处理 obcdc 输出的结果时，对于无法判断的列值，通常会使用标记 /* POTENTIALLY INACCURATE */ 来表示这些列值可能不准确。
+1.3 预期目标 使 oblogminer 能够在 obcdc 4.3.1 版本及之后的版本中，正确识别列值的可信性，并根据 obcdc 的标记输出可信的列值，无需标记为 /* POTENTIALLY INACCURATE */。
+对于判断列值是否可信的场景：
+oblogmsg 库中 ValueOrigin.h 中的 enum 类型 VALUE_ORIGIN 代表了列值来源。 VALUE_ORIGIN::REDO 代表列值来源于日志，说明该列为可信的。 VALUE_ORIGIN::PADDING 代表列值来源于 OBCDC 自己生成的，不代表真实列值。 1.4 参考信息 在 delete 操作后，CDC 拿到的数据中，BLOB 类型的列值被设置为 NULL，而 TEXT 类型的列值则保留了原始数据。这导致从节点复制失败。CDC 应该能够处理 BLOB 列的正确值，而不是将其设为 NULL。
+复现步骤：
+创建表 t_blob_text，包含一个 BLOB 列和一个 TEXT 列。 插入一行数据，其中 BLOB 列包含 16383 个“😂”字符，TEXT 列包含 300 个“犇”字。 执行 delete 操作删除表中的所有数据。 期望行为：">
+
+
+
+    <meta property="og:url" content="//localhost:1313/posts/zh/opensource/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A9%E6%B1%A0%E4%BA%91oceanbase%E5%AF%B9obcdc%E8%BE%93%E5%87%BA%E4%BF%A1%E6%81%AF%E9%87%8D%E6%96%B0%E6%89%93%E6%A0%87/">
+  <meta property="og:site_name" content="Victor的世界">
+  <meta property="og:title" content="阿里云天池云oceanbase对obcdc输出信息重新打标">
+  <meta property="og:description" content="1. 项目概述 1.1 项目背景 OceanBase 是自研的企业级原生分布式数据库，支持“数据零丢失”标准，兼容 Oracle/MySQL，提供无缝水平扩展，首创“三地五中心”城市级故障自动无损容灾新标准，刷新 TPC-C 标准测试，单集群规模超过 1500 节点，具有云原生、强一致性、高度兼容 Oracle/MySQL 等特性。采用高压缩引擎和多租户架构，显著降低存储和运维成本。支持实时交易和分析，确保数据一致性，同时具备完备的安全性，经过多年金融核心场景验证，自主研发保障代码可控和高可靠性。
+1.2 目前现状 oblogminer 在处理 obcdc 输出的结果时，对于无法判断的列值，通常会使用标记 /* POTENTIALLY INACCURATE */ 来表示这些列值可能不准确。
+1.3 预期目标 使 oblogminer 能够在 obcdc 4.3.1 版本及之后的版本中，正确识别列值的可信性，并根据 obcdc 的标记输出可信的列值，无需标记为 /* POTENTIALLY INACCURATE */。
+对于判断列值是否可信的场景：
+oblogmsg 库中 ValueOrigin.h 中的 enum 类型 VALUE_ORIGIN 代表了列值来源。 VALUE_ORIGIN::REDO 代表列值来源于日志，说明该列为可信的。 VALUE_ORIGIN::PADDING 代表列值来源于 OBCDC 自己生成的，不代表真实列值。 1.4 参考信息 在 delete 操作后，CDC 拿到的数据中，BLOB 类型的列值被设置为 NULL，而 TEXT 类型的列值则保留了原始数据。这导致从节点复制失败。CDC 应该能够处理 BLOB 列的正确值，而不是将其设为 NULL。
+复现步骤：
+创建表 t_blob_text，包含一个 BLOB 列和一个 TEXT 列。 插入一行数据，其中 BLOB 列包含 16383 个“😂”字符，TEXT 列包含 300 个“犇”字。 执行 delete 操作删除表中的所有数据。 期望行为：">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-08-20T19:42:02+08:00">
+    <meta property="article:modified_time" content="2024-08-20T19:42:02+08:00">
+    <meta property="article:tag" content="OceanBase">
+    <meta property="article:tag" content="Oblogminer">
+    <meta property="article:tag" content="Obcdc">
+
+
+
+
+
+
+    <meta property="article:published_time" content="2024-08-20 19:42:02 &#43;0800 CST" />
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text ">
+                Victor的世界</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about">关于</a></li><li><a href="/posts">博客</a></li><li><a href="https://github.com/buzhimingyonghu">GitHub</a></li>
+        <ul class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">zh</a>
+                <div class="dropdown-content">
+                        
+                </div>
+            </li>
+        </ul>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        
+
+        
+      </p>
+
+      
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <a href="/posts/posts">Posts</a>
+      </p>
+      
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="//localhost:1313/posts/zh/opensource/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A9%E6%B1%A0%E4%BA%91oceanbase%E5%AF%B9obcdc%E8%BE%93%E5%87%BA%E4%BF%A1%E6%81%AF%E9%87%8D%E6%96%B0%E6%89%93%E6%A0%87/">阿里云天池云oceanbase对obcdc输出信息重新打标</a>
+      </h1>
+
+      
+
+      
+
+      <div class="post-content">
+        <h1 id="1-项目概述">1. 项目概述</h1>
+<h2 id="11-项目背景">1.1 项目背景</h2>
+<p>OceanBase 是自研的企业级原生分布式数据库，支持“数据零丢失”标准，兼容 Oracle/MySQL，提供无缝水平扩展，首创“三地五中心”城市级故障自动无损容灾新标准，刷新 TPC-C 标准测试，单集群规模超过 1500 节点，具有云原生、强一致性、高度兼容 Oracle/MySQL 等特性。采用高压缩引擎和多租户架构，显著降低存储和运维成本。支持实时交易和分析，确保数据一致性，同时具备完备的安全性，经过多年金融核心场景验证，自主研发保障代码可控和高可靠性。</p>
+<h2 id="12-目前现状">1.2 目前现状</h2>
+<p>oblogminer 在处理 obcdc 输出的结果时，对于无法判断的列值，通常会使用标记 <code>/* POTENTIALLY INACCURATE */</code> 来表示这些列值可能不准确。</p>
+<h2 id="13-预期目标">1.3 预期目标</h2>
+<p>使 oblogminer 能够在 obcdc 4.3.1 版本及之后的版本中，正确识别列值的可信性，并根据 obcdc 的标记输出可信的列值，无需标记为 <code>/* POTENTIALLY INACCURATE */</code>。</p>
+<p>对于判断列值是否可信的场景：</p>
+<ul>
+<li><code>oblogmsg</code> 库中 <code>ValueOrigin.h</code> 中的 <code>enum</code> 类型 <code>VALUE_ORIGIN</code> 代表了列值来源。</li>
+<li><code>VALUE_ORIGIN::REDO</code> 代表列值来源于日志，说明该列为可信的。</li>
+<li><code>VALUE_ORIGIN::PADDING</code> 代表列值来源于 OBCDC 自己生成的，不代表真实列值。</li>
+</ul>
+<h2 id="14-参考信息">1.4 参考信息</h2>
+<p>在 <code>delete</code> 操作后，CDC 拿到的数据中，BLOB 类型的列值被设置为 <code>NULL</code>，而 TEXT 类型的列值则保留了原始数据。这导致从节点复制失败。CDC 应该能够处理 BLOB 列的正确值，而不是将其设为 <code>NULL</code>。</p>
+<p><strong>复现步骤：</strong></p>
+<ol>
+<li>创建表 <code>t_blob_text</code>，包含一个 <code>BLOB</code> 列和一个 <code>TEXT</code> 列。</li>
+<li>插入一行数据，其中 <code>BLOB</code> 列包含 16383 个“😂”字符，<code>TEXT</code> 列包含 300 个“犇”字。</li>
+<li>执行 <code>delete</code> 操作删除表中的所有数据。</li>
+</ol>
+<p><strong>期望行为：</strong></p>
+<ul>
+<li>CDC 在处理 <code>delete</code> 操作后，<code>id1</code> 的值应该保留为 16383 个“😂”字符，而不是 <code>NULL</code>。</li>
+</ul>
+<p><strong>实际行为：</strong></p>
+<ul>
+<li>CDC 返回的 <code>id1</code> 列的值为 <code>NULL</code>，<code>id2</code> 列的值为 300 个“犇”字。
+<img src="./images/obcdc.png" alt="obcdc"></li>
+</ul>
+<hr>
+<h1 id="2-关键技术介绍">2. 关键技术介绍</h1>
+<h2 id="21-cdc-change-data-capture-概述">2.1 CDC (Change Data Capture) 概述</h2>
+<p>CDC （Change Data Capture，即变更数据捕获）能够帮助识别从上次提取之后发生变化的数据。CDC 提供的数据可用于构建历史库、近实时缓存、消息队列（MQ）等，用户可以消费 MQ 数据进行分析和审计。</p>
+<h3 id="211-什么是-cdc">2.1.1 什么是 CDC</h3>
+<p>OceanBase CDC 包括两个组件：</p>
+<ul>
+<li><strong>obcdc</strong></li>
+<li><strong>oblogmsg</strong></li>
+</ul>
+<p>其中，<code>obcdc</code> 是 OceanBase CDC 的基本组件，衍生出了 <code>OBLogProxy</code>，并依赖 <code>oblogmsg</code>。</p>
+<h3 id="212-obcdc">2.1.2 obcdc</h3>
+<p><code>obcdc</code> 以动态库的形式对外提供 OceanBase 数据库的实时增量（事务）数据。</p>
+<ul>
+<li>通过 RPC 向 OceanBase 数据库请求各分区的 <code>Clog（Redo）</code> 日志。</li>
+<li>结合表结构 <code>schema</code> 信息（通过 SQL 与 OBServer 交互获取）。</li>
+<li>将 <code>Redo</code> 日志转化为中间数据格式 <code>LOGMSG</code>，聚合事务涉及的各分区数据变更，以事务为单位逐行输出变更数据。</li>
+</ul>
+<h3 id="213-oblogmsg">2.1.3 oblogmsg</h3>
+<p><code>oblogmsg</code> 是一种数据库增量数据的输出格式，OceanBase CDC 采用该格式输出增量数据。</p>
+<ul>
+<li><code>oblogmsg</code> 支持 OceanBase 数据库中不同数据类型的增量数据的写入。</li>
+<li>具备序列化和反序列化能力。</li>
+<li><code>ValueOrigin.h</code> 中的 <code>VALUE_ORIGIN</code> 表示列值来源：
+<ul>
+<li><code>VALUE_ORIGIN::REDO</code> 代表日志来源，可信。</li>
+<li><code>VALUE_ORIGIN::PADDING</code> 代表 OBCDC 生成的列值，不代表真实值。
+<img src="./images/oblogmsg.png" alt="oblogmsg"></li>
+</ul>
+</li>
+</ul>
+<h2 id="22-oblogminer-概述">2.2 oblogminer 概述</h2>
+<p>OceanBase LogMiner（简称 <code>oblogminer</code>）是一款用于 OceanBase 数据库日志分析的命令行工具，支持在线及归档日志分析。
+<img src="./images/oblogminer.png" alt="oblogminer"></p>
+<h3 id="221-主要功能">2.2.1 主要功能</h3>
+<ul>
+<li><strong>自助服务</strong>：
+<ul>
+<li>支持对在线日志和归档日志的分析。</li>
+<li>提供故障时间点精准定位能力，降低排查复杂度，提高诊断效率。</li>
+</ul>
+</li>
+<li><strong>细粒度恢复</strong>：
+<ul>
+<li>可生成逆向回滚 SQL（UNDO SQL），实现“SQL 闪回”的细粒度恢复能力。</li>
+</ul>
+</li>
+<li><strong>数据分析</strong>：
+<ul>
+<li>获取所有 DDL 和 DML 变更，并保证按照执行顺序输出。</li>
+<li>组织并展示 <code>clog</code> 日志中的事务、表结构等信息，提高可观测性。</li>
+</ul>
+</li>
+</ul>
+<p>对于 <code>LOB</code> 类型或不支持的数据类型，<code>REDO/UNDO SQL</code> 结果中会标记 <code>/* POTENTIALLY INACCURATE */</code>，表示结果可能不正确。</p>
+<hr>
+<h1 id="3-实现方案">3. 实现方案</h1>
+<p>由于 CDC 无法确保 <code>LOB</code> 数据的正确性，但 <code>logminer</code> 可以判断 <code>LOB</code> 类型的 <code>NULL</code> 值是否源自真实操作，或是 CDC 修改的错误操作，从而决定是否追加 <code>/* POTENTIALLY INACCURATE */</code>。</p>
+<p>示例 SQL 操作：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> t_blob_text <span style="color:#66d9ef">VALUES</span> (REPEAT(<span style="color:#e6db74">&#39;😂&#39;</span>, <span style="color:#ae81ff">16383</span>), REPEAT(<span style="color:#e6db74">&#39;犇&#39;</span>, <span style="color:#ae81ff">300</span>));
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">DELETE</span> <span style="color:#66d9ef">FROM</span> t_blob_text;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> t_blob_text <span style="color:#66d9ef">VALUES</span> (<span style="color:#66d9ef">NULL</span>, REPEAT(<span style="color:#e6db74">&#39;犇&#39;</span>, <span style="color:#ae81ff">300</span>));
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">DELETE</span> <span style="color:#66d9ef">FROM</span> t_blob_text;
+</span></span></code></pre></div><h3 id="oblogminer-运行结果"><code>oblogminer</code> 运行结果：</h3>
+<ul>
+<li><strong>原始输出（带标记）</strong>：
+<ul>
+<li>部分 <code>LOB</code> 列值被标记 <code>/* POTENTIALLY INACCURATE */</code>。
+<img src="./images/oblogminer1.png" alt="oblogminer"></li>
+</ul>
+</li>
+<li><strong>优化后输出（取消标记）</strong>：
+<ul>
+<li><code>oblogminer</code> 依据 <code>obcdc</code> 的 <code>VALUE_ORIGIN</code> 进行判断，确保仅在不可信列值上追加标记。
+<img src="./images/oblogminer2.png" alt="oblogminer"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>该方案能够优化 <code>oblogminer</code> 解析 <code>LOB</code> 列值的准确性，使其在 OceanBase CDC 4.3.1 版本及之后能够更精确地处理变更数据，提高可靠性和数据完整性。</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="//localhost:1313/tags/oceanbase/">OceanBase</a></span>
+        <span class="tag"><a href="//localhost:1313/tags/oblogminer/">oblogminer</a></span>
+        <span class="tag"><a href="//localhost:1313/tags/obcdc/">obcdc</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2024-08-20 19:42
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+            <span class="button previous">
+                <a href="//localhost:1313/posts/zh/pika/pika-acl%E6%97%A0%E6%9D%83%E9%99%90bug/">
+                    <span class="button__icon">←</span>
+                    <span class="button__text">Pika-Acl无权限BUG</span>
+                </a>
+            </span>
+            
+
+            
+            <span class="button next">
+                <a href="//localhost:1313/posts/zh/opensource/%E8%85%BE%E8%AE%AF%E7%8A%80%E7%89%9B%E9%B8%9F%E5%BC%80%E6%BA%90%E5%8A%A0%E6%9D%83%E8%BD%AE%E8%AF%A2%E7%AE%97%E6%B3%95/">
+                    <span class="button__text">腾讯犀牛鸟开源-加权轮询算法</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.e89fda0f29b95d33f6f4224dd9e5cf69d84aff3818be2b0d73e731689cc374261b016d17d46f8381962fb4a1577ba3017b1f23509d894f6e66431f988c00889e.js" integrity="sha512-6J/aDym5XTP29CJN2eXPadhK/zgYvisNc&#43;cxaJzDdCYbAW0X1G&#43;DgZYvtKFXe6MBex8jUJ2JT25mQx&#43;YjACIng=="></script>
+
+
+
+
+    </body>
+</html>

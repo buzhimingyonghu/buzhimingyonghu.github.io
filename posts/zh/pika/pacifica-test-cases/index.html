@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh">
-    <head>
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
         <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
@@ -15,7 +15,7 @@
 <meta name="keywords" content="Victor, 博客, 技术, 生活, Pika, PacificA, 分布式, 一致性" />
 <meta name="robots" content="noodp" />
 <meta name="theme-color" content="" />
-<link rel="canonical" href="https://buzhimingyonghu.github.io/posts/zh/pika/pacifica-test-cases/" />
+<link rel="canonical" href="//localhost:1313/posts/zh/pika/pacifica-test-cases/" />
 
 
     <title>
@@ -51,8 +51,8 @@
 写入初始数据 断开从节点1连接（模拟网络分区） 向主节点写入新数据 恢复从节点1连接 验证数据一致性 预期结果：网络恢复后，断开的从节点应同步所有错过的数据 测试用例4：动态节点添加测试 目的：验证新增节点时的数据一致性 步骤：
 初始只启动主节点和一个从节点 写入一批初始数据 添加第二个从节点 写入新的数据 验证新旧数据的一致性 预期结果：新加入的从节点应正确接收所有历史数据和新数据 测试用例5：节点故障恢复测试 目的：测试节点故障和恢复时的系统行为 步骤：
 向所有节点写入初始数据 模拟从节点1故障 故障期间写入数据 恢复从节点1 写入新的数据 验证所有数据集 预期结果： 节点故障期间系统继续正常运行 故障节点恢复后能同步所有错过的数据 所有节点最终达到数据一致 测试环境 1个主节点（端口：9301） 2个从节点（端口：9302，9303） 启用强一致性模式 注意事项 每个测试用例都包含足够的等待时间，确保数据同步完成 所有测试都在强一致性模式下进行 测试过程中会验证数据的完整性和一致性">
-  <meta itemprop="datePublished" content="2025-02-18T19:42:02+08:00">
-  <meta itemprop="dateModified" content="2025-02-18T19:42:02+08:00">
+  <meta itemprop="datePublished" content="2025-02-10T19:42:02+08:00">
+  <meta itemprop="dateModified" content="2025-02-10T19:42:02+08:00">
   <meta itemprop="wordCount" content="53">
   <meta itemprop="keywords" content="Pika,PacificA,分布式,一致性">
 
@@ -67,7 +67,7 @@
 
 
 
-    <meta property="og:url" content="https://buzhimingyonghu.github.io/posts/zh/pika/pacifica-test-cases/">
+    <meta property="og:url" content="//localhost:1313/posts/zh/pika/pacifica-test-cases/">
   <meta property="og:site_name" content="Victor的世界">
   <meta property="og:title" content="PacificA 一致性测试用例说明">
   <meta property="og:description" content="测试用例1：基础一致性测试 目的：验证主从复制的基本功能和数据一致性 步骤：
@@ -79,8 +79,8 @@
   <meta property="og:locale" content="zh">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2025-02-18T19:42:02+08:00">
-    <meta property="article:modified_time" content="2025-02-18T19:42:02+08:00">
+    <meta property="article:published_time" content="2025-02-10T19:42:02+08:00">
+    <meta property="article:modified_time" content="2025-02-10T19:42:02+08:00">
     <meta property="article:tag" content="Pika">
     <meta property="article:tag" content="PacificA">
     <meta property="article:tag" content="分布式">
@@ -91,7 +91,7 @@
 
 
 
-    <meta property="article:published_time" content="2025-02-18 19:42:02 &#43;0800 CST" />
+    <meta property="article:published_time" content="2025-02-10 19:42:02 &#43;0800 CST" />
 
 
 
@@ -181,7 +181,7 @@
 
     <article>
       <h1 class="post-title">
-        <a href="https://buzhimingyonghu.github.io/posts/zh/pika/pacifica-test-cases/">PacificA 一致性测试用例说明</a>
+        <a href="//localhost:1313/posts/zh/pika/pacifica-test-cases/">PacificA 一致性测试用例说明</a>
       </h1>
 
       
@@ -269,10 +269,10 @@
     <p>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
 
-        <span class="tag"><a href="https://buzhimingyonghu.github.io/tags/pika/">Pika</a></span>
-        <span class="tag"><a href="https://buzhimingyonghu.github.io/tags/pacifica/">PacificA</a></span>
-        <span class="tag"><a href="https://buzhimingyonghu.github.io/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></span>
-        <span class="tag"><a href="https://buzhimingyonghu.github.io/tags/%E4%B8%80%E8%87%B4%E6%80%A7/">一致性</a></span>
+        <span class="tag"><a href="//localhost:1313/tags/pika/">Pika</a></span>
+        <span class="tag"><a href="//localhost:1313/tags/pacifica/">PacificA</a></span>
+        <span class="tag"><a href="//localhost:1313/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></span>
+        <span class="tag"><a href="//localhost:1313/tags/%E4%B8%80%E8%87%B4%E6%80%A7/">一致性</a></span>
         
     </p>
 
@@ -286,7 +286,7 @@
           <line x1="3" y1="10" x2="21" y2="10"></line>
         </svg>
         
-          2025-02-18 19:42
+          2025-02-10 19:42
         
       </p>
     </div>
@@ -297,11 +297,18 @@
 
         <div class="pagination__buttons">
             
+            <span class="button previous">
+                <a href="//localhost:1313/posts/zh/distributed/pacifica-test-cases/">
+                    <span class="button__icon">←</span>
+                    <span class="button__text">PacificA解读</span>
+                </a>
+            </span>
+            
 
             
             <span class="button next">
-                <a href="https://buzhimingyonghu.github.io/posts/zh/distributed/pacifica-test-cases/">
-                    <span class="button__text">PacificA解读</span>
+                <a href="//localhost:1313/posts/zh/pika/pacifica-consistency/">
+                    <span class="button__text">基于PacificA协议Pika主从一致性</span>
                     <span class="button__icon">→</span>
                 </a>
             </span>

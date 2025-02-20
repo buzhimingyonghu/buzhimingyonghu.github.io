@@ -1,166 +1,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Posts on Victor的世界</title>
-        <link>https://buzhimingyonghu.github.io/posts/</link>
+        <link>//localhost:1313/posts/</link>
         <description>Recent content in Posts on Victor的世界</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>zh</language>
         <lastBuildDate>Tue, 18 Feb 2025 19:42:02 +0800</lastBuildDate>
-        <atom:link href="https://buzhimingyonghu.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
-        
-        <item>
-            <title>PacificA 一致性测试用例说明</title>
-            <link>https://buzhimingyonghu.github.io/posts/zh/pika/pacifica-test-cases/</link>
-            <pubDate>Tue, 18 Feb 2025 19:42:02 +0800</pubDate>
-            
-            <guid>https://buzhimingyonghu.github.io/posts/zh/pika/pacifica-test-cases/</guid>
-            <description>&lt;h2 id=&#34;测试用例1基础一致性测试&#34;&gt;测试用例1：基础一致性测试&lt;/h2&gt;
-&lt;p&gt;&lt;strong&gt;目的&lt;/strong&gt;：验证主从复制的基本功能和数据一致性
-&lt;strong&gt;步骤&lt;/strong&gt;：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;向主节点写入数据&lt;/li&gt;
-&lt;li&gt;验证两个从节点的数据同步情况&lt;/li&gt;
-&lt;li&gt;检查所有节点的复制状态
-&lt;strong&gt;预期结果&lt;/strong&gt;：所有节点数据完全一致，复制状态正常&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2 id=&#34;测试用例2并发写入一致性测试&#34;&gt;测试用例2：并发写入一致性测试&lt;/h2&gt;
-&lt;p&gt;&lt;strong&gt;目的&lt;/strong&gt;：确保并发写入时的数据一致性
-&lt;strong&gt;步骤&lt;/strong&gt;：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;向主节点并发写入10条数据&lt;/li&gt;
-&lt;li&gt;等待数据同步完成&lt;/li&gt;
-&lt;li&gt;验证两个从节点的所有数据
-&lt;strong&gt;预期结果&lt;/strong&gt;：所有并发写入的数据都正确同步到从节点&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2 id=&#34;测试用例3网络分区恢复测试&#34;&gt;测试用例3：网络分区恢复测试&lt;/h2&gt;
-&lt;p&gt;&lt;strong&gt;目的&lt;/strong&gt;：测试网络分区后的一致性恢复
-&lt;strong&gt;步骤&lt;/strong&gt;：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;写入初始数据&lt;/li&gt;
-&lt;li&gt;断开从节点1连接（模拟网络分区）&lt;/li&gt;
-&lt;li&gt;向主节点写入新数据&lt;/li&gt;
-&lt;li&gt;恢复从节点1连接&lt;/li&gt;
-&lt;li&gt;验证数据一致性
-&lt;strong&gt;预期结果&lt;/strong&gt;：网络恢复后，断开的从节点应同步所有错过的数据&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2 id=&#34;测试用例4动态节点添加测试&#34;&gt;测试用例4：动态节点添加测试&lt;/h2&gt;
-&lt;p&gt;&lt;strong&gt;目的&lt;/strong&gt;：验证新增节点时的数据一致性
-&lt;strong&gt;步骤&lt;/strong&gt;：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;初始只启动主节点和一个从节点&lt;/li&gt;
-&lt;li&gt;写入一批初始数据&lt;/li&gt;
-&lt;li&gt;添加第二个从节点&lt;/li&gt;
-&lt;li&gt;写入新的数据&lt;/li&gt;
-&lt;li&gt;验证新旧数据的一致性
-&lt;strong&gt;预期结果&lt;/strong&gt;：新加入的从节点应正确接收所有历史数据和新数据&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h2 id=&#34;测试用例5节点故障恢复测试&#34;&gt;测试用例5：节点故障恢复测试&lt;/h2&gt;
-&lt;p&gt;&lt;strong&gt;目的&lt;/strong&gt;：测试节点故障和恢复时的系统行为
-&lt;strong&gt;步骤&lt;/strong&gt;：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;向所有节点写入初始数据&lt;/li&gt;
-&lt;li&gt;模拟从节点1故障&lt;/li&gt;
-&lt;li&gt;故障期间写入数据&lt;/li&gt;
-&lt;li&gt;恢复从节点1&lt;/li&gt;
-&lt;li&gt;写入新的数据&lt;/li&gt;
-&lt;li&gt;验证所有数据集
-&lt;strong&gt;预期结果&lt;/strong&gt;：&lt;/li&gt;
-&lt;/ol&gt;
-&lt;ul&gt;
-&lt;li&gt;节点故障期间系统继续正常运行&lt;/li&gt;
-&lt;li&gt;故障节点恢复后能同步所有错过的数据&lt;/li&gt;
-&lt;li&gt;所有节点最终达到数据一致&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;测试环境&#34;&gt;测试环境&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;1个主节点（端口：9301）&lt;/li&gt;
-&lt;li&gt;2个从节点（端口：9302，9303）&lt;/li&gt;
-&lt;li&gt;启用强一致性模式&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;注意事项&#34;&gt;注意事项&lt;/h2&gt;
-&lt;ol&gt;
-&lt;li&gt;每个测试用例都包含足够的等待时间，确保数据同步完成&lt;/li&gt;
-&lt;li&gt;所有测试都在强一致性模式下进行&lt;/li&gt;
-&lt;li&gt;测试过程中会验证数据的完整性和一致性&lt;/li&gt;
-&lt;/ol&gt;</description>
-            <content type="html"><![CDATA[<h2 id="测试用例1基础一致性测试">测试用例1：基础一致性测试</h2>
-<p><strong>目的</strong>：验证主从复制的基本功能和数据一致性
-<strong>步骤</strong>：</p>
-<ol>
-<li>向主节点写入数据</li>
-<li>验证两个从节点的数据同步情况</li>
-<li>检查所有节点的复制状态
-<strong>预期结果</strong>：所有节点数据完全一致，复制状态正常</li>
-</ol>
-<h2 id="测试用例2并发写入一致性测试">测试用例2：并发写入一致性测试</h2>
-<p><strong>目的</strong>：确保并发写入时的数据一致性
-<strong>步骤</strong>：</p>
-<ol>
-<li>向主节点并发写入10条数据</li>
-<li>等待数据同步完成</li>
-<li>验证两个从节点的所有数据
-<strong>预期结果</strong>：所有并发写入的数据都正确同步到从节点</li>
-</ol>
-<h2 id="测试用例3网络分区恢复测试">测试用例3：网络分区恢复测试</h2>
-<p><strong>目的</strong>：测试网络分区后的一致性恢复
-<strong>步骤</strong>：</p>
-<ol>
-<li>写入初始数据</li>
-<li>断开从节点1连接（模拟网络分区）</li>
-<li>向主节点写入新数据</li>
-<li>恢复从节点1连接</li>
-<li>验证数据一致性
-<strong>预期结果</strong>：网络恢复后，断开的从节点应同步所有错过的数据</li>
-</ol>
-<h2 id="测试用例4动态节点添加测试">测试用例4：动态节点添加测试</h2>
-<p><strong>目的</strong>：验证新增节点时的数据一致性
-<strong>步骤</strong>：</p>
-<ol>
-<li>初始只启动主节点和一个从节点</li>
-<li>写入一批初始数据</li>
-<li>添加第二个从节点</li>
-<li>写入新的数据</li>
-<li>验证新旧数据的一致性
-<strong>预期结果</strong>：新加入的从节点应正确接收所有历史数据和新数据</li>
-</ol>
-<h2 id="测试用例5节点故障恢复测试">测试用例5：节点故障恢复测试</h2>
-<p><strong>目的</strong>：测试节点故障和恢复时的系统行为
-<strong>步骤</strong>：</p>
-<ol>
-<li>向所有节点写入初始数据</li>
-<li>模拟从节点1故障</li>
-<li>故障期间写入数据</li>
-<li>恢复从节点1</li>
-<li>写入新的数据</li>
-<li>验证所有数据集
-<strong>预期结果</strong>：</li>
-</ol>
-<ul>
-<li>节点故障期间系统继续正常运行</li>
-<li>故障节点恢复后能同步所有错过的数据</li>
-<li>所有节点最终达到数据一致</li>
-</ul>
-<h2 id="测试环境">测试环境</h2>
-<ul>
-<li>1个主节点（端口：9301）</li>
-<li>2个从节点（端口：9302，9303）</li>
-<li>启用强一致性模式</li>
-</ul>
-<h2 id="注意事项">注意事项</h2>
-<ol>
-<li>每个测试用例都包含足够的等待时间，确保数据同步完成</li>
-<li>所有测试都在强一致性模式下进行</li>
-<li>测试过程中会验证数据的完整性和一致性</li>
-</ol>
-]]></content>
-        </item>
+        <atom:link href="//localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
         
         <item>
             <title>PacificA解读</title>
-            <link>https://buzhimingyonghu.github.io/posts/zh/distributed/pacifica-test-cases/</link>
+            <link>//localhost:1313/posts/zh/distributed/pacifica-test-cases/</link>
             <pubDate>Tue, 18 Feb 2025 19:42:02 +0800</pubDate>
             
-            <guid>https://buzhimingyonghu.github.io/posts/zh/distributed/pacifica-test-cases/</guid>
+            <guid>//localhost:1313/posts/zh/distributed/pacifica-test-cases/</guid>
             <description>&lt;h2 id=&#34;摘要&#34;&gt;摘要&lt;/h2&gt;
 &lt;p&gt;大规模分布式存储因数据量增长而广受关注，复制机制是实现高可用性和高吞吐的关键。尽管共识研究为复制协议奠定基础，但架构设计和工程实现仍具挑战。本文分享了PacificA协议基于日志的存储系统设计复制机制的经验，提出一种简单、实用、强一致的通用复制框架，展示其支持多种设计选择的灵活性。&lt;/p&gt;
 &lt;hr&gt;
@@ -506,11 +359,158 @@
         </item>
         
         <item>
-            <title>基于PacificA协议Pika主从一致性</title>
-            <link>https://buzhimingyonghu.github.io/posts/zh/pika/pacifica-consistency/</link>
-            <pubDate>Tue, 18 Feb 2025 19:42:02 +0800</pubDate>
+            <title>PacificA 一致性测试用例说明</title>
+            <link>//localhost:1313/posts/zh/pika/pacifica-test-cases/</link>
+            <pubDate>Mon, 10 Feb 2025 19:42:02 +0800</pubDate>
             
-            <guid>https://buzhimingyonghu.github.io/posts/zh/pika/pacifica-consistency/</guid>
+            <guid>//localhost:1313/posts/zh/pika/pacifica-test-cases/</guid>
+            <description>&lt;h2 id=&#34;测试用例1基础一致性测试&#34;&gt;测试用例1：基础一致性测试&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;目的&lt;/strong&gt;：验证主从复制的基本功能和数据一致性
+&lt;strong&gt;步骤&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;向主节点写入数据&lt;/li&gt;
+&lt;li&gt;验证两个从节点的数据同步情况&lt;/li&gt;
+&lt;li&gt;检查所有节点的复制状态
+&lt;strong&gt;预期结果&lt;/strong&gt;：所有节点数据完全一致，复制状态正常&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;测试用例2并发写入一致性测试&#34;&gt;测试用例2：并发写入一致性测试&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;目的&lt;/strong&gt;：确保并发写入时的数据一致性
+&lt;strong&gt;步骤&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;向主节点并发写入10条数据&lt;/li&gt;
+&lt;li&gt;等待数据同步完成&lt;/li&gt;
+&lt;li&gt;验证两个从节点的所有数据
+&lt;strong&gt;预期结果&lt;/strong&gt;：所有并发写入的数据都正确同步到从节点&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;测试用例3网络分区恢复测试&#34;&gt;测试用例3：网络分区恢复测试&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;目的&lt;/strong&gt;：测试网络分区后的一致性恢复
+&lt;strong&gt;步骤&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;写入初始数据&lt;/li&gt;
+&lt;li&gt;断开从节点1连接（模拟网络分区）&lt;/li&gt;
+&lt;li&gt;向主节点写入新数据&lt;/li&gt;
+&lt;li&gt;恢复从节点1连接&lt;/li&gt;
+&lt;li&gt;验证数据一致性
+&lt;strong&gt;预期结果&lt;/strong&gt;：网络恢复后，断开的从节点应同步所有错过的数据&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;测试用例4动态节点添加测试&#34;&gt;测试用例4：动态节点添加测试&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;目的&lt;/strong&gt;：验证新增节点时的数据一致性
+&lt;strong&gt;步骤&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;初始只启动主节点和一个从节点&lt;/li&gt;
+&lt;li&gt;写入一批初始数据&lt;/li&gt;
+&lt;li&gt;添加第二个从节点&lt;/li&gt;
+&lt;li&gt;写入新的数据&lt;/li&gt;
+&lt;li&gt;验证新旧数据的一致性
+&lt;strong&gt;预期结果&lt;/strong&gt;：新加入的从节点应正确接收所有历史数据和新数据&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;测试用例5节点故障恢复测试&#34;&gt;测试用例5：节点故障恢复测试&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;目的&lt;/strong&gt;：测试节点故障和恢复时的系统行为
+&lt;strong&gt;步骤&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;向所有节点写入初始数据&lt;/li&gt;
+&lt;li&gt;模拟从节点1故障&lt;/li&gt;
+&lt;li&gt;故障期间写入数据&lt;/li&gt;
+&lt;li&gt;恢复从节点1&lt;/li&gt;
+&lt;li&gt;写入新的数据&lt;/li&gt;
+&lt;li&gt;验证所有数据集
+&lt;strong&gt;预期结果&lt;/strong&gt;：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;节点故障期间系统继续正常运行&lt;/li&gt;
+&lt;li&gt;故障节点恢复后能同步所有错过的数据&lt;/li&gt;
+&lt;li&gt;所有节点最终达到数据一致&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;测试环境&#34;&gt;测试环境&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;1个主节点（端口：9301）&lt;/li&gt;
+&lt;li&gt;2个从节点（端口：9302，9303）&lt;/li&gt;
+&lt;li&gt;启用强一致性模式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;注意事项&#34;&gt;注意事项&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;每个测试用例都包含足够的等待时间，确保数据同步完成&lt;/li&gt;
+&lt;li&gt;所有测试都在强一致性模式下进行&lt;/li&gt;
+&lt;li&gt;测试过程中会验证数据的完整性和一致性&lt;/li&gt;
+&lt;/ol&gt;</description>
+            <content type="html"><![CDATA[<h2 id="测试用例1基础一致性测试">测试用例1：基础一致性测试</h2>
+<p><strong>目的</strong>：验证主从复制的基本功能和数据一致性
+<strong>步骤</strong>：</p>
+<ol>
+<li>向主节点写入数据</li>
+<li>验证两个从节点的数据同步情况</li>
+<li>检查所有节点的复制状态
+<strong>预期结果</strong>：所有节点数据完全一致，复制状态正常</li>
+</ol>
+<h2 id="测试用例2并发写入一致性测试">测试用例2：并发写入一致性测试</h2>
+<p><strong>目的</strong>：确保并发写入时的数据一致性
+<strong>步骤</strong>：</p>
+<ol>
+<li>向主节点并发写入10条数据</li>
+<li>等待数据同步完成</li>
+<li>验证两个从节点的所有数据
+<strong>预期结果</strong>：所有并发写入的数据都正确同步到从节点</li>
+</ol>
+<h2 id="测试用例3网络分区恢复测试">测试用例3：网络分区恢复测试</h2>
+<p><strong>目的</strong>：测试网络分区后的一致性恢复
+<strong>步骤</strong>：</p>
+<ol>
+<li>写入初始数据</li>
+<li>断开从节点1连接（模拟网络分区）</li>
+<li>向主节点写入新数据</li>
+<li>恢复从节点1连接</li>
+<li>验证数据一致性
+<strong>预期结果</strong>：网络恢复后，断开的从节点应同步所有错过的数据</li>
+</ol>
+<h2 id="测试用例4动态节点添加测试">测试用例4：动态节点添加测试</h2>
+<p><strong>目的</strong>：验证新增节点时的数据一致性
+<strong>步骤</strong>：</p>
+<ol>
+<li>初始只启动主节点和一个从节点</li>
+<li>写入一批初始数据</li>
+<li>添加第二个从节点</li>
+<li>写入新的数据</li>
+<li>验证新旧数据的一致性
+<strong>预期结果</strong>：新加入的从节点应正确接收所有历史数据和新数据</li>
+</ol>
+<h2 id="测试用例5节点故障恢复测试">测试用例5：节点故障恢复测试</h2>
+<p><strong>目的</strong>：测试节点故障和恢复时的系统行为
+<strong>步骤</strong>：</p>
+<ol>
+<li>向所有节点写入初始数据</li>
+<li>模拟从节点1故障</li>
+<li>故障期间写入数据</li>
+<li>恢复从节点1</li>
+<li>写入新的数据</li>
+<li>验证所有数据集
+<strong>预期结果</strong>：</li>
+</ol>
+<ul>
+<li>节点故障期间系统继续正常运行</li>
+<li>故障节点恢复后能同步所有错过的数据</li>
+<li>所有节点最终达到数据一致</li>
+</ul>
+<h2 id="测试环境">测试环境</h2>
+<ul>
+<li>1个主节点（端口：9301）</li>
+<li>2个从节点（端口：9302，9303）</li>
+<li>启用强一致性模式</li>
+</ul>
+<h2 id="注意事项">注意事项</h2>
+<ol>
+<li>每个测试用例都包含足够的等待时间，确保数据同步完成</li>
+<li>所有测试都在强一致性模式下进行</li>
+<li>测试过程中会验证数据的完整性和一致性</li>
+</ol>
+]]></content>
+        </item>
+        
+        <item>
+            <title>基于PacificA协议Pika主从一致性</title>
+            <link>//localhost:1313/posts/zh/pika/pacifica-consistency/</link>
+            <pubDate>Fri, 10 Jan 2025 19:42:02 +0800</pubDate>
+            
+            <guid>//localhost:1313/posts/zh/pika/pacifica-consistency/</guid>
             <description>&lt;h1 id=&#34;pacifica-协议概述&#34;&gt;PacificA 协议概述&lt;/h1&gt;
 &lt;p&gt;&lt;a href=&#34;https://www.microsoft.com/en-us/research/wp-content/uploads/2008/02/tr-2008-25.pdf&#34;&gt;PacificA &lt;/a&gt;协议简单来说分为两部分：&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;- 数据复制&lt;/strong&gt;&lt;/p&gt;
@@ -680,6 +680,1587 @@ PAT 是 PacificA 协议中的核心辅助线程，负责：</p>
 <li>若同步失败（超时 10 秒），记录信息并退出。</li>
 </ol>
 <p><img src="https://github.com/user-attachments/assets/41df6eae-f144-47c4-b554-c0bcf512b62a" alt="image"></p>
+]]></content>
+        </item>
+        
+        <item>
+            <title>HNSW向量索引在Bustub中的实现</title>
+            <link>//localhost:1313/posts/zh/vectordb/hnsw%E5%90%91%E9%87%8F%E7%B4%A2%E5%BC%95%E5%9C%A8bustub%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0/</link>
+            <pubDate>Mon, 02 Dec 2024 19:42:02 +0800</pubDate>
+            
+            <guid>//localhost:1313/posts/zh/vectordb/hnsw%E5%90%91%E9%87%8F%E7%B4%A2%E5%BC%95%E5%9C%A8bustub%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0/</guid>
+            <description>&lt;p&gt;HNSW (Hierarchical Navigable Small World) 是一种高效的近似最近邻(ANN)搜索算法，特别适用于高维向量数据的相似度搜索，支持向量的插入和近邻搜索操作。
+&lt;img src=&#34;./images/1280X1280%281%29.PNG&#34; alt=&#34;HNSW&#34;&gt;
+&lt;img src=&#34;./images/1280X1280.PNG&#34; alt=&#34;HNSW&#34;&gt;&lt;/p&gt;
+&lt;p&gt;本文主要从以下两个方面介绍HNSW的实现：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;核心数据结构和算法实现&lt;/li&gt;
+&lt;li&gt;向量检索和插入流程示例&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;核心数据结构和算法实现&#34;&gt;核心数据结构和算法实现&lt;/h2&gt;
+&lt;h3 id=&#34;1-核心数据结构&#34;&gt;1. 核心数据结构&lt;/h3&gt;
+&lt;h4 id=&#34;11-nsw-navigable-small-world&#34;&gt;1.1 NSW (Navigable Small World)&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;struct&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;NSW&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  std&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;vector&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Vector&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;vertices_;         &lt;span style=&#34;color:#75715e&#34;&gt;// 所有向量数据
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  std&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;unordered_map&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;size_t, std&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;vector&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;size_t&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt; edges_;  &lt;span style=&#34;color:#75715e&#34;&gt;// 邻接表
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  std&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;vector&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;size_t&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; in_vertices_;       &lt;span style=&#34;color:#75715e&#34;&gt;// 该层包含的顶点
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  VectorExpressionType dist_fn_;          &lt;span style=&#34;color:#75715e&#34;&gt;// 距离计算函数
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  size_t m_max_;                         &lt;span style=&#34;color:#75715e&#34;&gt;// 最大边数限制
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;12-hnswindex&#34;&gt;1.2 HNSWIndex&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;HNSWIndex&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  std&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;unique_ptr&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;std&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;vector&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Vector&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt; vertices_;  &lt;span style=&#34;color:#75715e&#34;&gt;// 向量数据
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  std&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;vector&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;RID&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; rids_;                         &lt;span style=&#34;color:#75715e&#34;&gt;// 记录ID
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  std&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;vector&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;NSW&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; layers_;                       &lt;span style=&#34;color:#75715e&#34;&gt;// 多层图结构
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#75715e&#34;&gt;// 配置参数
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  size_t m_;                &lt;span style=&#34;color:#75715e&#34;&gt;// 每个节点的邻居数
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  size_t ef_construction_;  &lt;span style=&#34;color:#75715e&#34;&gt;// 构建时的候选集大小
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  size_t ef_search_;       &lt;span style=&#34;color:#75715e&#34;&gt;// 搜索时的候选集大小
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt; m_l_;             &lt;span style=&#34;color:#75715e&#34;&gt;// 层级计算参数
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;2-核心算法实现&#34;&gt;2. 核心算法实现&lt;/h3&gt;
+&lt;h4 id=&#34;21-搜索算法&#34;&gt;2.1 搜索算法&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;auto&lt;/span&gt; NSW&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;SearchLayer(&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; vector&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;query, size_t limit, &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; vector&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;size_t&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;entry_points)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;采用贪心搜索策略&lt;/li&gt;
+&lt;li&gt;使用优先队列维护候选集和结果集&lt;/li&gt;
+&lt;li&gt;通过距离比较进行剪枝优化&lt;/li&gt;
+&lt;li&gt;搜索过程：
+&lt;ol&gt;
+&lt;li&gt;从入口点开始搜索&lt;/li&gt;
+&lt;li&gt;遍历当前节点的邻居&lt;/li&gt;
+&lt;li&gt;更新候选集和结果集&lt;/li&gt;
+&lt;li&gt;当候选集最小距离大于结果集最大距离时终止&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;22-插入算法&#34;&gt;2.2 插入算法&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; HNSWIndex&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;InsertVectorEntry(&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; vector&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;key, RID rid)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;插入步骤：
+&lt;ol&gt;
+&lt;li&gt;生成随机层级&lt;/li&gt;
+&lt;li&gt;从最高层开始搜索合适的插入位置&lt;/li&gt;
+&lt;li&gt;在目标层及以下建立连接&lt;/li&gt;
+&lt;li&gt;优化各层的邻居连接&lt;/li&gt;
+&lt;li&gt;必要时创建新层&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-重要参数说明&#34;&gt;3. 重要参数说明&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;m&lt;/code&gt;：每个节点的最大邻居数&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ef_construction&lt;/code&gt;：构建索引时的候选集大小&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ef_search&lt;/code&gt;：查询时的候选集大小&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;m_max_&lt;/code&gt;：非底层的最大边数&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;m_max_0_&lt;/code&gt;：底层的最大边数（= m * m）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;向量检索和插入流程示例&#34;&gt;向量检索和插入流程示例&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;索引结构&lt;/strong&gt;:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;层级3:   o---o  (稀疏连接)
+层级2:   o---o---o  (中等密度连接)
+层级1:   o---o---o---o  (较密连接)
+层级0:   o---o---o---o---o---o  (最密连接，包含所有节点)
+&lt;/code&gt;&lt;/pre&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;&lt;strong&gt;插入流程&lt;/strong&gt; (&lt;code&gt;InsertVectorEntry&lt;/code&gt;):&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; HNSWIndex&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;InsertVectorEntry(&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; std&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;vector&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;key, RID rid) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#75715e&#34;&gt;// 1. 随机决定新节点的最高层级
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; target_level &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; GenerateRandomLevel();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#75715e&#34;&gt;// 2. 将向量数据和RID添加到存储中
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;auto&lt;/span&gt; vertex_id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; AddVertex(key, rid);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#75715e&#34;&gt;// 3. 自顶向下插入过程
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;layers_[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;].in_vertices_.empty()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 3.1 从最高层开始搜索
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    std&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;vector&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;size_t&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; entry_points &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; {&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;最高层的入口点&lt;/span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 3.2 在高于目标层的层中只更新entry_points
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (level &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; max_level; level &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; target_level; level&lt;span style=&#34;color:#f92672&#34;&gt;--&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;找到当前层最近的节点&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;将这些节点作为下一层的入口点&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 3.3 在目标层及以下的层中建立连接
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (; level &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;; level&lt;span style=&#34;color:#f92672&#34;&gt;--&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;找到当前层最近的&lt;/span&gt;ef_construction个节点;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;选择最近的&lt;/span&gt;m个作为邻居;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;建立双向连接&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;优化邻居的连接&lt;/span&gt;(&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;确保不超过最大连接数&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#75715e&#34;&gt;// 4. 如果需要，创建新的层
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (layers_.size() &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;=&lt;/span&gt; target_level) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;创建新层并添加当前节点&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;&lt;strong&gt;搜索流程&lt;/strong&gt; (&lt;code&gt;ScanVectorKey&lt;/code&gt;):&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;auto&lt;/span&gt; HNSWIndex&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;ScanVectorKey(&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; std&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;vector&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;query, size_t k) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#75715e&#34;&gt;// 1. 从最高层开始
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  entry_points &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; {&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;最高层的入口点&lt;/span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#75715e&#34;&gt;// 2. 逐层向下搜索
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (level &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; max_level; level &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;; level&lt;span style=&#34;color:#f92672&#34;&gt;--&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 在当前层找到最近的节点
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    entry_points &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; layers_[level].SearchLayer(query, k, entry_points);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#75715e&#34;&gt;// 3. 在底层进行最终搜索
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  final_results &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; layers_[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;].SearchLayer(query, k, entry_points);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#75715e&#34;&gt;// 4. 转换结果为RID并返回
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;转换为&lt;/span&gt;RID列表;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;&lt;strong&gt;单层搜索流程&lt;/strong&gt; (&lt;code&gt;SearchLayer&lt;/code&gt;):&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;auto&lt;/span&gt; NSW&lt;span style=&#34;color:#f92672&#34;&gt;::&lt;/span&gt;SearchLayer(&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; vector&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;query, size_t k, &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; vector&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;size_t&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;entry_points) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#75715e&#34;&gt;// 1. 初始化搜索状态
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  candidate_queue &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;空队列&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  result_set &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;空优先队列&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  visited &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;空集合&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#75715e&#34;&gt;// 2. 将入口点加入候选集
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (entry_point : entry_points) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;计算距离&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;加入候选队列和结果集&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#75715e&#34;&gt;// 3. 贪心搜索
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;candidate_queue.empty()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    current &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; candidate_queue.front();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 3.1 获取当前节点的邻居
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    neighbors &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; edges_[current];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 3.2 处理每个未访问的邻居
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (neighbor : neighbors) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;已访问&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;continue&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;计算距离&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;更新结果集&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;加入候选队列&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 3.3 提前终止检查
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;候选集中最近距离&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;结果集中最远距离&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#75715e&#34;&gt;// 4. 返回结果
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;最近的&lt;/span&gt;k个节点;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+            <content type="html"><![CDATA[<p>HNSW (Hierarchical Navigable Small World) 是一种高效的近似最近邻(ANN)搜索算法，特别适用于高维向量数据的相似度搜索，支持向量的插入和近邻搜索操作。
+<img src="./images/1280X1280%281%29.PNG" alt="HNSW">
+<img src="./images/1280X1280.PNG" alt="HNSW"></p>
+<p>本文主要从以下两个方面介绍HNSW的实现：</p>
+<ol>
+<li>核心数据结构和算法实现</li>
+<li>向量检索和插入流程示例</li>
+</ol>
+<h2 id="核心数据结构和算法实现">核心数据结构和算法实现</h2>
+<h3 id="1-核心数据结构">1. 核心数据结构</h3>
+<h4 id="11-nsw-navigable-small-world">1.1 NSW (Navigable Small World)</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">NSW</span> {
+</span></span><span style="display:flex;"><span>  std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>Vector<span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>vertices_;         <span style="color:#75715e">// 所有向量数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>unordered_map<span style="color:#f92672">&lt;</span>size_t, std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>size_t<span style="color:#f92672">&gt;&gt;</span> edges_;  <span style="color:#75715e">// 邻接表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>size_t<span style="color:#f92672">&gt;</span> in_vertices_;       <span style="color:#75715e">// 该层包含的顶点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  VectorExpressionType dist_fn_;          <span style="color:#75715e">// 距离计算函数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  size_t m_max_;                         <span style="color:#75715e">// 最大边数限制
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><h4 id="12-hnswindex">1.2 HNSWIndex</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HNSWIndex</span> {
+</span></span><span style="display:flex;"><span>  std<span style="color:#f92672">::</span>unique_ptr<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>Vector<span style="color:#f92672">&gt;&gt;</span> vertices_;  <span style="color:#75715e">// 向量数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>RID<span style="color:#f92672">&gt;</span> rids_;                         <span style="color:#75715e">// 记录ID
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>NSW<span style="color:#f92672">&gt;</span> layers_;                       <span style="color:#75715e">// 多层图结构
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 配置参数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  size_t m_;                <span style="color:#75715e">// 每个节点的邻居数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  size_t ef_construction_;  <span style="color:#75715e">// 构建时的候选集大小
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  size_t ef_search_;       <span style="color:#75715e">// 搜索时的候选集大小
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">double</span> m_l_;             <span style="color:#75715e">// 层级计算参数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><h3 id="2-核心算法实现">2. 核心算法实现</h3>
+<h4 id="21-搜索算法">2.1 搜索算法</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">auto</span> NSW<span style="color:#f92672">::</span>SearchLayer(<span style="color:#66d9ef">const</span> vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>query, size_t limit, <span style="color:#66d9ef">const</span> vector<span style="color:#f92672">&lt;</span>size_t<span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>entry_points)
+</span></span></code></pre></div><ul>
+<li>采用贪心搜索策略</li>
+<li>使用优先队列维护候选集和结果集</li>
+<li>通过距离比较进行剪枝优化</li>
+<li>搜索过程：
+<ol>
+<li>从入口点开始搜索</li>
+<li>遍历当前节点的邻居</li>
+<li>更新候选集和结果集</li>
+<li>当候选集最小距离大于结果集最大距离时终止</li>
+</ol>
+</li>
+</ul>
+<h4 id="22-插入算法">2.2 插入算法</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> HNSWIndex<span style="color:#f92672">::</span>InsertVectorEntry(<span style="color:#66d9ef">const</span> vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>key, RID rid)
+</span></span></code></pre></div><ul>
+<li>插入步骤：
+<ol>
+<li>生成随机层级</li>
+<li>从最高层开始搜索合适的插入位置</li>
+<li>在目标层及以下建立连接</li>
+<li>优化各层的邻居连接</li>
+<li>必要时创建新层</li>
+</ol>
+</li>
+</ul>
+<h3 id="3-重要参数说明">3. 重要参数说明</h3>
+<ul>
+<li><code>m</code>：每个节点的最大邻居数</li>
+<li><code>ef_construction</code>：构建索引时的候选集大小</li>
+<li><code>ef_search</code>：查询时的候选集大小</li>
+<li><code>m_max_</code>：非底层的最大边数</li>
+<li><code>m_max_0_</code>：底层的最大边数（= m * m）</li>
+</ul>
+<h2 id="向量检索和插入流程示例">向量检索和插入流程示例</h2>
+<ol>
+<li><strong>索引结构</strong>:</li>
+</ol>
+<pre tabindex="0"><code>层级3:   o---o  (稀疏连接)
+层级2:   o---o---o  (中等密度连接)
+层级1:   o---o---o---o  (较密连接)
+层级0:   o---o---o---o---o---o  (最密连接，包含所有节点)
+</code></pre><ol start="2">
+<li><strong>插入流程</strong> (<code>InsertVectorEntry</code>):</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> HNSWIndex<span style="color:#f92672">::</span>InsertVectorEntry(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>key, RID rid) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 1. 随机决定新节点的最高层级
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">int</span> target_level <span style="color:#f92672">=</span> GenerateRandomLevel();
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 2. 将向量数据和RID添加到存储中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">auto</span> vertex_id <span style="color:#f92672">=</span> AddVertex(key, rid);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 3. 自顶向下插入过程
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>layers_[<span style="color:#ae81ff">0</span>].in_vertices_.empty()) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 3.1 从最高层开始搜索
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>size_t<span style="color:#f92672">&gt;</span> entry_points <span style="color:#f92672">=</span> {<span style="color:#960050;background-color:#1e0010">最高层的入口点</span>};
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 3.2 在高于目标层的层中只更新entry_points
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> (level <span style="color:#f92672">=</span> max_level; level <span style="color:#f92672">&gt;</span> target_level; level<span style="color:#f92672">--</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#960050;background-color:#1e0010">找到当前层最近的节点</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#960050;background-color:#1e0010">将这些节点作为下一层的入口点</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 3.3 在目标层及以下的层中建立连接
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> (; level <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>; level<span style="color:#f92672">--</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#960050;background-color:#1e0010">找到当前层最近的</span>ef_construction个节点;
+</span></span><span style="display:flex;"><span>      <span style="color:#960050;background-color:#1e0010">选择最近的</span>m个作为邻居;
+</span></span><span style="display:flex;"><span>      <span style="color:#960050;background-color:#1e0010">建立双向连接</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#960050;background-color:#1e0010">优化邻居的连接</span>(<span style="color:#960050;background-color:#1e0010">确保不超过最大连接数</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 4. 如果需要，创建新的层
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">while</span> (layers_.size() <span style="color:#f92672">&lt;=</span> target_level) {
+</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">创建新层并添加当前节点</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ol start="3">
+<li><strong>搜索流程</strong> (<code>ScanVectorKey</code>):</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">auto</span> HNSWIndex<span style="color:#f92672">::</span>ScanVectorKey(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>query, size_t k) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 1. 从最高层开始
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  entry_points <span style="color:#f92672">=</span> {<span style="color:#960050;background-color:#1e0010">最高层的入口点</span>};
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 2. 逐层向下搜索
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">for</span> (level <span style="color:#f92672">=</span> max_level; level <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>; level<span style="color:#f92672">--</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 在当前层找到最近的节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    entry_points <span style="color:#f92672">=</span> layers_[level].SearchLayer(query, k, entry_points);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 3. 在底层进行最终搜索
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  final_results <span style="color:#f92672">=</span> layers_[<span style="color:#ae81ff">0</span>].SearchLayer(query, k, entry_points);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 4. 转换结果为RID并返回
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> <span style="color:#960050;background-color:#1e0010">转换为</span>RID列表;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ol start="4">
+<li><strong>单层搜索流程</strong> (<code>SearchLayer</code>):</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">auto</span> NSW<span style="color:#f92672">::</span>SearchLayer(<span style="color:#66d9ef">const</span> vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>query, size_t k, <span style="color:#66d9ef">const</span> vector<span style="color:#f92672">&lt;</span>size_t<span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>entry_points) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 1. 初始化搜索状态
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  candidate_queue <span style="color:#f92672">=</span> <span style="color:#960050;background-color:#1e0010">空队列</span>;
+</span></span><span style="display:flex;"><span>  result_set <span style="color:#f92672">=</span> <span style="color:#960050;background-color:#1e0010">空优先队列</span>;
+</span></span><span style="display:flex;"><span>  visited <span style="color:#f92672">=</span> <span style="color:#960050;background-color:#1e0010">空集合</span>;
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 2. 将入口点加入候选集
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">for</span> (entry_point : entry_points) {
+</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">计算距离</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">加入候选队列和结果集</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 3. 贪心搜索
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">while</span> (<span style="color:#f92672">!</span>candidate_queue.empty()) {
+</span></span><span style="display:flex;"><span>    current <span style="color:#f92672">=</span> candidate_queue.front();
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 3.1 获取当前节点的邻居
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    neighbors <span style="color:#f92672">=</span> edges_[current];
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 3.2 处理每个未访问的邻居
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> (neighbor : neighbors) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> (<span style="color:#960050;background-color:#1e0010">已访问</span>) <span style="color:#66d9ef">continue</span>;
+</span></span><span style="display:flex;"><span>      
+</span></span><span style="display:flex;"><span>      <span style="color:#960050;background-color:#1e0010">计算距离</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#960050;background-color:#1e0010">更新结果集</span>;
+</span></span><span style="display:flex;"><span>      <span style="color:#960050;background-color:#1e0010">加入候选队列</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 3.3 提前终止检查
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (<span style="color:#960050;background-color:#1e0010">候选集中最近距离</span> <span style="color:#f92672">&gt;</span> <span style="color:#960050;background-color:#1e0010">结果集中最远距离</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 4. 返回结果
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> <span style="color:#960050;background-color:#1e0010">最近的</span>k个节点;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>]]></content>
+        </item>
+        
+        <item>
+            <title>IVFFlat索引在Bustub中的实现</title>
+            <link>//localhost:1313/posts/zh/vectordb/ivfflat%E7%B4%A2%E5%BC%95%E5%9C%A8bustub%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0/</link>
+            <pubDate>Sat, 30 Nov 2024 19:42:02 +0800</pubDate>
+            
+            <guid>//localhost:1313/posts/zh/vectordb/ivfflat%E7%B4%A2%E5%BC%95%E5%9C%A8bustub%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0/</guid>
+            <description>&lt;h3 id=&#34;ivfflat索引&#34;&gt;IVFFlat索引&lt;/h3&gt;
+&lt;p&gt;IVF（Inverted File Index，倒排文件索引）是一种常用于向量搜索（ANN, Approximate Nearest Neighbor）的索引结构，主要用于高维数据检索，比如图像、文本、音频等向量数据的相似性搜索。&lt;/p&gt;
+&lt;p&gt;本文主要介绍IVFFlat索引在Bustub中的实现，主要从以下三个方面来回答：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;IVFFlat索引的概述&lt;/li&gt;
+&lt;li&gt;IVFFlat索引在向量数据库中的应用&lt;/li&gt;
+&lt;li&gt;IVFFlat索引在Bustub中的实现&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;ivfflat索引的概述&#34;&gt;IVFFlat索引的概述&lt;/h2&gt;
+&lt;p&gt;IVF 通过聚类将向量划分到不同的“桶”（centroids, 聚类中心），查询时只在最相关的桶中搜索，从而减少计算量。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;训练阶段&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;使用 &lt;strong&gt;K-means&lt;/strong&gt; 聚类将所有数据点分成 ( K ) 个簇（每个簇有一个中心）。&lt;/li&gt;
+&lt;li&gt;每个向量根据与哪个中心最近，归属于该中心对应的桶。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;索引构建&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;记录每个桶中的向量 ID 及其原始向量。&lt;/li&gt;
+&lt;li&gt;形成一个 &lt;strong&gt;倒排表&lt;/strong&gt;，即每个簇对应多个向量。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;查询阶段&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;先找到查询向量最接近的 ( N ) 个簇中心（通常 ( N \ll K )）。&lt;/li&gt;
+&lt;li&gt;只在这些簇对应的桶内进行精确搜索，而不是全量搜索。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;示例&#34;&gt;&lt;strong&gt;示例&lt;/strong&gt;&lt;/h3&gt;
+&lt;p&gt;假设有 100 万个 128 维向量：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用 K-means 训练出 &lt;strong&gt;1000 个簇中心&lt;/strong&gt;（K=1000）。&lt;/li&gt;
+&lt;li&gt;每个向量归类到最近的簇，存入倒排表。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;当查询时：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;计算查询向量与 1000 个簇中心的距离，找到最近的 10 个簇。&lt;/li&gt;
+&lt;li&gt;只在这 10 个簇对应的桶里搜索最近邻，而不是在全部 100 万个向量中搜索。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这样，计算量大大减少，提高了搜索速度。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;ivf-的优点&#34;&gt;&lt;strong&gt;IVF 的优点&lt;/strong&gt;&lt;/h3&gt;
+&lt;p&gt;✅ &lt;strong&gt;高效查询&lt;/strong&gt;：比暴力搜索（Brute-force）快很多，适用于大规模数据。&lt;br&gt;
+✅ &lt;strong&gt;可扩展&lt;/strong&gt;：K 值可调，适应不同数据规模。&lt;br&gt;
+✅ &lt;strong&gt;支持 ANN（近似最近邻搜索）&lt;/strong&gt;：可以搭配其他方法（如 PQ, HNSW）进一步加速。&lt;/p&gt;</description>
+            <content type="html"><![CDATA[<h3 id="ivfflat索引">IVFFlat索引</h3>
+<p>IVF（Inverted File Index，倒排文件索引）是一种常用于向量搜索（ANN, Approximate Nearest Neighbor）的索引结构，主要用于高维数据检索，比如图像、文本、音频等向量数据的相似性搜索。</p>
+<p>本文主要介绍IVFFlat索引在Bustub中的实现，主要从以下三个方面来回答：</p>
+<ol>
+<li>IVFFlat索引的概述</li>
+<li>IVFFlat索引在向量数据库中的应用</li>
+<li>IVFFlat索引在Bustub中的实现</li>
+</ol>
+<h2 id="ivfflat索引的概述">IVFFlat索引的概述</h2>
+<p>IVF 通过聚类将向量划分到不同的“桶”（centroids, 聚类中心），查询时只在最相关的桶中搜索，从而减少计算量。</p>
+<ol>
+<li>
+<p><strong>训练阶段</strong>：</p>
+<ul>
+<li>使用 <strong>K-means</strong> 聚类将所有数据点分成 ( K ) 个簇（每个簇有一个中心）。</li>
+<li>每个向量根据与哪个中心最近，归属于该中心对应的桶。</li>
+</ul>
+</li>
+<li>
+<p><strong>索引构建</strong>：</p>
+<ul>
+<li>记录每个桶中的向量 ID 及其原始向量。</li>
+<li>形成一个 <strong>倒排表</strong>，即每个簇对应多个向量。</li>
+</ul>
+</li>
+<li>
+<p><strong>查询阶段</strong>：</p>
+<ul>
+<li>先找到查询向量最接近的 ( N ) 个簇中心（通常 ( N \ll K )）。</li>
+<li>只在这些簇对应的桶内进行精确搜索，而不是全量搜索。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="示例"><strong>示例</strong></h3>
+<p>假设有 100 万个 128 维向量：</p>
+<ul>
+<li>用 K-means 训练出 <strong>1000 个簇中心</strong>（K=1000）。</li>
+<li>每个向量归类到最近的簇，存入倒排表。</li>
+</ul>
+<p>当查询时：</p>
+<ol>
+<li>计算查询向量与 1000 个簇中心的距离，找到最近的 10 个簇。</li>
+<li>只在这 10 个簇对应的桶里搜索最近邻，而不是在全部 100 万个向量中搜索。</li>
+</ol>
+<p>这样，计算量大大减少，提高了搜索速度。</p>
+<hr>
+<h3 id="ivf-的优点"><strong>IVF 的优点</strong></h3>
+<p>✅ <strong>高效查询</strong>：比暴力搜索（Brute-force）快很多，适用于大规模数据。<br>
+✅ <strong>可扩展</strong>：K 值可调，适应不同数据规模。<br>
+✅ <strong>支持 ANN（近似最近邻搜索）</strong>：可以搭配其他方法（如 PQ, HNSW）进一步加速。</p>
+<h3 id="ivf-的缺点"><strong>IVF 的缺点</strong></h3>
+<p>❌ <strong>召回率下降</strong>：仅搜索部分簇，可能会漏掉最优解。<br>
+❌ <strong>需要训练</strong>：K-means 聚类需要预处理，适用于静态数据集。</p>
+<h2 id="ivf-在向量数据库中的应用">IVF 在向量数据库中的应用</h2>
+<p>向量数据库的核心功能是<strong>存储和检索高维向量</strong>，而 IVF 作为索引结构，优化了搜索效率。以下是它的主要应用方式：</p>
+<h3 id="1-数据索引">1. 数据索引</h3>
+<p>当你把向量数据插入数据库时：</p>
+<ol>
+<li>
+<p><strong>聚类（Clustering）</strong>：</p>
+<ul>
+<li>使用 <strong>K-means</strong> 预训练 ( K ) 个聚类中心（centroids）。</li>
+<li>每个聚类中心代表一个“桶”（cell）。</li>
+</ul>
+</li>
+<li>
+<p><strong>向量分桶（Assigning to Clusters）</strong>：</p>
+<ul>
+<li>每个向量分配到最近的簇中心，存入该中心的倒排列表。</li>
+</ul>
+</li>
+</ol>
+<p>数据库内部结构示意：</p>
+<pre tabindex="0"><code>Cluster 1: [vec_3, vec_7, vec_10]
+Cluster 2: [vec_2, vec_6, vec_9]
+...
+Cluster K: [vec_1, vec_4, vec_8]
+</code></pre><hr>
+<h3 id="2-向量查询">2. 向量查询</h3>
+<p>当你查询一个向量时：</p>
+<ol>
+<li><strong>找到最接近的聚类中心</strong>（一般选取 ( N ) 个最近的中心）。</li>
+<li><strong>只在这些桶中搜索最近邻向量</strong>（减少计算量）。</li>
+<li><strong>返回最相似的向量（Top-k 结果）</strong>。</li>
+</ol>
+<p>举例：</p>
+<ul>
+<li>查询向量 <code>q</code> 。</li>
+<li>计算 <code>q</code> 到所有聚类中心的距离，找到最近的 3 个簇（假设 K=1000，N=3）。</li>
+<li>只在这 3 个簇的倒排列表中搜索最近邻，而不是全局搜索。</li>
+</ul>
+<hr>
+<h2 id="ivf-结合其他优化方法">IVF 结合其他优化方法</h2>
+<p>IVF 可以和其他技术结合，进一步提升性能：</p>
+<ol>
+<li><strong>IVF-PQ（Product Quantization）</strong>：降低存储和计算成本。</li>
+<li><strong>IVF-HNSW（Hierarchical Navigable Small World）</strong>：加速近邻搜索。</li>
+<li><strong>IVF-SQ（Scalar Quantization）</strong>：减少索引占用的内存。</li>
+</ol>
+<h2 id="ivfflat索引实现技术">IVFFlat索引实现技术</h2>
+<h3 id="1-类结构">1. 类结构</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">IVFFlatIndex</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> VectorIndex {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>Vector<span style="color:#f92672">&gt;</span> centroids_;              <span style="color:#75715e">// 聚类中心列表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>pair<span style="color:#f92672">&lt;</span>Vector, RID<span style="color:#f92672">&gt;&gt;&gt;</span> centroids_buckets_;  <span style="color:#75715e">// 向量桶
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    size_t lists_;                              <span style="color:#75715e">// 聚类数量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    size_t probe_lists_;                        <span style="color:#75715e">// 查询时检查的聚类数量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>};
+</span></span></code></pre></div><h3 id="2-索引构建流程">2. 索引构建流程</h3>
+<p><strong>实现步骤</strong>：</p>
+<ol>
+<li>检查数据量是否足够</li>
+<li>初始化聚类桶</li>
+<li>随机选择初始聚类中心</li>
+<li>执行K-means迭代（最多500次）</li>
+<li>将向量分配到最近的聚类中心</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> IVFFlatIndex<span style="color:#f92672">::</span>BuildIndex(std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>pair<span style="color:#f92672">&lt;</span>Vector, RID<span style="color:#f92672">&gt;&gt;</span> initial_data) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 1. 检查数据量是否足够
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span> (initial_data.size() <span style="color:#f92672">&lt;</span> lists_) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 2. 初始化聚类桶
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  centroids_buckets_.resize(lists_);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 3. 随机采样初始聚类中心
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  centroids_ <span style="color:#f92672">=</span> RandomSample(initial_data, lists_);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 4. K-means迭代优化聚类中心
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">for</span> (size_t iter <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; iter <span style="color:#f92672">&lt;</span> max_iterations; <span style="color:#f92672">++</span>iter) {
+</span></span><span style="display:flex;"><span>    centroids_ <span style="color:#f92672">=</span> FindCentroids(initial_data, centroids_, VectorExpressionType<span style="color:#f92672">::</span>L2Dist);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 5. 将向量分配到最近的聚类中心
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">auto</span><span style="color:#f92672">&amp;</span> pair : initial_data) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> Vector<span style="color:#f92672">&amp;</span> vec <span style="color:#f92672">=</span> pair.first;
+</span></span><span style="display:flex;"><span>    size_t nearest_centroid_idx <span style="color:#f92672">=</span> FindCentroid(vec, centroids_, VectorExpressionType<span style="color:#f92672">::</span>L2Dist);
+</span></span><span style="display:flex;"><span>    centroids_buckets_[nearest_centroid_idx].push_back(pair);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="3-插入流程">3. 插入流程</h3>
+<p><strong>实现步骤</strong>：</p>
+<ol>
+<li>找到最近的聚类中心</li>
+<li>将向量和RID对插入对应的桶中</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> IVFFlatIndex<span style="color:#f92672">::</span>InsertVectorEntry(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>key, RID rid) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 1. 找到最近的聚类中心
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  size_t nearest_centroid_idx <span style="color:#f92672">=</span> FindCentroid(key, centroids_, VectorExpressionType<span style="color:#f92672">::</span>L2Dist);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 2. 将向量添加到对应的聚类桶中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  centroids_buckets_[nearest_centroid_idx].emplace_back(key, rid);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="4-搜索流程">4. 搜索流程</h3>
+<p><strong>实现步骤</strong>：</p>
+<ol>
+<li>找到最近的probe_lists_个聚类中心</li>
+<li>在选中的聚类中搜索最近邻</li>
+<li>对结果排序</li>
+<li>返回前limit个最近邻的RID</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">auto</span> IVFFlatIndex<span style="color:#f92672">::</span>ScanVectorKey(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>base_vector, size_t limit) {
+</span></span><span style="display:flex;"><span>  std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>RID<span style="color:#f92672">&gt;</span> global_result;
+</span></span><span style="display:flex;"><span>  std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>pair<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span>, RID<span style="color:#f92672">&gt;&gt;</span> local_results;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 1. 找到最近的probe_lists_个聚类中心
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>size_t<span style="color:#f92672">&gt;</span> nearest_centroids <span style="color:#f92672">=</span> FindNearestCentroids(base_vector, probe_lists_);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 2. 在选中的聚类中搜索最近邻
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">for</span> (size_t centroid_idx : nearest_centroids) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">auto</span><span style="color:#f92672">&amp;</span> entry : centroids_buckets_[centroid_idx]) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">const</span> Vector<span style="color:#f92672">&amp;</span> vec <span style="color:#f92672">=</span> entry.first;
+</span></span><span style="display:flex;"><span>      RID rid <span style="color:#f92672">=</span> entry.second;
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">double</span> distance <span style="color:#f92672">=</span> ComputeDistance(base_vector, vec, VectorExpressionType<span style="color:#f92672">::</span>L2Dist);
+</span></span><span style="display:flex;"><span>      local_results.emplace_back(distance, rid);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 3. 对候选结果排序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>sort(local_results.begin(), local_results.end());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 4. 返回top-k结果
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">for</span> (size_t i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> std<span style="color:#f92672">::</span>min(limit, local_results.size()); <span style="color:#f92672">++</span>i) {
+</span></span><span style="display:flex;"><span>    global_result.push_back(local_results[i].second);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> global_result;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>主要特点：</p>
+<ol>
+<li>
+<p><strong>数据组织</strong>:</p>
+<ul>
+<li>使用K-means聚类将向量空间划分为多个区域</li>
+<li>每个区域有一个聚类中心(centroid)</li>
+<li>向量存储在最近的聚类中心对应的桶中</li>
+</ul>
+</li>
+<li>
+<p><strong>优化策略</strong>:</p>
+<ul>
+<li>查询时只需要搜索最近的几个聚类桶</li>
+<li>通过probe_lists_参数控制搜索范围</li>
+<li>在桶内进行精确距离计算</li>
+</ul>
+</li>
+<li>
+<p><strong>关键参数</strong>:</p>
+<ul>
+<li>lists_: 聚类中心数量</li>
+<li>probe_lists_: 查询时检查的聚类数量</li>
+</ul>
+</li>
+</ol>
+]]></content>
+        </item>
+        
+        <item>
+            <title>匹配向量索引</title>
+            <link>//localhost:1313/posts/zh/vectordb/%E5%8C%B9%E9%85%8D%E5%90%91%E9%87%8F%E7%B4%A2%E5%BC%95/</link>
+            <pubDate>Sun, 10 Nov 2024 19:42:02 +0800</pubDate>
+            
+            <guid>//localhost:1313/posts/zh/vectordb/%E5%8C%B9%E9%85%8D%E5%90%91%E9%87%8F%E7%B4%A2%E5%BC%95/</guid>
+            <description>&lt;h1 id=&#34;匹配向量索引任务介绍概述&#34;&gt;匹配向量索引任务介绍概述&lt;/h1&gt;
+&lt;p&gt;这个任务的目标是根据查询中的条件，判断是否可以将查询转换为向量索引扫描，并在可能的情况下使用该索引。通过这种方式，你可以显著提高向量最近邻查询的效率，避免全表扫描。&lt;/p&gt;
+&lt;p&gt;具体来说，你需要实现一个优化规则，该规则能够识别出需要执行&lt;strong&gt;向量索引扫描&lt;/strong&gt;的SQL查询，并将这些查询转换成使用向量索引的执行计划。任务的关键部分是优化器（optimizer），你需要根据查询的结构和给定的索引类型选择合适的索引进行查询优化。&lt;/p&gt;
+&lt;h3 id=&#34;任务步骤&#34;&gt;任务步骤：&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;识别查询&lt;/strong&gt;：首先，优化器需要识别SQL查询中是否有需要使用向量索引的部分。查询通常会包含计算向量距离（如&lt;code&gt;&amp;lt;-&amp;gt;&lt;/code&gt;）的条件，这时候就可能需要使用索引扫描来替代全表扫描。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;转换为向量索引扫描&lt;/strong&gt;：当确认查询能使用向量索引时，优化器需要将查询计划转换为&lt;strong&gt;向量索引扫描&lt;/strong&gt;。这个过程包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;查找查询中的&lt;strong&gt;向量列&lt;/strong&gt;，通常是表中的第一个向量列。&lt;/li&gt;
+&lt;li&gt;选择一个可用的索引（如HNSW或IVFFlat）来优化查询。&lt;/li&gt;
+&lt;li&gt;将查询转换为一个新的查询计划节点，替代传统的全表扫描和排序操作。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;支持的查询类型&lt;/strong&gt;：你需要处理不同形式的查询，特别是带有&lt;code&gt;ORDER BY&lt;/code&gt;和&lt;code&gt;LIMIT&lt;/code&gt;子句的查询。例如，查询可能包含按向量距离排序并限制返回结果数量的操作，这些查询应转换为使用向量索引扫描。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;索引选择策略&lt;/strong&gt;：在优化器中，你需要实现一个策略来选择合适的索引。可以选择以下几种策略：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;空值&lt;/strong&gt;（默认）：选择第一个可用的向量索引。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HNSW&lt;/strong&gt;：只匹配HNSW索引。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;IVFFlat&lt;/strong&gt;：只匹配IVFFlat索引。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;无索引&lt;/strong&gt;：不使用任何索引，进行精确的最近邻搜索。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;处理的三种情况&#34;&gt;处理的三种情况&lt;/h3&gt;
+&lt;p&gt;优化器需要处理以下三种常见的查询结构，并根据情况选择使用向量索引扫描：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;情况1：TopN直接跟随SeqScan&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;TopN { n=2, order_bys=[(&amp;#34;Default&amp;#34;, &amp;#34;l2_dist([1.000000,1.000000,1.000000], #0.0)&amp;#34;)]}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  SeqScan { table=t1 }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这种情况下，查询直接使用了&lt;code&gt;TopN&lt;/code&gt;（即返回前&lt;code&gt;k&lt;/code&gt;个结果），并且顺序扫描表。此时可以直接将&lt;code&gt;SeqScan&lt;/code&gt;替换为向量索引扫描。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;情况2：TopN跟随Projection&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;TopN { n=2, order_bys=[(&amp;#34;Default&amp;#34;, &amp;#34;l2_dist([1.000000,1.000000,1.000000], #0.0)&amp;#34;)]}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  Projection { exprs=[&amp;#34;#0.0&amp;#34;, &amp;#34;l2_dist([1.000000,1.000000,1.000000], #0.0)&amp;#34;] }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    SeqScan { table=t1 }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在这种情况下，&lt;code&gt;TopN&lt;/code&gt;操作之后有一个&lt;code&gt;Projection&lt;/code&gt;操作，需要对结果进行投影。优化器仍然可以将&lt;code&gt;SeqScan&lt;/code&gt;替换为向量索引扫描，并在索引扫描后加上投影操作，以保持查询语义。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;情况3：TopN跟随Projection并且列顺序变换&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;TopN { n=2, order_bys=[(&amp;#34;Default&amp;#34;, &amp;#34;l2_dist([1.000000,1.000000,1.000000], #0.1)&amp;#34;)]}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  Projection { exprs=[&amp;#34;#0.1&amp;#34;, &amp;#34;#0.0&amp;#34;] }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    SeqScan { table=t1 }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;这种情况与情况2类似，但投影中列的顺序发生了变化，优化器需要正确地识别出列的映射，并在向量索引扫描后执行相应的投影。&lt;/p&gt;</description>
+            <content type="html"><![CDATA[<h1 id="匹配向量索引任务介绍概述">匹配向量索引任务介绍概述</h1>
+<p>这个任务的目标是根据查询中的条件，判断是否可以将查询转换为向量索引扫描，并在可能的情况下使用该索引。通过这种方式，你可以显著提高向量最近邻查询的效率，避免全表扫描。</p>
+<p>具体来说，你需要实现一个优化规则，该规则能够识别出需要执行<strong>向量索引扫描</strong>的SQL查询，并将这些查询转换成使用向量索引的执行计划。任务的关键部分是优化器（optimizer），你需要根据查询的结构和给定的索引类型选择合适的索引进行查询优化。</p>
+<h3 id="任务步骤">任务步骤：</h3>
+<ol>
+<li>
+<p><strong>识别查询</strong>：首先，优化器需要识别SQL查询中是否有需要使用向量索引的部分。查询通常会包含计算向量距离（如<code>&lt;-&gt;</code>）的条件，这时候就可能需要使用索引扫描来替代全表扫描。</p>
+</li>
+<li>
+<p><strong>转换为向量索引扫描</strong>：当确认查询能使用向量索引时，优化器需要将查询计划转换为<strong>向量索引扫描</strong>。这个过程包括：</p>
+<ul>
+<li>查找查询中的<strong>向量列</strong>，通常是表中的第一个向量列。</li>
+<li>选择一个可用的索引（如HNSW或IVFFlat）来优化查询。</li>
+<li>将查询转换为一个新的查询计划节点，替代传统的全表扫描和排序操作。</li>
+</ul>
+</li>
+<li>
+<p><strong>支持的查询类型</strong>：你需要处理不同形式的查询，特别是带有<code>ORDER BY</code>和<code>LIMIT</code>子句的查询。例如，查询可能包含按向量距离排序并限制返回结果数量的操作，这些查询应转换为使用向量索引扫描。</p>
+</li>
+<li>
+<p><strong>索引选择策略</strong>：在优化器中，你需要实现一个策略来选择合适的索引。可以选择以下几种策略：</p>
+<ul>
+<li><strong>空值</strong>（默认）：选择第一个可用的向量索引。</li>
+<li><strong>HNSW</strong>：只匹配HNSW索引。</li>
+<li><strong>IVFFlat</strong>：只匹配IVFFlat索引。</li>
+<li><strong>无索引</strong>：不使用任何索引，进行精确的最近邻搜索。</li>
+</ul>
+</li>
+</ol>
+<h3 id="处理的三种情况">处理的三种情况</h3>
+<p>优化器需要处理以下三种常见的查询结构，并根据情况选择使用向量索引扫描：</p>
+<ol>
+<li>
+<p><strong>情况1：TopN直接跟随SeqScan</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>TopN { n=2, order_bys=[(&#34;Default&#34;, &#34;l2_dist([1.000000,1.000000,1.000000], #0.0)&#34;)]}
+</span></span><span style="display:flex;"><span>  SeqScan { table=t1 }
+</span></span></code></pre></div><p>这种情况下，查询直接使用了<code>TopN</code>（即返回前<code>k</code>个结果），并且顺序扫描表。此时可以直接将<code>SeqScan</code>替换为向量索引扫描。</p>
+</li>
+<li>
+<p><strong>情况2：TopN跟随Projection</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>TopN { n=2, order_bys=[(&#34;Default&#34;, &#34;l2_dist([1.000000,1.000000,1.000000], #0.0)&#34;)]}
+</span></span><span style="display:flex;"><span>  Projection { exprs=[&#34;#0.0&#34;, &#34;l2_dist([1.000000,1.000000,1.000000], #0.0)&#34;] }
+</span></span><span style="display:flex;"><span>    SeqScan { table=t1 }
+</span></span></code></pre></div><p>在这种情况下，<code>TopN</code>操作之后有一个<code>Projection</code>操作，需要对结果进行投影。优化器仍然可以将<code>SeqScan</code>替换为向量索引扫描，并在索引扫描后加上投影操作，以保持查询语义。</p>
+</li>
+<li>
+<p><strong>情况3：TopN跟随Projection并且列顺序变换</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>TopN { n=2, order_bys=[(&#34;Default&#34;, &#34;l2_dist([1.000000,1.000000,1.000000], #0.1)&#34;)]}
+</span></span><span style="display:flex;"><span>  Projection { exprs=[&#34;#0.1&#34;, &#34;#0.0&#34;] }
+</span></span><span style="display:flex;"><span>    SeqScan { table=t1 }
+</span></span></code></pre></div><p>这种情况与情况2类似，但投影中列的顺序发生了变化，优化器需要正确地识别出列的映射，并在向量索引扫描后执行相应的投影。</p>
+</li>
+</ol>
+<h3 id="索引选择策略">索引选择策略</h3>
+<p>优化器会根据以下条件选择合适的向量索引：</p>
+<ul>
+<li><strong>未设置索引选择策略</strong>：选择第一个可用的向量索引。</li>
+<li><strong>HNSW</strong>：只匹配HNSW索引。</li>
+<li><strong>IVFFlat</strong>：只匹配IVFFlat索引。</li>
+<li><strong>无索引</strong>：不使用索引，进行精确的最近邻查询。</li>
+</ul>
+<h3 id="总结">总结</h3>
+<p>本任务的核心是实现一个优化规则，通过分析查询结构来判断是否可以使用向量索引进行优化。通过匹配查询中的距离计算条件，优化器将选择合适的索引并转换查询执行计划，以提高向量最近邻查询的效率。</p>
+<h1 id="向量索引扫描优化器的实现">向量索引扫描优化器的实现</h1>
+<h2 id="1-概述">1. 概述</h2>
+<p>向量索引扫描优化器（Vector Index Scan Optimizer）是一个用于优化向量相似度搜索查询的组件。它能够将基于全表扫描的向量搜索转换为使用专门的向量索引进行搜索，从而显著提升查询性能。</p>
+<h2 id="2-核心功能">2. 核心功能</h2>
+<h3 id="21-索引匹配matchvectorindex">2.1 索引匹配（MatchVectorIndex）</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">auto</span> MatchVectorIndex(<span style="color:#66d9ef">const</span> Catalog <span style="color:#f92672">&amp;</span>catalog, 
+</span></span><span style="display:flex;"><span>                     table_oid_t table_oid, 
+</span></span><span style="display:flex;"><span>                     <span style="color:#66d9ef">uint32_t</span> col_idx, 
+</span></span><span style="display:flex;"><span>                     VectorExpressionType dist_fn,
+</span></span><span style="display:flex;"><span>                     std<span style="color:#f92672">::</span>string <span style="color:#f92672">&amp;</span>vector_index_match_method) 
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">const</span> IndexInfo <span style="color:#f92672">*</span>
+</span></span></code></pre></div><h4 id="功能描述">功能描述</h4>
+<ul>
+<li>在给定表中查找合适的向量索引</li>
+<li>支持多种向量距离度量方式</li>
+<li>提供灵活的索引选择策略</li>
+</ul>
+<h4 id="支持的索引类型">支持的索引类型</h4>
+<ol>
+<li>
+<p><strong>HNSW（Hierarchical Navigable Small World）</strong></p>
+<ul>
+<li>高精度近似最近邻搜索</li>
+<li>适用于要求高精度的场景</li>
+</ul>
+</li>
+<li>
+<p><strong>IVF-FLAT（Inverted File with Flat Storage）</strong></p>
+<ul>
+<li>中等精度的近似最近邻搜索</li>
+<li>适用于内存受限场景</li>
+</ul>
+</li>
+</ol>
+<h4 id="索引匹配策略">索引匹配策略</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (vector_index_match_method.empty() <span style="color:#f92672">||</span> vector_index_match_method <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;default&#34;</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 使用第一个匹配的索引
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>} <span style="color:#66d9ef">else</span> <span style="color:#a6e22e">if</span> (vector_index_match_method <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;hnsw&#34;</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 强制使用HNSW索引
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>} <span style="color:#66d9ef">else</span> <span style="color:#a6e22e">if</span> (vector_index_match_method <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;ivfflat&#34;</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 强制使用IVF-FLAT索引
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>} <span style="color:#66d9ef">else</span> <span style="color:#a6e22e">if</span> (vector_index_match_method <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;none&#34;</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 不使用索引，执行顺序扫描
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><h3 id="22-查询计划优化optimizeasvectorindexscan">2.2 查询计划优化（OptimizeAsVectorIndexScan）</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">auto</span> OptimizeAsVectorIndexScan(<span style="color:#66d9ef">const</span> AbstractPlanNodeRef <span style="color:#f92672">&amp;</span>plan) 
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">-&gt;</span> AbstractPlanNodeRef
+</span></span></code></pre></div><h4 id="支持的查询模式">支持的查询模式</h4>
+<ol>
+<li><strong>直接TopN模式</strong></li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> images 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> feature <span style="color:#f92672">&lt;-&gt;</span> ARRAY[<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>] <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">5</span>;
+</span></span></code></pre></div><ol start="2">
+<li><strong>带投影的TopN模式</strong></li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> feature, distance(feature, ARRAY[<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>]) <span style="color:#66d9ef">as</span> dist 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> images 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> dist <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">5</span>;
+</span></span></code></pre></div><ol start="3">
+<li><strong>带列重排的TopN模式</strong></li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> url, feature, distance(feature, ARRAY[<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>]) <span style="color:#66d9ef">as</span> dist 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> images 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> dist <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">5</span>;
+</span></span></code></pre></div><h4 id="优化流程">优化流程</h4>
+<pre class="mermaid">graph TD
+    A[输入查询计划] --> B{识别TopN节点}
+    B -->|是| C[提取限制数量和基准向量]
+    B -->|否| D[返回原计划]
+    C --> E{检查子节点类型}
+    E -->|Projection| F[处理投影]
+    E -->|SeqScan| G[直接处理]
+    F --> H[查找向量索引]
+    G --> H
+    H -->|找到索引| I[创建向量索引扫描节点]
+    H -->|未找到索引| J[返回原计划]
+    I --> K[处理投影]
+    K --> L[返回优化后的计划]
+</pre>
+<h2 id="3-性能特征">3. 性能特征</h2>
+<h3 id="31-时间复杂度">3.1 时间复杂度</h3>
+<ul>
+<li>全表扫描：O(n)</li>
+<li>HNSW索引：O(log n)</li>
+<li>IVF-FLAT索引：O(sqrt(n))</li>
+</ul>
+<h3 id="32-空间复杂度">3.2 空间复杂度</h3>
+<ul>
+<li>HNSW索引：O(n * E)，E为每个节点的平均边数</li>
+<li>IVF-FLAT索引：O(n)</li>
+</ul>
+<h2 id="4-使用示例">4. 使用示例</h2>
+<h3 id="41-创建向量索引">4.1 创建向量索引</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 创建表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> images (
+</span></span><span style="display:flex;"><span>    id INT,
+</span></span><span style="display:flex;"><span>    feature VECTOR(<span style="color:#ae81ff">128</span>),
+</span></span><span style="display:flex;"><span>    url TEXT
+</span></span><span style="display:flex;"><span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 创建HNSW索引
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">INDEX</span> img_feature_hnsw <span style="color:#66d9ef">ON</span> images 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">USING</span> hnsw (feature vector_l2_ops) 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WITH</span> (m <span style="color:#f92672">=</span> <span style="color:#ae81ff">16</span>, ef_construction <span style="color:#f92672">=</span> <span style="color:#ae81ff">64</span>);
+</span></span></code></pre></div><h3 id="42-查询示例">4.2 查询示例</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 基本向量搜索
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> images 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> feature <span style="color:#f92672">&lt;-&gt;</span> ARRAY[...] 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">5</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 带距离计算的搜索
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span>, 
+</span></span><span style="display:flex;"><span>       feature <span style="color:#f92672">&lt;-&gt;</span> ARRAY[...] <span style="color:#66d9ef">as</span> distance 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> images 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> distance 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">5</span>;
+</span></span></code></pre></div><h2 id="5-配置参数">5. 配置参数</h2>
+<h3 id="51-hnsw索引参数">5.1 HNSW索引参数</h3>
+<ul>
+<li><code>m</code>：每个节点的最大边数</li>
+<li><code>ef_construction</code>：构建时的搜索范围</li>
+<li><code>ef_search</code>：查询时的搜索范围</li>
+</ul>
+<h3 id="52-ivf-flat索引参数">5.2 IVF-FLAT索引参数</h3>
+<ul>
+<li><code>nlist</code>：聚类中心数量</li>
+<li><code>nprobe</code>：查询时检查的聚类数量</li>
+</ul>
+]]></content>
+        </item>
+        
+        <item>
+            <title>Pika-Acl无权限BUG</title>
+            <link>//localhost:1313/posts/zh/pika/pika-acl%E6%97%A0%E6%9D%83%E9%99%90bug/</link>
+            <pubDate>Sun, 20 Oct 2024 19:42:02 +0800</pubDate>
+            
+            <guid>//localhost:1313/posts/zh/pika/pika-acl%E6%97%A0%E6%9D%83%E9%99%90bug/</guid>
+            <description>&lt;h1 id=&#34;pika-acl问题分析与解决方案&#34;&gt;Pika ACL问题分析与解决方案&lt;/h1&gt;
+&lt;h2 id=&#34;配置详情&#34;&gt;配置详情&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ini&#34; data-lang=&#34;ini&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;requirepass: 123&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Password for replication verify, used for authentication when a slave&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# connects to a master to request replication.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# [NOTICE] The value of this parameter must match the &amp;#34;requirepass&amp;#34; setting on the master.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;masterauth:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# The [password of user], which is empty by default.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# [NOTICE] If this user password is the same as admin password (including both being empty),&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# the value of this parameter will be ignored and all users are considered as administrators,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# in this scenario, users are not subject to the restrictions imposed by the userblacklist.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# PS: &amp;#34;admin password&amp;#34; refers to value of the parameter above: requirepass.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# userpass:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# The blacklist of commands for users that logged in by userpass,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# the commands that added to this list will not be available for users except for administrator.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# [Advice] It&amp;#39;s recommended to add high-risk commands to this list.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# [Format] Commands should be separated by &amp;#34;,&amp;#34;. For example: FLUSHALL, SHUTDOWN, KEYS, CONFIG&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# By default, this list is empty.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;userblacklist: FLUSHALL, flushdb&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;hr&gt;
+&lt;h2 id=&#34;issue-描述&#34;&gt;Issue 描述&lt;/h2&gt;
+&lt;h3 id=&#34;配置情况&#34;&gt;配置情况：&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;requirepass: xxx&lt;/code&gt;（管理员密码）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;userpass:&lt;/code&gt;（未设置）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;userblacklist: FLUSHALL&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;问题&lt;/strong&gt;：&lt;/p&gt;</description>
+            <content type="html"><![CDATA[<h1 id="pika-acl问题分析与解决方案">Pika ACL问题分析与解决方案</h1>
+<h2 id="配置详情">配置详情</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ini" data-lang="ini"><span style="display:flex;"><span><span style="color:#a6e22e">requirepass: 123</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Password for replication verify, used for authentication when a slave</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># connects to a master to request replication.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [NOTICE] The value of this parameter must match the &#34;requirepass&#34; setting on the master.</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">masterauth:</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># The [password of user], which is empty by default.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [NOTICE] If this user password is the same as admin password (including both being empty),</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># the value of this parameter will be ignored and all users are considered as administrators,</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># in this scenario, users are not subject to the restrictions imposed by the userblacklist.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># PS: &#34;admin password&#34; refers to value of the parameter above: requirepass.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># userpass:</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># The blacklist of commands for users that logged in by userpass,</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># the commands that added to this list will not be available for users except for administrator.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [Advice] It&#39;s recommended to add high-risk commands to this list.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [Format] Commands should be separated by &#34;,&#34;. For example: FLUSHALL, SHUTDOWN, KEYS, CONFIG</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># By default, this list is empty.</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">userblacklist: FLUSHALL, flushdb</span>
+</span></span></code></pre></div><hr>
+<h2 id="issue-描述">Issue 描述</h2>
+<h3 id="配置情况">配置情况：</h3>
+<ul>
+<li><code>requirepass: xxx</code>（管理员密码）</li>
+<li><code>userpass:</code>（未设置）</li>
+<li><code>userblacklist: FLUSHALL</code></li>
+</ul>
+<p><strong>问题</strong>：</p>
+<ul>
+<li>在 3.5.2 版本中，一切正常。</li>
+<li>在 3.5.5 版本中，普通用户无法连接 Pika，提示 <code>ERR NOAUTH Authentication required</code>。</li>
+<li>只有当 <code>requirepass</code> 为空时，普通用户才能连接。</li>
+</ul>
+<p><strong>示例配置</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ini" data-lang="ini"><span style="display:flex;"><span><span style="color:#a6e22e">requirepass:</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">userpass:</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">userblacklist: FLUSHALL</span>
+</span></span></code></pre></div><hr>
+<h2 id="issue-背景">Issue 背景</h2>
+<p>在 3.5.5 版本后，Pika 引入了 <strong>ACL 认证</strong>，改变了传统的认证方式。<br>
+每个 <code>PikaClientConn</code> 现在拥有一个 <code>user_</code>，用于存储相关的标志、密码和限制信息。每当收到请求时，都会检查当前连接是否已认证。</p>
+<hr>
+<h2 id="问题分析">问题分析</h2>
+<p><strong>关键代码检查</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#75715e">// Check auth
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">if</span> (AuthRequired()) {  <span style="color:#75715e">// 用户未认证，需要进行认证
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(c_ptr<span style="color:#f92672">-&gt;</span>flag() <span style="color:#f92672">&amp;</span> kCmdFlagsNoAuth)) {
+</span></span><span style="display:flex;"><span>    c_ptr<span style="color:#f92672">-&gt;</span>res().SetRes(CmdRes<span style="color:#f92672">::</span>kErrOther, <span style="color:#e6db74">&#34;NOAUTH Authentication required.&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> c_ptr;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>发现问题</strong>：</p>
+<ul>
+<li><code>AuthRequired</code> 方法逻辑如下：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> PikaClientConn<span style="color:#f92672">::</span>AuthRequired() <span style="color:#66d9ef">const</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> (<span style="color:#f92672">!</span>user_<span style="color:#f92672">-&gt;</span>HasFlags(<span style="color:#66d9ef">static_cast</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">uint32_t</span><span style="color:#f92672">&gt;</span>(AclUserFlag<span style="color:#f92672">::</span>NO_PASS)) <span style="color:#f92672">||</span>
+</span></span><span style="display:flex;"><span>          user_<span style="color:#f92672">-&gt;</span>HasFlags(<span style="color:#66d9ef">static_cast</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">uint32_t</span><span style="color:#f92672">&gt;</span>(AclUserFlag<span style="color:#f92672">::</span>DISABLED))) <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#f92672">!</span>IsAuthed();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ul>
+<li>这里的逻辑是：
+<ul>
+<li>如果用户未被 <code>NO_PASS</code> 标志允许免密，或者被禁用，则需要认证。</li>
+</ul>
+</li>
+</ul>
+<p><strong>优化后逻辑</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> PikaClientConn<span style="color:#f92672">::</span>AuthRequired() <span style="color:#66d9ef">const</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (IsAuthed()) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> false;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (user_<span style="color:#f92672">-&gt;</span>HasFlags(<span style="color:#66d9ef">static_cast</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">uint32_t</span><span style="color:#f92672">&gt;</span>(AclUserFlag<span style="color:#f92672">::</span>DISABLED))) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> true;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (user_<span style="color:#f92672">-&gt;</span>HasFlags(<span style="color:#66d9ef">static_cast</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">uint32_t</span><span style="color:#f92672">&gt;</span>(AclUserFlag<span style="color:#f92672">::</span>NO_PASS))) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> false;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> true;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><hr>
+<h2 id="解决方案">解决方案</h2>
+<h3 id="解决方案一">解决方案一</h3>
+<p><strong>问题</strong>：</p>
+<ul>
+<li>在 <code>requirepass</code> 设置后，未设置 <code>userpass</code>，普通用户仍应能无密码访问。</li>
+</ul>
+<p><strong>原因</strong>：</p>
+<ul>
+<li>Pika 默认用户分为：
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string Acl<span style="color:#f92672">::</span>DefaultUser <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;default&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string Acl<span style="color:#f92672">::</span>DefaultLimitUser <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;limit&#34;</span>;
+</span></span></code></pre></div></li>
+<li>但目前所有 <code>PikaClientConn</code> 默认使用 <code>DefaultUser</code>。</li>
+</ul>
+<p><strong>修复方法</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> PikaClientConn<span style="color:#f92672">::</span>InitUser() {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>g_pika_conf<span style="color:#f92672">-&gt;</span>GetUserBlackList().empty()) {
+</span></span><span style="display:flex;"><span>    user_ <span style="color:#f92672">=</span> g_pika_server<span style="color:#f92672">-&gt;</span>Acl()<span style="color:#f92672">-&gt;</span>GetUserLock(Acl<span style="color:#f92672">::</span>DefaultLimitUser);
+</span></span><span style="display:flex;"><span>  } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    user_ <span style="color:#f92672">=</span> g_pika_server<span style="color:#f92672">-&gt;</span>Acl()<span style="color:#f92672">-&gt;</span>GetUserLock(Acl<span style="color:#f92672">::</span>DefaultUser);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  authenticated_ <span style="color:#f92672">=</span> user_<span style="color:#f92672">-&gt;</span>HasFlags(<span style="color:#66d9ef">static_cast</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">uint32_t</span><span style="color:#f92672">&gt;</span>(AclUserFlag<span style="color:#f92672">::</span>NO_PASS)) <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>                   <span style="color:#f92672">!</span>user_<span style="color:#f92672">-&gt;</span>HasFlags(<span style="color:#66d9ef">static_cast</span><span style="color:#f92672">&lt;</span><span style="color:#66d9ef">uint32_t</span><span style="color:#f92672">&gt;</span>(AclUserFlag<span style="color:#f92672">::</span>DISABLED));
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><hr>
+<h3 id="解决方案二">解决方案二</h3>
+<p><strong>问题</strong>：</p>
+<ul>
+<li>即使 <code>user_</code> 被更改为 <code>DefaultLimitUser</code>，仍然会出现权限问题。</li>
+</ul>
+<p><strong>解决思路</strong>：</p>
+<ul>
+<li>在 <code>UpdateDefaultUserPassword</code> 方法中，<strong>增加 NO_PASS 逻辑</strong>：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Acl<span style="color:#f92672">::</span>UpdateDefaultUserPassword(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>string<span style="color:#f92672">&amp;</span> pass) {
+</span></span><span style="display:flex;"><span>  std<span style="color:#f92672">::</span>unique_lock wl(mutex_);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">auto</span> u <span style="color:#f92672">=</span> GetUser(DefaultUser);
+</span></span><span style="display:flex;"><span>  u<span style="color:#f92672">-&gt;</span>SetUser(<span style="color:#e6db74">&#34;resetpass&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (pass.empty()) {
+</span></span><span style="display:flex;"><span>    u<span style="color:#f92672">-&gt;</span>SetUser(<span style="color:#e6db74">&#34;nopass&#34;</span>);
+</span></span><span style="display:flex;"><span>  } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    u<span style="color:#f92672">-&gt;</span>SetUser(<span style="color:#e6db74">&#34;&gt;&#34;</span> <span style="color:#f92672">+</span> pass);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (g_pika_conf<span style="color:#f92672">-&gt;</span>userpass().empty()) {
+</span></span><span style="display:flex;"><span>      u<span style="color:#f92672">-&gt;</span>SetUser(<span style="color:#e6db74">&#34;nopass&#34;</span>);
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>      u<span style="color:#f92672">-&gt;</span>SetUser(<span style="color:#e6db74">&#34;&gt;&#34;</span> <span style="color:#f92672">+</span> pass);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><hr>
+<h2 id="测试结果">测试结果</h2>
+<p><strong>普通用户无密码登录 ✅</strong></p>
+<p><img src="./images/Pika-Acl%E6%99%AE%E9%80%9A%E7%94%A8%E6%88%B7%E6%97%A0%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95.png" alt="Pika-Acl无权限BUG">
+<strong>管理员有密码登录 ✅</strong>
+<img src="./images/Pika-Acl%E7%AE%A1%E7%90%86%E5%91%98%E6%9C%89%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95.png" alt="Pika-Acl无权限BUG">
+<img src="./images/Pika-Acl%E7%AE%A1%E7%90%86%E5%91%98%E6%9C%89%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%952.png" alt="Pika-Acl无权限BUG"></p>
+<p><strong>limit 用户受限制 ✅</strong></p>
+<p><img src="./images/Pika-Acllimit%E7%94%A8%E6%88%B7%E5%8F%97%E9%99%90%E5%88%B6.png" alt="Pika-Acl无权限BUG"></p>
+]]></content>
+        </item>
+        
+        <item>
+            <title>阿里云天池云oceanbase对obcdc输出信息重新打标</title>
+            <link>//localhost:1313/posts/zh/opensource/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A9%E6%B1%A0%E4%BA%91oceanbase%E5%AF%B9obcdc%E8%BE%93%E5%87%BA%E4%BF%A1%E6%81%AF%E9%87%8D%E6%96%B0%E6%89%93%E6%A0%87/</link>
+            <pubDate>Tue, 20 Aug 2024 19:42:02 +0800</pubDate>
+            
+            <guid>//localhost:1313/posts/zh/opensource/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A9%E6%B1%A0%E4%BA%91oceanbase%E5%AF%B9obcdc%E8%BE%93%E5%87%BA%E4%BF%A1%E6%81%AF%E9%87%8D%E6%96%B0%E6%89%93%E6%A0%87/</guid>
+            <description>&lt;h1 id=&#34;1-项目概述&#34;&gt;1. 项目概述&lt;/h1&gt;
+&lt;h2 id=&#34;11-项目背景&#34;&gt;1.1 项目背景&lt;/h2&gt;
+&lt;p&gt;OceanBase 是自研的企业级原生分布式数据库，支持“数据零丢失”标准，兼容 Oracle/MySQL，提供无缝水平扩展，首创“三地五中心”城市级故障自动无损容灾新标准，刷新 TPC-C 标准测试，单集群规模超过 1500 节点，具有云原生、强一致性、高度兼容 Oracle/MySQL 等特性。采用高压缩引擎和多租户架构，显著降低存储和运维成本。支持实时交易和分析，确保数据一致性，同时具备完备的安全性，经过多年金融核心场景验证，自主研发保障代码可控和高可靠性。&lt;/p&gt;
+&lt;h2 id=&#34;12-目前现状&#34;&gt;1.2 目前现状&lt;/h2&gt;
+&lt;p&gt;oblogminer 在处理 obcdc 输出的结果时，对于无法判断的列值，通常会使用标记 &lt;code&gt;/* POTENTIALLY INACCURATE */&lt;/code&gt; 来表示这些列值可能不准确。&lt;/p&gt;
+&lt;h2 id=&#34;13-预期目标&#34;&gt;1.3 预期目标&lt;/h2&gt;
+&lt;p&gt;使 oblogminer 能够在 obcdc 4.3.1 版本及之后的版本中，正确识别列值的可信性，并根据 obcdc 的标记输出可信的列值，无需标记为 &lt;code&gt;/* POTENTIALLY INACCURATE */&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;对于判断列值是否可信的场景：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;oblogmsg&lt;/code&gt; 库中 &lt;code&gt;ValueOrigin.h&lt;/code&gt; 中的 &lt;code&gt;enum&lt;/code&gt; 类型 &lt;code&gt;VALUE_ORIGIN&lt;/code&gt; 代表了列值来源。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;VALUE_ORIGIN::REDO&lt;/code&gt; 代表列值来源于日志，说明该列为可信的。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;VALUE_ORIGIN::PADDING&lt;/code&gt; 代表列值来源于 OBCDC 自己生成的，不代表真实列值。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;14-参考信息&#34;&gt;1.4 参考信息&lt;/h2&gt;
+&lt;p&gt;在 &lt;code&gt;delete&lt;/code&gt; 操作后，CDC 拿到的数据中，BLOB 类型的列值被设置为 &lt;code&gt;NULL&lt;/code&gt;，而 TEXT 类型的列值则保留了原始数据。这导致从节点复制失败。CDC 应该能够处理 BLOB 列的正确值，而不是将其设为 &lt;code&gt;NULL&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;复现步骤：&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;创建表 &lt;code&gt;t_blob_text&lt;/code&gt;，包含一个 &lt;code&gt;BLOB&lt;/code&gt; 列和一个 &lt;code&gt;TEXT&lt;/code&gt; 列。&lt;/li&gt;
+&lt;li&gt;插入一行数据，其中 &lt;code&gt;BLOB&lt;/code&gt; 列包含 16383 个“😂”字符，&lt;code&gt;TEXT&lt;/code&gt; 列包含 300 个“犇”字。&lt;/li&gt;
+&lt;li&gt;执行 &lt;code&gt;delete&lt;/code&gt; 操作删除表中的所有数据。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;期望行为：&lt;/strong&gt;&lt;/p&gt;</description>
+            <content type="html"><![CDATA[<h1 id="1-项目概述">1. 项目概述</h1>
+<h2 id="11-项目背景">1.1 项目背景</h2>
+<p>OceanBase 是自研的企业级原生分布式数据库，支持“数据零丢失”标准，兼容 Oracle/MySQL，提供无缝水平扩展，首创“三地五中心”城市级故障自动无损容灾新标准，刷新 TPC-C 标准测试，单集群规模超过 1500 节点，具有云原生、强一致性、高度兼容 Oracle/MySQL 等特性。采用高压缩引擎和多租户架构，显著降低存储和运维成本。支持实时交易和分析，确保数据一致性，同时具备完备的安全性，经过多年金融核心场景验证，自主研发保障代码可控和高可靠性。</p>
+<h2 id="12-目前现状">1.2 目前现状</h2>
+<p>oblogminer 在处理 obcdc 输出的结果时，对于无法判断的列值，通常会使用标记 <code>/* POTENTIALLY INACCURATE */</code> 来表示这些列值可能不准确。</p>
+<h2 id="13-预期目标">1.3 预期目标</h2>
+<p>使 oblogminer 能够在 obcdc 4.3.1 版本及之后的版本中，正确识别列值的可信性，并根据 obcdc 的标记输出可信的列值，无需标记为 <code>/* POTENTIALLY INACCURATE */</code>。</p>
+<p>对于判断列值是否可信的场景：</p>
+<ul>
+<li><code>oblogmsg</code> 库中 <code>ValueOrigin.h</code> 中的 <code>enum</code> 类型 <code>VALUE_ORIGIN</code> 代表了列值来源。</li>
+<li><code>VALUE_ORIGIN::REDO</code> 代表列值来源于日志，说明该列为可信的。</li>
+<li><code>VALUE_ORIGIN::PADDING</code> 代表列值来源于 OBCDC 自己生成的，不代表真实列值。</li>
+</ul>
+<h2 id="14-参考信息">1.4 参考信息</h2>
+<p>在 <code>delete</code> 操作后，CDC 拿到的数据中，BLOB 类型的列值被设置为 <code>NULL</code>，而 TEXT 类型的列值则保留了原始数据。这导致从节点复制失败。CDC 应该能够处理 BLOB 列的正确值，而不是将其设为 <code>NULL</code>。</p>
+<p><strong>复现步骤：</strong></p>
+<ol>
+<li>创建表 <code>t_blob_text</code>，包含一个 <code>BLOB</code> 列和一个 <code>TEXT</code> 列。</li>
+<li>插入一行数据，其中 <code>BLOB</code> 列包含 16383 个“😂”字符，<code>TEXT</code> 列包含 300 个“犇”字。</li>
+<li>执行 <code>delete</code> 操作删除表中的所有数据。</li>
+</ol>
+<p><strong>期望行为：</strong></p>
+<ul>
+<li>CDC 在处理 <code>delete</code> 操作后，<code>id1</code> 的值应该保留为 16383 个“😂”字符，而不是 <code>NULL</code>。</li>
+</ul>
+<p><strong>实际行为：</strong></p>
+<ul>
+<li>CDC 返回的 <code>id1</code> 列的值为 <code>NULL</code>，<code>id2</code> 列的值为 300 个“犇”字。
+<img src="./images/obcdc.png" alt="obcdc"></li>
+</ul>
+<hr>
+<h1 id="2-关键技术介绍">2. 关键技术介绍</h1>
+<h2 id="21-cdc-change-data-capture-概述">2.1 CDC (Change Data Capture) 概述</h2>
+<p>CDC （Change Data Capture，即变更数据捕获）能够帮助识别从上次提取之后发生变化的数据。CDC 提供的数据可用于构建历史库、近实时缓存、消息队列（MQ）等，用户可以消费 MQ 数据进行分析和审计。</p>
+<h3 id="211-什么是-cdc">2.1.1 什么是 CDC</h3>
+<p>OceanBase CDC 包括两个组件：</p>
+<ul>
+<li><strong>obcdc</strong></li>
+<li><strong>oblogmsg</strong></li>
+</ul>
+<p>其中，<code>obcdc</code> 是 OceanBase CDC 的基本组件，衍生出了 <code>OBLogProxy</code>，并依赖 <code>oblogmsg</code>。</p>
+<h3 id="212-obcdc">2.1.2 obcdc</h3>
+<p><code>obcdc</code> 以动态库的形式对外提供 OceanBase 数据库的实时增量（事务）数据。</p>
+<ul>
+<li>通过 RPC 向 OceanBase 数据库请求各分区的 <code>Clog（Redo）</code> 日志。</li>
+<li>结合表结构 <code>schema</code> 信息（通过 SQL 与 OBServer 交互获取）。</li>
+<li>将 <code>Redo</code> 日志转化为中间数据格式 <code>LOGMSG</code>，聚合事务涉及的各分区数据变更，以事务为单位逐行输出变更数据。</li>
+</ul>
+<h3 id="213-oblogmsg">2.1.3 oblogmsg</h3>
+<p><code>oblogmsg</code> 是一种数据库增量数据的输出格式，OceanBase CDC 采用该格式输出增量数据。</p>
+<ul>
+<li><code>oblogmsg</code> 支持 OceanBase 数据库中不同数据类型的增量数据的写入。</li>
+<li>具备序列化和反序列化能力。</li>
+<li><code>ValueOrigin.h</code> 中的 <code>VALUE_ORIGIN</code> 表示列值来源：
+<ul>
+<li><code>VALUE_ORIGIN::REDO</code> 代表日志来源，可信。</li>
+<li><code>VALUE_ORIGIN::PADDING</code> 代表 OBCDC 生成的列值，不代表真实值。
+<img src="./images/oblogmsg.png" alt="oblogmsg"></li>
+</ul>
+</li>
+</ul>
+<h2 id="22-oblogminer-概述">2.2 oblogminer 概述</h2>
+<p>OceanBase LogMiner（简称 <code>oblogminer</code>）是一款用于 OceanBase 数据库日志分析的命令行工具，支持在线及归档日志分析。
+<img src="./images/oblogminer.png" alt="oblogminer"></p>
+<h3 id="221-主要功能">2.2.1 主要功能</h3>
+<ul>
+<li><strong>自助服务</strong>：
+<ul>
+<li>支持对在线日志和归档日志的分析。</li>
+<li>提供故障时间点精准定位能力，降低排查复杂度，提高诊断效率。</li>
+</ul>
+</li>
+<li><strong>细粒度恢复</strong>：
+<ul>
+<li>可生成逆向回滚 SQL（UNDO SQL），实现“SQL 闪回”的细粒度恢复能力。</li>
+</ul>
+</li>
+<li><strong>数据分析</strong>：
+<ul>
+<li>获取所有 DDL 和 DML 变更，并保证按照执行顺序输出。</li>
+<li>组织并展示 <code>clog</code> 日志中的事务、表结构等信息，提高可观测性。</li>
+</ul>
+</li>
+</ul>
+<p>对于 <code>LOB</code> 类型或不支持的数据类型，<code>REDO/UNDO SQL</code> 结果中会标记 <code>/* POTENTIALLY INACCURATE */</code>，表示结果可能不正确。</p>
+<hr>
+<h1 id="3-实现方案">3. 实现方案</h1>
+<p>由于 CDC 无法确保 <code>LOB</code> 数据的正确性，但 <code>logminer</code> 可以判断 <code>LOB</code> 类型的 <code>NULL</code> 值是否源自真实操作，或是 CDC 修改的错误操作，从而决定是否追加 <code>/* POTENTIALLY INACCURATE */</code>。</p>
+<p>示例 SQL 操作：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> t_blob_text <span style="color:#66d9ef">VALUES</span> (REPEAT(<span style="color:#e6db74">&#39;😂&#39;</span>, <span style="color:#ae81ff">16383</span>), REPEAT(<span style="color:#e6db74">&#39;犇&#39;</span>, <span style="color:#ae81ff">300</span>));
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">DELETE</span> <span style="color:#66d9ef">FROM</span> t_blob_text;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> t_blob_text <span style="color:#66d9ef">VALUES</span> (<span style="color:#66d9ef">NULL</span>, REPEAT(<span style="color:#e6db74">&#39;犇&#39;</span>, <span style="color:#ae81ff">300</span>));
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">DELETE</span> <span style="color:#66d9ef">FROM</span> t_blob_text;
+</span></span></code></pre></div><h3 id="oblogminer-运行结果"><code>oblogminer</code> 运行结果：</h3>
+<ul>
+<li><strong>原始输出（带标记）</strong>：
+<ul>
+<li>部分 <code>LOB</code> 列值被标记 <code>/* POTENTIALLY INACCURATE */</code>。
+<img src="./images/oblogminer1.png" alt="oblogminer"></li>
+</ul>
+</li>
+<li><strong>优化后输出（取消标记）</strong>：
+<ul>
+<li><code>oblogminer</code> 依据 <code>obcdc</code> 的 <code>VALUE_ORIGIN</code> 进行判断，确保仅在不可信列值上追加标记。
+<img src="./images/oblogminer2.png" alt="oblogminer"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>该方案能够优化 <code>oblogminer</code> 解析 <code>LOB</code> 列值的准确性，使其在 OceanBase CDC 4.3.1 版本及之后能够更精确地处理变更数据，提高可靠性和数据完整性。</p>
+]]></content>
+        </item>
+        
+        <item>
+            <title>腾讯犀牛鸟开源-加权轮询算法</title>
+            <link>//localhost:1313/posts/zh/opensource/%E8%85%BE%E8%AE%AF%E7%8A%80%E7%89%9B%E9%B8%9F%E5%BC%80%E6%BA%90%E5%8A%A0%E6%9D%83%E8%BD%AE%E8%AF%A2%E7%AE%97%E6%B3%95/</link>
+            <pubDate>Sat, 20 Jul 2024 19:42:02 +0800</pubDate>
+            
+            <guid>//localhost:1313/posts/zh/opensource/%E8%85%BE%E8%AE%AF%E7%8A%80%E7%89%9B%E9%B8%9F%E5%BC%80%E6%BA%90%E5%8A%A0%E6%9D%83%E8%BD%AE%E8%AF%A2%E7%AE%97%E6%B3%95/</guid>
+            <description>&lt;h1 id=&#34;平滑加权轮询负载均衡插件&#34;&gt;平滑加权轮询负载均衡插件&lt;/h1&gt;
+&lt;h2 id=&#34;一概述&#34;&gt;一、概述&lt;/h2&gt;
+&lt;p&gt;为了避免传统加权轮询中可能出现的负载不均衡，采用平滑加权轮询（Smooth Weighted Round-Robin，简称 SWRR）。它通常用于将请求分配到一组服务器中，以达到更均衡的负载分配。在传统的加权轮询（Weighted Round-Robin）基础上，通过平滑处理来避免负载分配的不均匀性。&lt;/p&gt;
+&lt;h2 id=&#34;二具体实现&#34;&gt;二、具体实现&lt;/h2&gt;
+&lt;p&gt;平滑加权轮询算法的目标是减少传统加权轮询算法中的不均衡现象，尤其是在请求到达不均匀或服务器负载变化的情况下。该算法通过以下方式来平滑负载分配：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;加权池&lt;/strong&gt;：服务器的权重决定了它们在加权池中的出现频率。平滑加权轮询算法会在轮询过程中根据权重动态调整每台服务器的“虚拟”权重，使得负载分配更均匀。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;平滑处理&lt;/strong&gt;：算法会计算每台服务器的负载和权重，并在每次分配请求时，基于服务器的负载情况调整请求的分配。这种方式确保了高负载的服务器不会被过度分配请求，从而避免了负载过度集中。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;动态调整&lt;/strong&gt;：当服务器的负载发生变化时，算法会动态调整权重值，以确保负载在服务器之间的分配更加合理。例如，如果某台服务器变得很繁忙，它的权重值可能会被降低，从而减少它接收请求的频率。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;示例&#34;&gt;示例&lt;/h3&gt;
+&lt;p&gt;假设有三个节点 A、B、C，它们的权重分别为 5、1、1。初始时，各节点的当前权重为 0。&lt;/p&gt;
+&lt;h4 id=&#34;第一次请求&#34;&gt;第一次请求：&lt;/h4&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;A：0 + 5 = 5
+B：0 + 1 = 1
+C：0 + 1 = 1
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;选择 A，因为 A 的当前权重最高。然后 A 的当前权重变为 &lt;code&gt;5 - (5 + 1 + 1) = -2&lt;/code&gt;。&lt;/p&gt;
+&lt;h4 id=&#34;第二次请求&#34;&gt;第二次请求：&lt;/h4&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;A：-2 + 5 = 3
+B：1 + 1 = 2
+C：1 + 1 = 2
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;选择 A，因为 A 的当前权重仍然最高。然后 A 的当前权重变为 &lt;code&gt;3 - (5 + 1 + 1) = -4&lt;/code&gt;。&lt;/p&gt;</description>
+            <content type="html"><![CDATA[<h1 id="平滑加权轮询负载均衡插件">平滑加权轮询负载均衡插件</h1>
+<h2 id="一概述">一、概述</h2>
+<p>为了避免传统加权轮询中可能出现的负载不均衡，采用平滑加权轮询（Smooth Weighted Round-Robin，简称 SWRR）。它通常用于将请求分配到一组服务器中，以达到更均衡的负载分配。在传统的加权轮询（Weighted Round-Robin）基础上，通过平滑处理来避免负载分配的不均匀性。</p>
+<h2 id="二具体实现">二、具体实现</h2>
+<p>平滑加权轮询算法的目标是减少传统加权轮询算法中的不均衡现象，尤其是在请求到达不均匀或服务器负载变化的情况下。该算法通过以下方式来平滑负载分配：</p>
+<ul>
+<li><strong>加权池</strong>：服务器的权重决定了它们在加权池中的出现频率。平滑加权轮询算法会在轮询过程中根据权重动态调整每台服务器的“虚拟”权重，使得负载分配更均匀。</li>
+<li><strong>平滑处理</strong>：算法会计算每台服务器的负载和权重，并在每次分配请求时，基于服务器的负载情况调整请求的分配。这种方式确保了高负载的服务器不会被过度分配请求，从而避免了负载过度集中。</li>
+<li><strong>动态调整</strong>：当服务器的负载发生变化时，算法会动态调整权重值，以确保负载在服务器之间的分配更加合理。例如，如果某台服务器变得很繁忙，它的权重值可能会被降低，从而减少它接收请求的频率。</li>
+</ul>
+<h3 id="示例">示例</h3>
+<p>假设有三个节点 A、B、C，它们的权重分别为 5、1、1。初始时，各节点的当前权重为 0。</p>
+<h4 id="第一次请求">第一次请求：</h4>
+<pre tabindex="0"><code>A：0 + 5 = 5
+B：0 + 1 = 1
+C：0 + 1 = 1
+</code></pre><p>选择 A，因为 A 的当前权重最高。然后 A 的当前权重变为 <code>5 - (5 + 1 + 1) = -2</code>。</p>
+<h4 id="第二次请求">第二次请求：</h4>
+<pre tabindex="0"><code>A：-2 + 5 = 3
+B：1 + 1 = 2
+C：1 + 1 = 2
+</code></pre><p>选择 A，因为 A 的当前权重仍然最高。然后 A 的当前权重变为 <code>3 - (5 + 1 + 1) = -4</code>。</p>
+<h4 id="第三次请求">第三次请求：</h4>
+<pre tabindex="0"><code>A：-4 + 5 = 1
+B：2 + 1 = 3
+C：2 + 1 = 3
+</code></pre><p>选择 B（或 C），因为 B 和 C 的当前权重相同且最高。然后 B 的当前权重变为 <code>3 - (5 + 1 + 1) = -4</code>。</p>
+<p>通过这个过程，可以看到虽然 A 的权重最高，但它不会在每次轮询中都被选中。随着轮询次数的增加，各节点的选择机会逐渐接近其权重比例，实现平滑的负载均衡。</p>
+<h2 id="三使用方法">三、使用方法</h2>
+<p>在客户端配置文件中，例如 <code>trpc_cpp_fiber.yaml</code>，在 <code>target</code> 配置，使用 <code>ip:port:weight</code> 格式来指定端点的方案。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">client</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">service</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">trpc.test.helloworld.Greeter</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">target</span>: <span style="color:#ae81ff">127.0.0.1</span>:<span style="color:#ae81ff">10000</span>:<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">127.0.0.1</span>:<span style="color:#ae81ff">20000</span>:<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">127.0.0.1</span>:<span style="color:#ae81ff">30000</span>:<span style="color:#ae81ff">3</span>  <span style="color:#75715e"># 使用 `direct` 选择器时填写 `ip:port:weight`</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">trpc               </span> <span style="color:#75715e"># 应用层协议，例如 trpc/http/...</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">network</span>: <span style="color:#ae81ff">tcp                 </span> <span style="color:#75715e"># 网络类型，支持 tcp/udp</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">selector_name</span>: <span style="color:#ae81ff">direct        </span> <span style="color:#75715e"># 选择器插件，默认 `direct`，用于直接访问 `ip:port`</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">load_balance_name</span>: <span style="color:#ae81ff">trpc_smooth_weighted_polling_load_balance</span>
+</span></span></code></pre></div><p>在客户端文件中，注册负载均衡插件。由于默认使用 <code>polling_load_balance</code> 插件，需要在获取 <code>proxy</code> 之前注册好插件，使用 <code>::trpc::loadbalance::Init()</code> 注册插件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">Run</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">::</span>trpc<span style="color:#f92672">::</span>loadbalance<span style="color:#f92672">::</span>Init();
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">auto</span> proxy <span style="color:#f92672">=</span> <span style="color:#f92672">::</span>trpc<span style="color:#f92672">::</span>GetTrpcClient()<span style="color:#f92672">-&gt;</span>GetProxy<span style="color:#f92672">&lt;::</span>trpc<span style="color:#f92672">::</span>test<span style="color:#f92672">::</span>helloworld<span style="color:#f92672">::</span>GreeterServiceProxy<span style="color:#f92672">&gt;</span>(FLAGS_service_name);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> argv[]) {
+</span></span><span style="display:flex;"><span>  ParseClientConfig(argc, argv);
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 业务代码运行在 `trpc` 纯客户端模式时，需在 `RunInTrpcRuntime` 函数中执行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">return</span> <span style="color:#f92672">::</span>trpc<span style="color:#f92672">::</span>RunInTrpcRuntime([]() { <span style="color:#66d9ef">return</span> Run(); });
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="一引言">一、引言</h1>
+<p>本报告旨在评估平滑加权轮询（Smooth Weighted Round Robin, SWRR）负载均衡插件的性能和功能。平滑加权轮询是一种改进的负载均衡算法，通过动态调整服务器节点的权重，实现请求的平滑分配，避免传统加权轮询中的突发负载问题。测试的主要目标是验证插件在不同权重配置下的负载分配平滑度、系统响应时间及其在高并发环境中的稳定性。本次测试模拟了实际生产环境，以确保插件在各种工作负载条件下均能维持系统的高可用性和一致的性能表现。</p>
+<h1 id="二测试环境">二、测试环境</h1>
+<ul>
+<li><strong>操作系统</strong>：Ubuntu 22.04</li>
+<li><strong>开发环境</strong>：VSCode</li>
+</ul>
+<h1 id="三测试目标">三、测试目标</h1>
+<ol>
+<li>验证加权轮询负载均衡插件的基本功能</li>
+<li>评估加权轮询负载均衡插件的性能</li>
+</ol>
+<h1 id="四测试方法与步骤">四、测试方法与步骤</h1>
+<h2 id="1-测试">1. 测试</h2>
+<h3 id="切换-test-分支">切换 test 分支</h3>
+<h3 id="服务端定义">服务端定义</h3>
+<p><img src="./images/image.png" alt="服务端定义">
+创建 <code>trpc_cpp_fiber.yaml</code>, <code>trpc_cpp_fiber1.yaml</code>, <code>trpc_cpp_fiber2.yaml</code> 配置 3 个服务端，IP:Port 分别为：</p>
+<ul>
+<li><code>127.0.0.1:10000</code></li>
+<li><code>127.0.0.1:20000</code></li>
+<li><code>127.0.0.1:30000</code></li>
+</ul>
+<h3 id="启动三个终端分别启动三个服务">启动三个终端分别启动三个服务</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>./bazel-bin/examples/helloworld/helloworld_svr --config<span style="color:#f92672">=</span>./examples/helloworld/conf/trpc_cpp_fiber.yaml
+</span></span><span style="display:flex;"><span>./bazel-bin/examples/helloworld/helloworld_svr --config<span style="color:#f92672">=</span>./examples/helloworld/conf/trpc_cpp_fiber1.yaml
+</span></span><span style="display:flex;"><span>./bazel-bin/examples/helloworld/helloworld_svr --config<span style="color:#f92672">=</span>./examples/helloworld/conf/trpc_cpp_fiber2.yaml
+</span></span></code></pre></div><h3 id="客户端配置">客户端配置</h3>
+<p><img src="./images/image%281%29.png" alt="客户端配置"></p>
+<ol>
+<li><strong>注入插件</strong>：在 <code>client</code> 配置 <code>load_balance_name</code> 插件
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">load_balance_name</span>: <span style="color:#ae81ff">trpc_swround_robin_loadbalance</span>
+</span></span></code></pre></div></li>
+<li><strong>配置权重信息</strong>：在客户端配置文件中，在 <code>plugins</code> 配置中 <code>loadbalance</code> 中配置对应服务的权重信息。</li>
+</ol>
+<h3 id="在-fiber_clientcc-文件中">在 <code>fiber_client.cc</code> 文件中</h3>
+<p>在 <code>run</code> 函数中，我创建了 <code>thread_count</code> 个线程，每个线程都会并发执行 RPC 调用。在每个线程内，我们执行了 <code>DoRpcCall</code> 函数 5 次，以确保对负载均衡插件进行充分的测试。
+<img src="./images/image%282%29.png" alt="在 fiber_client.cc 文件中"></p>
+<h3 id="启动客户端">启动客户端</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>./bazel-bin/examples/helloworld/test/fiber_client --client_config<span style="color:#f92672">=</span>./examples/helloworld/test/conf/trpc_cpp_fiber.yaml
+</span></span></code></pre></div><h1 id="五测试结果与分析">五、测试结果与分析</h1>
+<p><img src="./images/image%283%29.png" alt="测试结果">
+根据结果，选择的服务基本符合权重的比例。</p>
+]]></content>
+        </item>
+        
+        <item>
+            <title>基于Simhash实现PSM概率性匹配系统</title>
+            <link>//localhost:1313/posts/zh/opensource/%E5%9F%BA%E4%BA%8Esimhash%E5%AE%9E%E7%8E%B0psm%E6%A6%82%E7%8E%87%E6%80%A7%E5%8C%B9%E9%85%8D%E7%B3%BB%E7%BB%9F/</link>
+            <pubDate>Thu, 20 Jun 2024 19:42:02 +0800</pubDate>
+            
+            <guid>//localhost:1313/posts/zh/opensource/%E5%9F%BA%E4%BA%8Esimhash%E5%AE%9E%E7%8E%B0psm%E6%A6%82%E7%8E%87%E6%80%A7%E5%8C%B9%E9%85%8D%E7%B3%BB%E7%BB%9F/</guid>
+            <description>&lt;p&gt;&lt;strong&gt;基于Simhash实现PSM概率性匹配系统&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;PSM系统，即概率性&lt;strong&gt;Simhash匹配系统&lt;/strong&gt;（Probabilistic Simhash Matching System），是一种用于高效检测近似重复图像或文档的算法系统。它利用&lt;strong&gt;Simhash技术&lt;/strong&gt;，通过概率性匹配方法来快速识别和定位相似度较高的对象。
+&lt;img src=&#34;./images/1280X1280.PNG&#34; alt=&#34;simhash&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Simhash和汉明距离&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Simhash由Moses Charikar开发，并在他的论文“Similarity Estimation Techniques from Rounding Algorithms”中描述。Simhash的主要目的是将相似的项目哈希到相似的哈希值。相似性可以通过哈希值之间的位汉明距离来判断。&lt;/p&gt;
+&lt;p&gt;以下是将一个n维实数向量映射到一个f位Simhash的算法。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;算法1：计算实数向量的Simhash&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;输入：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;v[1..n]：输入实数向量&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;输出：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;s：f位Simhash&lt;/p&gt;
+&lt;p&gt;初始化一个实数向量t[1..f]为0&lt;/p&gt;
+&lt;p&gt;生成n个f位随机整数r[1..n]&lt;/p&gt;
+&lt;p&gt;对于i从1到n，执行以下步骤：&lt;/p&gt;
+&lt;p&gt;对于j从1到f，执行以下步骤：&lt;/p&gt;
+&lt;p&gt;如果r[i]的第j位是1，则t[j] ← t[j] + v[i]&lt;/p&gt;
+&lt;p&gt;否则，t[j] ← t[j] − v[i]&lt;/p&gt;
+&lt;p&gt;对于i从1到f，执行以下步骤：&lt;/p&gt;
+&lt;p&gt;如果t[i] ≥ 0，则将s的第i位设为1&lt;/p&gt;
+&lt;p&gt;否则，将s的第i位设为0&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;近似重复检测&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;一般来说，如果两个Simhash的汉明距离不超过h（h是一个经验阈值），我们可以认为它们是近似重复的。要在一个包含m个Simhash的数据库中找到一个Simhash的所有近似重复，最简单的方法是进行一次完整的线性扫描，这需要计算m次汉明距离。&lt;/p&gt;
+&lt;p&gt;随着m的增长，完整线性扫描的时间成本将变得不可接受。事实上，大多数汉明距离计算是没有必要的，因为对于每个查询的Simhash，只有少数近似重复可以找到。已经提出了几种解决方案来减少比较的时间，例如Manku等人（2007年）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;位翻转组合&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;我们考虑Sood和Luguinov提出的一种新方法，即概率性Simhash匹配（PSM）系统，该系统在不需要维护数据的多个副本以进行近似重复搜索的情况下，仍然保持了良好的召回率。对于给定的查询指纹，我们基于找到近似重复匹配的概率探索不同的现有指纹，并限制我们的尝试次数以实现良好的查询速度。&lt;/p&gt;
+&lt;p&gt;首先，我们可以对Si69521mhash数据库进行排序并建立一个索引。为了更好地理解这里的“索引”，假设所有的Simhash都是f位整数并按列表排序，我们根据每个Simhash的前p位将它们分成子列表，然后所有子列表中第一个元素的位置组成一个索引。例如，索引的第32767个元素表示Simhash列表中前p位等于0x7fff的最小元素的位置。由于汉明距离阈值h通常是2或3，我们可以轻松构建位翻转组合，这意味着查询Simhash的所有可能的前16位的近似重复。对于h=3和p=16的索引，我们需要扫描所有65536（2^16）个子列表进行完整线性扫描，但仅需要扫描C(p,0) + C(p,1) + C(p,2) + C(p,3) = 697个子列表，受益于位翻转组合。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;计算Simhash&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Simhash 原理概述&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Simhash 的基本思想是通过特征向量的加权累加生成一个低维哈希值，进而用于判断相似性。对于文本来说，特征可以是单词或词组，对于实数向量来说，特征就是向量的每一个分量。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;将实数向量映射到 Simhash 的过程&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;对于文本，我们通常将每个单词哈希为一个固定长度的位串，并根据单词的权重对这些位串进行加权累加。而对于实数向量，我们可以使用类似的过程，将每个向量分量视为一个特征，进行加权累加。具体步骤如下：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;输入：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;v[1..n]v[1..n]v[1..n]：输入的实数向量&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;输出：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;sss：f 位 Simhash&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;步骤：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;初始化向量&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;初始化一个长度为 f 的实数向量 t[1..f]t[1..f]t[1..f]，所有值设为 0。&lt;/p&gt;</description>
+            <content type="html"><![CDATA[<p><strong>基于Simhash实现PSM概率性匹配系统</strong></p>
+<p>PSM系统，即概率性<strong>Simhash匹配系统</strong>（Probabilistic Simhash Matching System），是一种用于高效检测近似重复图像或文档的算法系统。它利用<strong>Simhash技术</strong>，通过概率性匹配方法来快速识别和定位相似度较高的对象。
+<img src="./images/1280X1280.PNG" alt="simhash"></p>
+<p><strong>Simhash和汉明距离</strong></p>
+<p>Simhash由Moses Charikar开发，并在他的论文“Similarity Estimation Techniques from Rounding Algorithms”中描述。Simhash的主要目的是将相似的项目哈希到相似的哈希值。相似性可以通过哈希值之间的位汉明距离来判断。</p>
+<p>以下是将一个n维实数向量映射到一个f位Simhash的算法。</p>
+<p><strong>算法1：计算实数向量的Simhash</strong></p>
+<p><strong>输入：</strong></p>
+<p>v[1..n]：输入实数向量</p>
+<p><strong>输出：</strong></p>
+<p>s：f位Simhash</p>
+<p>初始化一个实数向量t[1..f]为0</p>
+<p>生成n个f位随机整数r[1..n]</p>
+<p>对于i从1到n，执行以下步骤：</p>
+<p>对于j从1到f，执行以下步骤：</p>
+<p>如果r[i]的第j位是1，则t[j] ← t[j] + v[i]</p>
+<p>否则，t[j] ← t[j] − v[i]</p>
+<p>对于i从1到f，执行以下步骤：</p>
+<p>如果t[i] ≥ 0，则将s的第i位设为1</p>
+<p>否则，将s的第i位设为0</p>
+<p><strong>近似重复检测</strong></p>
+<p>一般来说，如果两个Simhash的汉明距离不超过h（h是一个经验阈值），我们可以认为它们是近似重复的。要在一个包含m个Simhash的数据库中找到一个Simhash的所有近似重复，最简单的方法是进行一次完整的线性扫描，这需要计算m次汉明距离。</p>
+<p>随着m的增长，完整线性扫描的时间成本将变得不可接受。事实上，大多数汉明距离计算是没有必要的，因为对于每个查询的Simhash，只有少数近似重复可以找到。已经提出了几种解决方案来减少比较的时间，例如Manku等人（2007年）。</p>
+<p><strong>位翻转组合</strong></p>
+<p>我们考虑Sood和Luguinov提出的一种新方法，即概率性Simhash匹配（PSM）系统，该系统在不需要维护数据的多个副本以进行近似重复搜索的情况下，仍然保持了良好的召回率。对于给定的查询指纹，我们基于找到近似重复匹配的概率探索不同的现有指纹，并限制我们的尝试次数以实现良好的查询速度。</p>
+<p>首先，我们可以对Si69521mhash数据库进行排序并建立一个索引。为了更好地理解这里的“索引”，假设所有的Simhash都是f位整数并按列表排序，我们根据每个Simhash的前p位将它们分成子列表，然后所有子列表中第一个元素的位置组成一个索引。例如，索引的第32767个元素表示Simhash列表中前p位等于0x7fff的最小元素的位置。由于汉明距离阈值h通常是2或3，我们可以轻松构建位翻转组合，这意味着查询Simhash的所有可能的前16位的近似重复。对于h=3和p=16的索引，我们需要扫描所有65536（2^16）个子列表进行完整线性扫描，但仅需要扫描C(p,0) + C(p,1) + C(p,2) + C(p,3) = 697个子列表，受益于位翻转组合。</p>
+<p><strong>计算Simhash</strong></p>
+<p><strong>Simhash 原理概述</strong></p>
+<p>Simhash 的基本思想是通过特征向量的加权累加生成一个低维哈希值，进而用于判断相似性。对于文本来说，特征可以是单词或词组，对于实数向量来说，特征就是向量的每一个分量。</p>
+<p><strong>将实数向量映射到 Simhash 的过程</strong></p>
+<p>对于文本，我们通常将每个单词哈希为一个固定长度的位串，并根据单词的权重对这些位串进行加权累加。而对于实数向量，我们可以使用类似的过程，将每个向量分量视为一个特征，进行加权累加。具体步骤如下：</p>
+<p><strong>输入：</strong></p>
+<p>v[1..n]v[1..n]v[1..n]：输入的实数向量</p>
+<p><strong>输出：</strong></p>
+<p>sss：f 位 Simhash</p>
+<p><strong>步骤：</strong></p>
+<p><strong>初始化向量</strong>：</p>
+<p>初始化一个长度为 f 的实数向量 t[1..f]t[1..f]t[1..f]，所有值设为 0。</p>
+<p><strong>生成随机整数</strong>：</p>
+<p>生成 n 个 f 位的随机整数 r[1..n]r[1..n]r[1..n]。</p>
+<p><strong>累加权重</strong>：</p>
+<p>对于每个向量分量 v[i]v[i]v[i]，根据对应的随机整数 r[i]r[i]r[i] 的每一位来调整 ttt 向量。</p>
+<p>如果 r[i]r[i]r[i] 的第 j 位是 1，则增加 t[j]t[j]t[j] 的值；否则，减少 t[j]t[j]t[j] 的值。</p>
+<p><strong>生成 Simhash</strong>：</p>
+<p>最后，根据 ttt 的值生成 Simhash sss。如果 t[j]≥0t[j] \geq 0t[j]≥0，则 sss 的第 j 位设为 1，否则设为 0。</p>
+<p><strong>详细解释</strong></p>
+<p><strong>初始化</strong>：</p>
+<p>创建一个长度为 f 的向量 ttt，并将它初始化为 0。这个向量用于临时存储每一位的累加结果。</p>
+<p><strong>生成随机整数</strong>：</p>
+<p>生成 n 个随机整数 rrr，每个整数是 f 位的二进制数。这些随机整数用于确定如何调整实数向量中的每个值。</p>
+<p><strong>累加向量值</strong>：</p>
+<p>对于实数向量 vvv 中的每个元素 v[i]v[i]v[i]，根据 r[i]r[i]r[i] 的二进制位来调整 ttt 的对应位。如果 r[i]r[i]r[i] 的第 j 位是 1，你就增加 t[j]t[j]t[j] 的值，否则就减少 t[j]t[j]t[j] 的值。</p>
+<p><strong>生成 Simhash</strong>：</p>
+<p>根据 ttt 的值来决定 Simhash sss 的每一位。如果 t[i]≥0t[i] \geq 0t[i]≥0，则 sss 的第 i 位为 1，否则为 0。</p>
+<p><strong>举例说明</strong></p>
+<p>假设你有一个 3 维实数向量 v=[0.5,−0.3,0.8]v = [0.5, -0.3, 0.8]v=[0.5,−0.3,0.8]，你想生成一个 4 位的 Simhash。</p>
+<p><strong>初始化</strong> ttt 为 [0, 0, 0, 0]。</p>
+<p><strong>生成随机整数</strong> rrr，例如：</p>
+<p>r[1]=1101r[1] = 1101r[1]=1101</p>
+<p>r[2]=0110r[2] = 0110r[2]=0110</p>
+<p>r[3]=1010r[3] = 1010r[3]=1010</p>
+<p><strong>累加向量值</strong>：</p>
+<p>对于 v[1]=0.5v[1] = 0.5v[1]=0.5:</p>
+<p>如果 r[1]r[1]r[1] 的第 1 位是 1，则 t[1]+=0.5t[1] += 0.5t[1]+=0.5 -&gt; t=[0.5,0,0,0]t = [0.5, 0, 0, 0]t=[0.5,0,0,0]</p>
+<p>如果 r[1]r[1]r[1] 的第 2 位是 1，则 t[2]+=0.5t[2] += 0.5t[2]+=0.5 -&gt; t=[0.5,0.5,0,0]t = [0.5, 0.5, 0, 0]t=[0.5,0.5,0,0]</p>
+<p>如果 r[1]r[1]r[1] 的第 3 位是 0，则 t[3]−=0.5t[3] -= 0.5t[3]−=0.5 -&gt; t=[0.5,0.5,−0.5,0]t = [0.5, 0.5, -0.5, 0]t=[0.5,0.5,−0.5,0]</p>
+<p>如果 r[1]r[1]r[1] 的第 4 位是 1，则 t[4]+=0.5t[4] += 0.5t[4]+=0.5 -&gt; t=[0.5,0.5,−0.5,0.5]t = [0.5, 0.5, -0.5, 0.5]t=[0.5,0.5,−0.5,0.5]</p>
+<p>对于 v[2]=−0.3v[2] = -0.3v[2]=−0.3:</p>
+<p>如果 r[2]r[2]r[2] 的第 1 位是 0，则 t[1]−=−0.3t[1] -= -0.3t[1]−=−0.3 -&gt; t=[0.2,0.5,−0.5,0.5]t = [0.2, 0.5, -0.5, 0.5]t=[0.2,0.5,−0.5,0.5]</p>
+<p>如果 r[2]r[2]r[2] 的第 2 位是 1，则 t[2]+=−0.3t[2] += -0.3t[2]+=−0.3 -&gt; t=[0.2,0.8,−0.5,0.5]t = [0.2, 0.8, -0.5, 0.5]t=[0.2,0.8,−0.5,0.5]</p>
+<p>如果 r[2]r[2]r[2] 的第 3 位是 1，则 t[3]+=−0.3t[3] += -0.3t[3]+=−0.3 -&gt; t=[0.2,0.8,−0.2,0.5]t = [0.2, 0.8, -0.2, 0.5]t=[0.2,0.8,−0.2,0.5]</p>
+<p>如果 r[2]r[2]r[2] 的第 4 位是 0，则 t[4]−=−0.3t[4] -= -0.3t[4]−=−0.3 -&gt; t=[0.2,0.8,−0.2,0.2]t = [0.2, 0.8, -0.2, 0.2]t=[0.2,0.8,−0.2,0.2]</p>
+<p>对于 v[3]=0.8v[3] = 0.8v[3]=0.8:</p>
+<p>如果 r[3]r[3]r[3] 的第 1 位是 1，则 t[1]+=0.8t[1] += 0.8t[1]+=0.8 -&gt; t=[1,0.8,−0.2,0.2]t = [1, 0.8, -0.2, 0.2]t=[1,0.8,−0.2,0.2]</p>
+<p>如果 r[3]r[3]r[3] 的第 2 位是 0，则 t[2]−=0.8t[2] -= 0.8t[2]−=0.8 -&gt; t=[1,0,−0.2,0.2]t = [1, 0, -0.2, 0.2]t=[1,0,−0.2,0.2]</p>
+<p>如果 r[3]r[3]r[3] 的第 3 位是 1，则 t[3]+=0.8t[3] += 0.8t[3]+=0.8 -&gt; t=[1,0,0.6,0.2]t = [1, 0, 0.6, 0.2]t=[1,0,0.6,0.2]</p>
+<p>如果 r[3]r[3]r[3] 的第 4 位是 0，则 t[4]−=0.8t[4] -= 0.8t[4]−=0.8 -&gt; t=[1,0,0.6,−0.6]t = [1, 0, 0.6, -0.6]t=[1,0,0.6,−0.6]</p>
+<p><strong>生成 Simhash</strong>：</p>
+<p>对于 t[1]=1t[1] = 1t[1]=1，第 1 位设为 1</p>
+<p>对于 t[2]=0t[2] = 0t[2]=0，第 2 位设为 1</p>
+<p>对于 t[3]=0.6t[3] = 0.6t[3]=0.6，第 3 位设为 1</p>
+<p>对于 t[4]=−0.6t[4] = -0.6t[4]=−0.6，第 4 位设为 0</p>
+<p>最终生成的 4 位 Simhash 为 1110。</p>
+<p><strong>Simhash 原理概述</strong></p>
+<p>Simhash 的基本思想是通过特征向量的加权累加生成一个低维哈希值，进而用于判断相似性。对于文本来说，特征可以是单词或词组，对于实数向量来说，特征就是向量的每一个分量。</p>
+<p><strong>将实数向量映射到 Simhash 的过程</strong></p>
+<p>对于文本，我们通常将每个单词哈希为一个固定长度的位串，并根据单词的权重对这些位串进行加权累加。而对于实数向量，我们可以使用类似的过程，将每个向量分量视为一个特征，进行加权累加。具体步骤如下：</p>
+<p><strong>输入：</strong></p>
+<p>v[1..n]v[1..n]v[1..n]：输入的实数向量</p>
+<p><strong>输出：</strong></p>
+<p>sss：f 位 Simhash</p>
+<p><strong>步骤：</strong></p>
+<p><strong>初始化向量</strong>：</p>
+<p>初始化一个长度为 f 的实数向量 t[1..f]t[1..f]t[1..f]，所有值设为 0。</p>
+<p><strong>生成随机整数</strong>：</p>
+<p>生成 n 个 f 位的随机整数 r[1..n]r[1..n]r[1..n]。</p>
+<p><strong>累加权重</strong>：</p>
+<p>对于每个向量分量 v[i]v[i]v[i]，根据对应的随机整数 r[i]r[i]r[i] 的每一位来调整 ttt 向量。</p>
+<p>如果 r[i]r[i]r[i] 的第 j 位是 1，则增加 t[j]t[j]t[j] 的值；否则，减少 t[j]t[j]t[j] 的值。</p>
+<p><strong>生成 Simhash</strong>：</p>
+<p>最后，根据 ttt 的值生成 Simhash sss。如果 t[j]≥0t[j] \geq 0t[j]≥0，则 sss 的第 j 位设为 1，否则设为 0。</p>
+<p><strong>详细解释</strong></p>
+<p><strong>初始化</strong>：</p>
+<p>创建一个长度为 f 的向量 ttt，并将它初始化为 0。这个向量用于临时存储每一位的累加结果。</p>
+<p><strong>生成随机整数</strong>：</p>
+<p>生成 n 个随机整数 rrr，每个整数是 f 位的二进制数。这些随机整数用于确定如何调整实数向量中的每个值。</p>
+<p><strong>累加向量值</strong>：</p>
+<p>对于实数向量 vvv 中的每个元素 v[i]v[i]v[i]，根据 r[i]r[i]r[i] 的二进制位来调整 ttt 的对应位。如果 r[i]r[i]r[i] 的第 j 位是 1，你就增加 t[j]t[j]t[j] 的值，否则就减少 t[j]t[j]t[j] 的值。</p>
+<p><strong>生成 Simhash</strong>：</p>
+<p>根据 ttt 的值来决定 Simhash sss 的每一位。如果 t[i]≥0t[i] \geq 0t[i]≥0，则 sss 的第 i 位为 1，否则为 0。</p>
+<p><strong>举例说明</strong></p>
+<p>假设你有一个 3 维实数向量 v=[0.5,−0.3,0.8]v = [0.5, -0.3, 0.8]v=[0.5,−0.3,0.8]，你想生成一个 4 位的 Simhash。</p>
+<p><strong>初始化</strong> ttt 为 [0, 0, 0, 0]。</p>
+<p><strong>生成随机整数</strong> rrr，例如：</p>
+<p>r[1]=1101r[1] = 1101r[1]=1101</p>
+<p>r[2]=0110r[2] = 0110r[2]=0110</p>
+<p>r[3]=1010r[3] = 1010r[3]=1010</p>
+<p><strong>累加向量值</strong>：</p>
+<p>对于 v[1]=0.5v[1] = 0.5v[1]=0.5:</p>
+<p>如果 r[1]r[1]r[1] 的第 1 位是 1，则 t[1]+=0.5t[1] += 0.5t[1]+=0.5 -&gt; t=[0.5,0,0,0]t = [0.5, 0, 0, 0]t=[0.5,0,0,0]</p>
+<p>如果 r[1]r[1]r[1] 的第 2 位是 1，则 t[2]+=0.5t[2] += 0.5t[2]+=0.5 -&gt; t=[0.5,0.5,0,0]t = [0.5, 0.5, 0, 0]t=[0.5,0.5,0,0]</p>
+<p>如果 r[1]r[1]r[1] 的第 3 位是 0，则 t[3]−=0.5t[3] -= 0.5t[3]−=0.5 -&gt; t=[0.5,0.5,−0.5,0]t = [0.5, 0.5, -0.5, 0]t=[0.5,0.5,−0.5,0]</p>
+<p>如果 r[1]r[1]r[1] 的第 4 位是 1，则 t[4]+=0.5t[4] += 0.5t[4]+=0.5 -&gt; t=[0.5,0.5,−0.5,0.5]t = [0.5, 0.5, -0.5, 0.5]t=[0.5,0.5,−0.5,0.5]</p>
+<p>对于 v[2]=−0.3v[2] = -0.3v[2]=−0.3:</p>
+<p>如果 r[2]r[2]r[2] 的第 1 位是 0，则 t[1]−=−0.3t[1] -= -0.3t[1]−=−0.3 -&gt; t=[0.2,0.5,−0.5,0.5]t = [0.2, 0.5, -0.5, 0.5]t=[0.2,0.5,−0.5,0.5]</p>
+<p>如果 r[2]r[2]r[2] 的第 2 位是 1，则 t[2]+=−0.3t[2] += -0.3t[2]+=−0.3 -&gt; t=[0.2,0.8,−0.5,0.5]t = [0.2, 0.8, -0.5, 0.5]t=[0.2,0.8,−0.5,0.5]</p>
+<p>如果 r[2]r[2]r[2] 的第 3 位是 1，则 t[3]+=−0.3t[3] += -0.3t[3]+=−0.3 -&gt; t=[0.2,0.8,−0.2,0.5]t = [0.2, 0.8, -0.2, 0.5]t=[0.2,0.8,−0.2,0.5]</p>
+<p>如果 r[2]r[2]r[2] 的第 4 位是 0，则 t[4]−=−0.3t[4] -= -0.3t[4]−=−0.3 -&gt; t=[0.2,0.8,−0.2,0.2]t = [0.2, 0.8, -0.2, 0.2]t=[0.2,0.8,−0.2,0.2]</p>
+<p>对于 v[3]=0.8v[3] = 0.8v[3]=0.8:</p>
+<p>如果 r[3]r[3]r[3] 的第 1 位是 1，则 t[1]+=0.8t[1] += 0.8t[1]+=0.8 -&gt; t=[1,0.8,−0.2,0.2]t = [1, 0.8, -0.2, 0.2]t=[1,0.8,−0.2,0.2]</p>
+<p>如果 r[3]r[3]r[3] 的第 2 位是 0，则 t[2]−=0.8t[2] -= 0.8t[2]−=0.8 -&gt; t=[1,0,−0.2,0.2]t = [1, 0, -0.2, 0.2]t=[1,0,−0.2,0.2]</p>
+<p>如果 r[3]r[3]r[3] 的第 3 位是 1，则 t[3]+=0.8t[3] += 0.8t[3]+=0.8 -&gt; t=[1,0,0.6,0.2]t = [1, 0, 0.6, 0.2]t=[1,0,0.6,0.2]</p>
+<p>如果 r[3]r[3]r[3] 的第 4 位是 0，则 t[4]−=0.8t[4] -= 0.8t[4]−=0.8 -&gt; t=[1,0,0.6,−0.6]t = [1, 0, 0.6, -0.6]t=[1,0,0.6,−0.6]</p>
+<p><strong>生成 Simhash</strong>：</p>
+<p>对于 t[1]=1t[1] = 1t[1]=1，第 1 位设为 1</p>
+<p>对于 t[2]=0t[2] = 0t[2]=0，第 2 位设为 1</p>
+<p>对于 t[3]=0.6t[3] = 0.6t[3]=0.6，第 3 位设为 1</p>
+<p>对于 t[4]=−0.6t[4] = -0.6t[4]=−0.6，第 4 位设为 0</p>
+<p>最终生成的 4 位 Simhash 为 1110。</p>
+<p><strong>计算两个64位整数的汉明距离</strong></p>
+<p>汉明距离是一种用于衡量两个相同长度的字符串或数字之间差异的指标。在处理64位整数时，我们可以将其视为64位长的二进制字符串。汉明距离即为两个二进制字符串中不同位数的数量。</p>
+<p><strong>具体步骤：</strong></p>
+<p><strong>异或操作</strong>：将两个64位整数进行<strong>异或操作</strong>。<strong>异或操作</strong>符 ^ 对应位相同则结果为0，不同则结果为1。因此，异或的结果中，1的位表示两个整数在该位上不同。</p>
+<p><strong>统计1的个数</strong>：对异或操作的结果逐位检查，统计其中1的个数。这可以通过不断右移和检查最低位来实现。</p>
+<p><strong>实现方法：</strong></p>
+<p><strong>异或操作</strong>：</p>
+<p>对输入的两个64位整数 x 和 y 进行异或操作，得到结果 z。</p>
+<p>异或操作的结果 z 中，每个1的位表示 x 和 y 在该位上不同。</p>
+<p><strong>统计1的个数</strong>：</p>
+<p>初始化一个计数器 dist 为0。</p>
+<p>使用一个循环，逐位检查 z 中的每一位：</p>
+<p>检查 z 的最低位是否为1（使用 z &amp; 1），如果是则计数器 dist 加1。</p>
+<p>将 z 右移一位（使用 z &raquo;= 1），继续检查下一位，直到 z 变为0。</p>
+<p>这个过程结束后，计数器 dist 中的值即为 x 和 y 之间的汉明距离。</p>
+<p><strong>从文件中读取图像特征数据库</strong></p>
+<p><strong>位翻转概率</strong></p>
+<p><strong>位翻转概率的计算与解释</strong></p>
+<p><strong>背景与计算步骤</strong></p>
+<p>Simhash 是一种用于相似性检测的哈希算法，通过将文档的特征映射到哈希值来判断相似性。在计算 Simhash 时，我们首先会得到一个权重向量 WdW_dWd，其每一维对应一个特定的哈希位。这些权重由文档特征的哈希值和相应的权重通过加减操作生成。</p>
+<p><strong>计算位翻转概率</strong></p>
+<p>Simhash 是一种用于相似性检测的哈希算法，通过将文档的特征映射到哈希值来判断相似性。在计算 Simhash 时，我们首先会得到一个权重向量 WdW_dWd，其每一维对应一个特定的哈希位。这些权重由文档特征的哈希值和相应的权重通过加减操作生成。</p>
+<p><strong>计算位翻转概率</strong></p>
+<p>在处理近似重复数据时，我们会关注两个近似重复文档 ddd 和 d′d&rsquo;d′ 的权重向量之间的差异。 是文档 ddd 和 d′d&rsquo;d′ 在第 j 位的权重，则它们的差异可以表示为：</p>
+<p>为了计算位翻转的概率，我们关注位权重 Wj,dW_{j,d}Wj,d 与 0 的距离。直觉上，权重越接近 0，该位发生翻转的概率就越高。通过统计大量文档对的距离分布，可以证明这一直觉，即 distj,d−d′dist_{j,d-d&rsquo;}distj,d−d′ 通常遵循均值为 0 的正态分布。</p>
+<p><strong>数学表达</strong></p>
+<p>位翻转的概率可以通过以下公式来估算：
+<img src="./images/a0abd75a-9a48-42f3-a18f-67a607fe51e4.png" alt="位翻转概率"></p>
+<p><strong>示例</strong></p>
+<p>假设我们有一个包含六个单词的文档，每个单词的哈希值和权重如下表所示：</p>
+<p><strong>点击图片可查看完整电子表格</strong></p>
+<p>我们要计算这个文档的4位Simhash，并计算每个位的翻转概率。</p>
+<p><strong>计算步骤</strong></p>
+<p><strong>初始化权重向量 WdW_dWd</strong>： Wd=[0,0,0,0]W_d = [0, 0, 0, 0]Wd=[0,0,0,0]</p>
+<p><strong>根据哈希值和权重更新权重向量 WdW_dWd</strong>：</p>
+<p>对于 word1 (哈希值: 0101, 权重: 0.05)：</p>
+<p>第1位：0 -&gt; -0.05</p>
+<p>第2位：1 -&gt; +0.05</p>
+<p>第3位：0 -&gt; -0.05</p>
+<p>第4位：1 -&gt; +0.05 Wd=[−0.05,+0.05,−0.05,+0.05]W_d = [-0.05, +0.05, -0.05, +0.05]Wd=[−0.05,+0.05,−0.05,+0.05]</p>
+<p>对于 word2 (哈希值: 1101, 权重: 0.02)：</p>
+<p>第1位：1 -&gt; +0.02</p>
+<p>第2位：1 -&gt; +0.02</p>
+<p>第3位：0 -&gt; -0.02</p>
+<p>第4位：1 -&gt; +0.02 Wd=[−0.03,+0.07,−0.07,+0.07]W_d = [-0.03, +0.07, -0.07, +0.07]Wd=[−0.03,+0.07,−0.07,+0.07]</p>
+<p>对于 word3 (哈希值: 0001, 权重: 0.01)：</p>
+<p>第1位：0 -&gt; -0.01</p>
+<p>第2位：0 -&gt; -0.01</p>
+<p>第3位：0 -&gt; -0.01</p>
+<p>第4位：1 -&gt; +0.01 Wd=[−0.04,+0.06,−0.08,+0.08]W_d = [-0.04, +0.06, -0.08, +0.08]Wd=[−0.04,+0.06,−0.08,+0.08]</p>
+<p>对于 word4 (哈希值: 1110, 权重: 0.03)：</p>
+<p>第1位：1 -&gt; +0.03</p>
+<p>第2位：1 -&gt; +0.03</p>
+<p>第3位：1 -&gt; +0.03</p>
+<p>第4位：0 -&gt; -0.03 Wd=[−0.01,+0.09,−0.05,+0.05]W_d = [-0.01, +0.09, -0.05, +0.05]Wd=[−0.01,+0.09,−0.05,+0.05]</p>
+<p>对于 word5 (哈希值: 0100, 权重: 0.05)：</p>
+<p>第1位：0 -&gt; -0.05</p>
+<p>第2位：1 -&gt; +0.05</p>
+<p>第3位：0 -&gt; -0.05</p>
+<p>第4位：0 -&gt; -0.05 Wd=[−0.06,+0.14,−0.10,+0.00]W_d = [-0.06, +0.14, -0.10, +0.00]Wd=[−0.06,+0.14,−0.10,+0.00]</p>
+<p>对于 word6 (哈希值: 0011, 权重: 0.09)：</p>
+<p>第1位：0 -&gt; -0.09</p>
+<p>第2位：0 -&gt; -0.09</p>
+<p>第3位：1 -&gt; +0.09</p>
+<p>第4位：1 -&gt; +0.09 Wd=[−0.15,+0.05,−0.01,+0.09]W_d = [-0.15, +0.05, -0.01, +0.09]Wd=[−0.15,+0.05,−0.01,+0.09]</p>
+<p><strong>计算位翻转概率</strong></p>
+<p>将权重向量 WdW_dWd 中每个分量除以其模长 ∣Wd∣|W_d|∣Wd∣ 进行归一化，得到每个位的翻转概率：</p>
+<p>所以，每个位的翻转概率为：
+<img src="./images/754f08f6-0a2c-46a2-933c-4780f0cd17db.png" alt="翻转概率"></p>
+<p>根据翻转概率，我们可以排序得到最容易翻转的位：</p>
+<p>第3位 (0.9451), 第2位 (0.7256), 第4位 (0.5059), 第1位 (0.1767)</p>
+<p>所以，按最容易翻转的位，我们可以生成前 k 个最弱的位组合，以用于高效处理近似重复数据。</p>
 ]]></content>
         </item>
         

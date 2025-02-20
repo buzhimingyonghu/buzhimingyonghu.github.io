@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Pika 认证问题分析与解决方案 配置详情 requirepass: 123 # Password for replication verify, used for authentication when a slave # connects to a master to request replication. # [NOTICE] The value of this parameter must match the &#34;requirepass&#34; setting on the master. masterauth: # The [password of user], which is empty by default. # [NOTICE] If this user password is the same as admin password (including both being empty), # the value of this parameter will be ignored and all users are considered as administrators, # in this scenario, users are not subject to the restrictions imposed by the userblacklist. # PS: &#34;admin password&#34; refers to value of the parameter above: requirepass. # userpass: # The blacklist of commands for users that logged in by userpass, # the commands that added to this list will not be available for users except for administrator. # [Advice] It&#39;s recommended to add high-risk commands to this list. # [Format] Commands should be separated by &#34;,&#34;. For example: FLUSHALL, SHUTDOWN, KEYS, CONFIG # By default, this list is empty. userblacklist: FLUSHALL, flushdb Issue 描述 地址：GitHub Issue #2920 配置情况： •	requirepass: xxx（管理员密码） •	userpass:（未设置） •	userblacklist: FLUSHALL 问题： •	在 3.5.2 版本中，一切正常。 •	在 3.5.5 版本中，普通用户无法连接 Pika，提示 ERR NOAUTH Authentication required。 •	只有当 requirepass 为空时，普通用户才能连接。 示例配置： requirepass: userpass: userblacklist: FLUSHALL Issue 背景 在 3.5.5 版本后，Pika 引入了 ACL 认证，改变了传统的认证方式。 每个 PikaClientConn 现在拥有一个 user_，用于存储相关的标志、密码和限制信息。每当收到请求时，都会检查当前连接是否已认证。 问题分析 关键代码检查： // Check auth if (AuthRequired()) { // 用户未认证，需要进行认证 if (!(c_ptr-&gt;flag() &amp; kCmdFlagsNoAuth)) { c_ptr-&gt;res().SetRes(CmdRes::kErrOther, &#34;NOAUTH Authentication required.&#34;); return c_ptr; } } 发现问题： •	AuthRequired 方法逻辑如下： bool PikaClientConn::AuthRequired() const { return (!user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::NO_PASS)) || user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::DISABLED))) &amp;&amp; !IsAuthed(); } •	这里的逻辑是： •	如果用户未被 NO_PASS 标志允许免密，或者被禁用，则需要认证。 优化后逻辑： bool PikaClientConn::AuthRequired() const { if (IsAuthed()) { return false; } if (user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::DISABLED))) { return true; } if (user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::NO_PASS))) { return false; } return true; } 解决方案 解决方案一 问题： •	在 requirepass 设置后，未设置 userpass，普通用户仍应能无密码访问。 原因： •	Pika 默认用户分为： const std::string Acl::DefaultUser = &#34;default&#34;; const std::string Acl::DefaultLimitUser = &#34;limit&#34;; •	但目前所有 PikaClientConn 默认使用 DefaultUser。 修复方法： void PikaClientConn::InitUser() { if (!g_pika_conf-&gt;GetUserBlackList().empty()) { user_ = g_pika_server-&gt;Acl()-&gt;GetUserLock(Acl::DefaultLimitUser); } else { user_ = g_pika_server-&gt;Acl()-&gt;GetUserLock(Acl::DefaultUser); } authenticated_ = user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::NO_PASS)) &amp;&amp; !user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::DISABLED)); } 解决方案二 问题： •	即使 user_ 被更改为 DefaultLimitUser，仍然会出现权限问题。 解决思路： •	在 UpdateDefaultUserPassword 方法中，增加 NO_PASS 逻辑： void Acl::UpdateDefaultUserPassword(const std::string&amp; pass) { std::unique_lock wl(mutex_); auto u = GetUser(DefaultUser); u-&gt;SetUser(&#34;resetpass&#34;); if (pass.empty()) { u-&gt;SetUser(&#34;nopass&#34;); } else { u-&gt;SetUser(&#34;&gt;&#34; &#43; pass); if (g_pika_conf-&gt;userpass().empty()) { u-&gt;SetUser(&#34;nopass&#34;); } else { u-&gt;SetUser(&#34;&gt;&#34; &#43; pass); } } } 测试结果 •	普通用户无密码登录 ✅ •	管理员有密码登录 ✅ •	limit 用户受限制 ✅ 相关截图 " />
+<meta name="keywords" content="Victor, 博客, 技术, 生活" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="//localhost:1313/posts/zh/pika/1/" />
+
+
+    <title>
+        
+             :: Victor的世界 
+        
+    </title>
+
+
+
+
+
+  <link rel="stylesheet" href="/main.min.244183cde1a38e0b08f82c11791181288f9aac1cc9618cd6f4e9e7710c5768ba.css" integrity="sha256-JEGDzeGjjgsI&#43;CwReRGBKI&#43;arBzJYYzW9OnncQxXaLo=" crossorigin="anonymous">
+
+
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="Victor的世界">
+  <meta itemprop="description" content="Pika 认证问题分析与解决方案 配置详情 requirepass: 123 # Password for replication verify, used for authentication when a slave # connects to a master to request replication. # [NOTICE] The value of this parameter must match the &#34;requirepass&#34; setting on the master. masterauth: # The [password of user], which is empty by default. # [NOTICE] If this user password is the same as admin password (including both being empty), # the value of this parameter will be ignored and all users are considered as administrators, # in this scenario, users are not subject to the restrictions imposed by the userblacklist. # PS: &#34;admin password&#34; refers to value of the parameter above: requirepass. # userpass: # The blacklist of commands for users that logged in by userpass, # the commands that added to this list will not be available for users except for administrator. # [Advice] It&#39;s recommended to add high-risk commands to this list. # [Format] Commands should be separated by &#34;,&#34;. For example: FLUSHALL, SHUTDOWN, KEYS, CONFIG # By default, this list is empty. userblacklist: FLUSHALL, flushdb Issue 描述 地址：GitHub Issue #2920 配置情况： •	requirepass: xxx（管理员密码） •	userpass:（未设置） •	userblacklist: FLUSHALL 问题： •	在 3.5.2 版本中，一切正常。 •	在 3.5.5 版本中，普通用户无法连接 Pika，提示 ERR NOAUTH Authentication required。 •	只有当 requirepass 为空时，普通用户才能连接。 示例配置： requirepass: userpass: userblacklist: FLUSHALL Issue 背景 在 3.5.5 版本后，Pika 引入了 ACL 认证，改变了传统的认证方式。 每个 PikaClientConn 现在拥有一个 user_，用于存储相关的标志、密码和限制信息。每当收到请求时，都会检查当前连接是否已认证。 问题分析 关键代码检查： // Check auth if (AuthRequired()) { // 用户未认证，需要进行认证 if (!(c_ptr-&gt;flag() &amp; kCmdFlagsNoAuth)) { c_ptr-&gt;res().SetRes(CmdRes::kErrOther, &#34;NOAUTH Authentication required.&#34;); return c_ptr; } } 发现问题： •	AuthRequired 方法逻辑如下： bool PikaClientConn::AuthRequired() const { return (!user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::NO_PASS)) || user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::DISABLED))) &amp;&amp; !IsAuthed(); } •	这里的逻辑是： •	如果用户未被 NO_PASS 标志允许免密，或者被禁用，则需要认证。 优化后逻辑： bool PikaClientConn::AuthRequired() const { if (IsAuthed()) { return false; } if (user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::DISABLED))) { return true; } if (user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::NO_PASS))) { return false; } return true; } 解决方案 解决方案一 问题： •	在 requirepass 设置后，未设置 userpass，普通用户仍应能无密码访问。 原因： •	Pika 默认用户分为： const std::string Acl::DefaultUser = &#34;default&#34;; const std::string Acl::DefaultLimitUser = &#34;limit&#34;; •	但目前所有 PikaClientConn 默认使用 DefaultUser。 修复方法： void PikaClientConn::InitUser() { if (!g_pika_conf-&gt;GetUserBlackList().empty()) { user_ = g_pika_server-&gt;Acl()-&gt;GetUserLock(Acl::DefaultLimitUser); } else { user_ = g_pika_server-&gt;Acl()-&gt;GetUserLock(Acl::DefaultUser); } authenticated_ = user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::NO_PASS)) &amp;&amp; !user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::DISABLED)); } 解决方案二 问题： •	即使 user_ 被更改为 DefaultLimitUser，仍然会出现权限问题。 解决思路： •	在 UpdateDefaultUserPassword 方法中，增加 NO_PASS 逻辑： void Acl::UpdateDefaultUserPassword(const std::string&amp; pass) { std::unique_lock wl(mutex_); auto u = GetUser(DefaultUser); u-&gt;SetUser(&#34;resetpass&#34;); if (pass.empty()) { u-&gt;SetUser(&#34;nopass&#34;); } else { u-&gt;SetUser(&#34;&gt;&#34; &#43; pass); if (g_pika_conf-&gt;userpass().empty()) { u-&gt;SetUser(&#34;nopass&#34;); } else { u-&gt;SetUser(&#34;&gt;&#34; &#43; pass); } } } 测试结果 •	普通用户无密码登录 ✅ •	管理员有密码登录 ✅ •	limit 用户受限制 ✅ 相关截图">
+  <meta itemprop="wordCount" content="405">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Victor的世界">
+  <meta name="twitter:description" content="Pika 认证问题分析与解决方案 配置详情 requirepass: 123 # Password for replication verify, used for authentication when a slave # connects to a master to request replication. # [NOTICE] The value of this parameter must match the &#34;requirepass&#34; setting on the master. masterauth: # The [password of user], which is empty by default. # [NOTICE] If this user password is the same as admin password (including both being empty), # the value of this parameter will be ignored and all users are considered as administrators, # in this scenario, users are not subject to the restrictions imposed by the userblacklist. # PS: &#34;admin password&#34; refers to value of the parameter above: requirepass. # userpass: # The blacklist of commands for users that logged in by userpass, # the commands that added to this list will not be available for users except for administrator. # [Advice] It&#39;s recommended to add high-risk commands to this list. # [Format] Commands should be separated by &#34;,&#34;. For example: FLUSHALL, SHUTDOWN, KEYS, CONFIG # By default, this list is empty. userblacklist: FLUSHALL, flushdb Issue 描述 地址：GitHub Issue #2920 配置情况： •	requirepass: xxx（管理员密码） •	userpass:（未设置） •	userblacklist: FLUSHALL 问题： •	在 3.5.2 版本中，一切正常。 •	在 3.5.5 版本中，普通用户无法连接 Pika，提示 ERR NOAUTH Authentication required。 •	只有当 requirepass 为空时，普通用户才能连接。 示例配置： requirepass: userpass: userblacklist: FLUSHALL Issue 背景 在 3.5.5 版本后，Pika 引入了 ACL 认证，改变了传统的认证方式。 每个 PikaClientConn 现在拥有一个 user_，用于存储相关的标志、密码和限制信息。每当收到请求时，都会检查当前连接是否已认证。 问题分析 关键代码检查： // Check auth if (AuthRequired()) { // 用户未认证，需要进行认证 if (!(c_ptr-&gt;flag() &amp; kCmdFlagsNoAuth)) { c_ptr-&gt;res().SetRes(CmdRes::kErrOther, &#34;NOAUTH Authentication required.&#34;); return c_ptr; } } 发现问题： •	AuthRequired 方法逻辑如下： bool PikaClientConn::AuthRequired() const { return (!user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::NO_PASS)) || user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::DISABLED))) &amp;&amp; !IsAuthed(); } •	这里的逻辑是： •	如果用户未被 NO_PASS 标志允许免密，或者被禁用，则需要认证。 优化后逻辑： bool PikaClientConn::AuthRequired() const { if (IsAuthed()) { return false; } if (user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::DISABLED))) { return true; } if (user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::NO_PASS))) { return false; } return true; } 解决方案 解决方案一 问题： •	在 requirepass 设置后，未设置 userpass，普通用户仍应能无密码访问。 原因： •	Pika 默认用户分为： const std::string Acl::DefaultUser = &#34;default&#34;; const std::string Acl::DefaultLimitUser = &#34;limit&#34;; •	但目前所有 PikaClientConn 默认使用 DefaultUser。 修复方法： void PikaClientConn::InitUser() { if (!g_pika_conf-&gt;GetUserBlackList().empty()) { user_ = g_pika_server-&gt;Acl()-&gt;GetUserLock(Acl::DefaultLimitUser); } else { user_ = g_pika_server-&gt;Acl()-&gt;GetUserLock(Acl::DefaultUser); } authenticated_ = user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::NO_PASS)) &amp;&amp; !user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::DISABLED)); } 解决方案二 问题： •	即使 user_ 被更改为 DefaultLimitUser，仍然会出现权限问题。 解决思路： •	在 UpdateDefaultUserPassword 方法中，增加 NO_PASS 逻辑： void Acl::UpdateDefaultUserPassword(const std::string&amp; pass) { std::unique_lock wl(mutex_); auto u = GetUser(DefaultUser); u-&gt;SetUser(&#34;resetpass&#34;); if (pass.empty()) { u-&gt;SetUser(&#34;nopass&#34;); } else { u-&gt;SetUser(&#34;&gt;&#34; &#43; pass); if (g_pika_conf-&gt;userpass().empty()) { u-&gt;SetUser(&#34;nopass&#34;); } else { u-&gt;SetUser(&#34;&gt;&#34; &#43; pass); } } } 测试结果 •	普通用户无密码登录 ✅ •	管理员有密码登录 ✅ •	limit 用户受限制 ✅ 相关截图">
+
+
+
+    <meta property="og:url" content="//localhost:1313/posts/zh/pika/1/">
+  <meta property="og:site_name" content="Victor的世界">
+  <meta property="og:title" content="Victor的世界">
+  <meta property="og:description" content="Pika 认证问题分析与解决方案 配置详情 requirepass: 123 # Password for replication verify, used for authentication when a slave # connects to a master to request replication. # [NOTICE] The value of this parameter must match the &#34;requirepass&#34; setting on the master. masterauth: # The [password of user], which is empty by default. # [NOTICE] If this user password is the same as admin password (including both being empty), # the value of this parameter will be ignored and all users are considered as administrators, # in this scenario, users are not subject to the restrictions imposed by the userblacklist. # PS: &#34;admin password&#34; refers to value of the parameter above: requirepass. # userpass: # The blacklist of commands for users that logged in by userpass, # the commands that added to this list will not be available for users except for administrator. # [Advice] It&#39;s recommended to add high-risk commands to this list. # [Format] Commands should be separated by &#34;,&#34;. For example: FLUSHALL, SHUTDOWN, KEYS, CONFIG # By default, this list is empty. userblacklist: FLUSHALL, flushdb Issue 描述 地址：GitHub Issue #2920 配置情况： •	requirepass: xxx（管理员密码） •	userpass:（未设置） •	userblacklist: FLUSHALL 问题： •	在 3.5.2 版本中，一切正常。 •	在 3.5.5 版本中，普通用户无法连接 Pika，提示 ERR NOAUTH Authentication required。 •	只有当 requirepass 为空时，普通用户才能连接。 示例配置： requirepass: userpass: userblacklist: FLUSHALL Issue 背景 在 3.5.5 版本后，Pika 引入了 ACL 认证，改变了传统的认证方式。 每个 PikaClientConn 现在拥有一个 user_，用于存储相关的标志、密码和限制信息。每当收到请求时，都会检查当前连接是否已认证。 问题分析 关键代码检查： // Check auth if (AuthRequired()) { // 用户未认证，需要进行认证 if (!(c_ptr-&gt;flag() &amp; kCmdFlagsNoAuth)) { c_ptr-&gt;res().SetRes(CmdRes::kErrOther, &#34;NOAUTH Authentication required.&#34;); return c_ptr; } } 发现问题： •	AuthRequired 方法逻辑如下： bool PikaClientConn::AuthRequired() const { return (!user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::NO_PASS)) || user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::DISABLED))) &amp;&amp; !IsAuthed(); } •	这里的逻辑是： •	如果用户未被 NO_PASS 标志允许免密，或者被禁用，则需要认证。 优化后逻辑： bool PikaClientConn::AuthRequired() const { if (IsAuthed()) { return false; } if (user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::DISABLED))) { return true; } if (user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::NO_PASS))) { return false; } return true; } 解决方案 解决方案一 问题： •	在 requirepass 设置后，未设置 userpass，普通用户仍应能无密码访问。 原因： •	Pika 默认用户分为： const std::string Acl::DefaultUser = &#34;default&#34;; const std::string Acl::DefaultLimitUser = &#34;limit&#34;; •	但目前所有 PikaClientConn 默认使用 DefaultUser。 修复方法： void PikaClientConn::InitUser() { if (!g_pika_conf-&gt;GetUserBlackList().empty()) { user_ = g_pika_server-&gt;Acl()-&gt;GetUserLock(Acl::DefaultLimitUser); } else { user_ = g_pika_server-&gt;Acl()-&gt;GetUserLock(Acl::DefaultUser); } authenticated_ = user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::NO_PASS)) &amp;&amp; !user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::DISABLED)); } 解决方案二 问题： •	即使 user_ 被更改为 DefaultLimitUser，仍然会出现权限问题。 解决思路： •	在 UpdateDefaultUserPassword 方法中，增加 NO_PASS 逻辑： void Acl::UpdateDefaultUserPassword(const std::string&amp; pass) { std::unique_lock wl(mutex_); auto u = GetUser(DefaultUser); u-&gt;SetUser(&#34;resetpass&#34;); if (pass.empty()) { u-&gt;SetUser(&#34;nopass&#34;); } else { u-&gt;SetUser(&#34;&gt;&#34; &#43; pass); if (g_pika_conf-&gt;userpass().empty()) { u-&gt;SetUser(&#34;nopass&#34;); } else { u-&gt;SetUser(&#34;&gt;&#34; &#43; pass); } } } 测试结果 •	普通用户无密码登录 ✅ •	管理员有密码登录 ✅ •	limit 用户受限制 ✅ 相关截图">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text ">
+                Victor的世界</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about">关于</a></li><li><a href="/posts">博客</a></li><li><a href="https://github.com/buzhimingyonghu">GitHub</a></li>
+        <ul class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">zh</a>
+                <div class="dropdown-content">
+                        
+                </div>
+            </li>
+        </ul>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        
+
+        
+      </p>
+
+      
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <a href="/posts/posts">Posts</a>
+      </p>
+      
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="//localhost:1313/posts/zh/pika/1/"></a>
+      </h1>
+
+      
+
+      
+
+      <div class="post-content">
+        <h1 id="pika-认证问题分析与解决方案">Pika 认证问题分析与解决方案</h1>
+<h2 id="配置详情">配置详情</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ini" data-lang="ini"><span style="display:flex;"><span><span style="color:#a6e22e">requirepass: 123</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Password for replication verify, used for authentication when a slave</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># connects to a master to request replication.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [NOTICE] The value of this parameter must match the &#34;requirepass&#34; setting on the master.</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">masterauth:</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># The [password of user], which is empty by default.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [NOTICE] If this user password is the same as admin password (including both being empty),</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># the value of this parameter will be ignored and all users are considered as administrators,</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># in this scenario, users are not subject to the restrictions imposed by the userblacklist.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># PS: &#34;admin password&#34; refers to value of the parameter above: requirepass.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># userpass:</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># The blacklist of commands for users that logged in by userpass,</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># the commands that added to this list will not be available for users except for administrator.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [Advice] It&#39;s recommended to add high-risk commands to this list.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [Format] Commands should be separated by &#34;,&#34;. For example: FLUSHALL, SHUTDOWN, KEYS, CONFIG</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># By default, this list is empty.</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">userblacklist: FLUSHALL, flushdb</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Issue 描述</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">地址：GitHub Issue #2920</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">配置情况：</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">•	requirepass: xxx（管理员密码）</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">•	userpass:（未设置）</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">•	userblacklist: FLUSHALL</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">问题：</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">•	在 3.5.2 版本中，一切正常。</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">•	在 3.5.5 版本中，普通用户无法连接 Pika，提示 ERR NOAUTH Authentication required。</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">•	只有当 requirepass 为空时，普通用户才能连接。</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">示例配置：</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">requirepass:</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">userpass:</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">userblacklist: FLUSHALL</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Issue 背景</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">在 3.5.5 版本后，Pika 引入了 ACL 认证，改变了传统的认证方式。</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">每个 PikaClientConn 现在拥有一个 user_，用于存储相关的标志、密码和限制信息。每当收到请求时，都会检查当前连接是否已认证。</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">问题分析</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">关键代码检查：</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">// Check auth</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">if (AuthRequired()) {  // 用户未认证，需要进行认证</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">if (!(c_ptr-&gt;flag() &amp; kCmdFlagsNoAuth)) {</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">c_ptr-&gt;res().SetRes(CmdRes::kErrOther, &#34;NOAUTH Authentication required.&#34;);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">return c_ptr;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">发现问题：</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">•	AuthRequired 方法逻辑如下：</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">bool PikaClientConn::AuthRequired() const {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">return (!user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::NO_PASS)) ||</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::DISABLED))) &amp;&amp;</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#a6e22e">!IsAuthed();</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">•	这里的逻辑是：</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">•	如果用户未被 NO_PASS 标志允许免密，或者被禁用，则需要认证。</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">优化后逻辑：</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">bool PikaClientConn::AuthRequired() const {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">if (IsAuthed()) {</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">return false;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">if (user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::DISABLED))) {</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">return true;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">if (user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::NO_PASS))) {</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">return false;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">return true;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">解决方案</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">解决方案一</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">问题：</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">•	在 requirepass 设置后，未设置 userpass，普通用户仍应能无密码访问。</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">原因：</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">•	Pika 默认用户分为：</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">const std::string Acl::DefaultUser</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;default&#34;;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">const std::string Acl::DefaultLimitUser</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;limit&#34;;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">•	但目前所有 PikaClientConn 默认使用 DefaultUser。</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">修复方法：</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">void PikaClientConn::InitUser() {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">if (!g_pika_conf-&gt;GetUserBlackList().empty()) {</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">user_</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">g_pika_server-&gt;Acl()-&gt;GetUserLock(Acl::DefaultLimitUser);
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  } else {
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    user_ = g_pika_server-&gt;Acl()-&gt;GetUserLock(Acl::DefaultUser);
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  }
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  authenticated_ = user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::NO_PASS)) &amp;&amp;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                   !user_-&gt;HasFlags(static_cast&lt;uint32_t&gt;(AclUserFlag::DISABLED));</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">解决方案二</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">问题：</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">•	即使 user_ 被更改为 DefaultLimitUser，仍然会出现权限问题。</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">解决思路：</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">•	在 UpdateDefaultUserPassword 方法中，增加 NO_PASS 逻辑：</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">void Acl::UpdateDefaultUserPassword(const std::string&amp; pass) {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">std::unique_lock wl(mutex_);</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">auto u</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">GetUser(DefaultUser);
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  u-&gt;SetUser(&#34;resetpass&#34;);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">if (pass.empty()) {</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">u-&gt;SetUser(&#34;nopass&#34;);</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">} else {</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">u-&gt;SetUser(&#34;&gt;&#34; + pass);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">if (g_pika_conf-&gt;userpass().empty()) {</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">u-&gt;SetUser(&#34;nopass&#34;);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">} else {</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">u-&gt;SetUser(&#34;&gt;&#34; + pass);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">测试结果</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">•	普通用户无密码登录 ✅</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">•	管理员有密码登录 ✅</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">•	limit 用户受限制 ✅</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">相关截图</span>
+</span></span></code></pre></div>
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          0001-01-01 08:05
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+            <span class="button previous">
+                <a href="//localhost:1313/posts/zh/opensource/%E5%9F%BA%E4%BA%8Esimhash%E5%AE%9E%E7%8E%B0psm%E6%A6%82%E7%8E%87%E6%80%A7%E5%8C%B9%E9%85%8D%E7%B3%BB%E7%BB%9F/">
+                    <span class="button__icon">←</span>
+                    <span class="button__text">基于Simhash实现PSM概率性匹配系统</span>
+                </a>
+            </span>
+            
+
+            
+        </div>
+    </div>
+
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.e89fda0f29b95d33f6f4224dd9e5cf69d84aff3818be2b0d73e731689cc374261b016d17d46f8381962fb4a1577ba3017b1f23509d894f6e66431f988c00889e.js" integrity="sha512-6J/aDym5XTP29CJN2eXPadhK/zgYvisNc&#43;cxaJzDdCYbAW0X1G&#43;DgZYvtKFXe6MBex8jUJ2JT25mQx&#43;YjACIng=="></script>
+
+
+
+
+    </body>
+</html>

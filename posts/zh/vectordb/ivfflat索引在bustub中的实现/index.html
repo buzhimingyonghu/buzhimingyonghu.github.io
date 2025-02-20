@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="IVFFlat索引 IVF（Inverted File Index，倒排文件索引）是一种常用于向量搜索（ANN, Approximate Nearest Neighbor）的索引结构，主要用于高维数据检索，比如图像、文本、音频等向量数据的相似性搜索。
+本文主要介绍IVFFlat索引在Bustub中的实现，主要从以下三个方面来回答：
+IVFFlat索引的概述 IVFFlat索引在向量数据库中的应用 IVFFlat索引在Bustub中的实现 IVFFlat索引的概述 IVF 通过聚类将向量划分到不同的“桶”（centroids, 聚类中心），查询时只在最相关的桶中搜索，从而减少计算量。
+训练阶段：
+使用 K-means 聚类将所有数据点分成 ( K ) 个簇（每个簇有一个中心）。 每个向量根据与哪个中心最近，归属于该中心对应的桶。 索引构建：
+记录每个桶中的向量 ID 及其原始向量。 形成一个 倒排表，即每个簇对应多个向量。 查询阶段：
+先找到查询向量最接近的 ( N ) 个簇中心（通常 ( N \ll K )）。 只在这些簇对应的桶内进行精确搜索，而不是全量搜索。 示例 假设有 100 万个 128 维向量：
+用 K-means 训练出 1000 个簇中心（K=1000）。 每个向量归类到最近的簇，存入倒排表。 当查询时：
+计算查询向量与 1000 个簇中心的距离，找到最近的 10 个簇。 只在这 10 个簇对应的桶里搜索最近邻，而不是在全部 100 万个向量中搜索。 这样，计算量大大减少，提高了搜索速度。
+IVF 的优点 ✅ 高效查询：比暴力搜索（Brute-force）快很多，适用于大规模数据。
+✅ 可扩展：K 值可调，适应不同数据规模。
+✅ 支持 ANN（近似最近邻搜索）：可以搭配其他方法（如 PQ, HNSW）进一步加速。
+" />
+<meta name="keywords" content="Victor, 博客, 技术, 生活, IVFFlat, 向量索引, ANN" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="//localhost:1313/posts/zh/vectordb/ivfflat%E7%B4%A2%E5%BC%95%E5%9C%A8bustub%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0/" />
+
+
+    <title>
+        
+            IVFFlat索引在Bustub中的实现 :: Victor的世界 
+        
+    </title>
+
+
+
+
+
+  <link rel="stylesheet" href="/main.min.244183cde1a38e0b08f82c11791181288f9aac1cc9618cd6f4e9e7710c5768ba.css" integrity="sha256-JEGDzeGjjgsI&#43;CwReRGBKI&#43;arBzJYYzW9OnncQxXaLo=" crossorigin="anonymous">
+
+
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="IVFFlat索引在Bustub中的实现">
+  <meta itemprop="description" content="IVFFlat索引 IVF（Inverted File Index，倒排文件索引）是一种常用于向量搜索（ANN, Approximate Nearest Neighbor）的索引结构，主要用于高维数据检索，比如图像、文本、音频等向量数据的相似性搜索。
+本文主要介绍IVFFlat索引在Bustub中的实现，主要从以下三个方面来回答：
+IVFFlat索引的概述 IVFFlat索引在向量数据库中的应用 IVFFlat索引在Bustub中的实现 IVFFlat索引的概述 IVF 通过聚类将向量划分到不同的“桶”（centroids, 聚类中心），查询时只在最相关的桶中搜索，从而减少计算量。
+训练阶段：
+使用 K-means 聚类将所有数据点分成 ( K ) 个簇（每个簇有一个中心）。 每个向量根据与哪个中心最近，归属于该中心对应的桶。 索引构建：
+记录每个桶中的向量 ID 及其原始向量。 形成一个 倒排表，即每个簇对应多个向量。 查询阶段：
+先找到查询向量最接近的 ( N ) 个簇中心（通常 ( N \ll K )）。 只在这些簇对应的桶内进行精确搜索，而不是全量搜索。 示例 假设有 100 万个 128 维向量：
+用 K-means 训练出 1000 个簇中心（K=1000）。 每个向量归类到最近的簇，存入倒排表。 当查询时：
+计算查询向量与 1000 个簇中心的距离，找到最近的 10 个簇。 只在这 10 个簇对应的桶里搜索最近邻，而不是在全部 100 万个向量中搜索。 这样，计算量大大减少，提高了搜索速度。
+IVF 的优点 ✅ 高效查询：比暴力搜索（Brute-force）快很多，适用于大规模数据。
+✅ 可扩展：K 值可调，适应不同数据规模。
+✅ 支持 ANN（近似最近邻搜索）：可以搭配其他方法（如 PQ, HNSW）进一步加速。">
+  <meta itemprop="datePublished" content="2024-11-30T19:42:02+08:00">
+  <meta itemprop="dateModified" content="2024-11-30T19:42:02+08:00">
+  <meta itemprop="wordCount" content="391">
+  <meta itemprop="keywords" content="IVFFlat,向量索引,ANN">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="IVFFlat索引在Bustub中的实现">
+  <meta name="twitter:description" content="IVFFlat索引 IVF（Inverted File Index，倒排文件索引）是一种常用于向量搜索（ANN, Approximate Nearest Neighbor）的索引结构，主要用于高维数据检索，比如图像、文本、音频等向量数据的相似性搜索。
+本文主要介绍IVFFlat索引在Bustub中的实现，主要从以下三个方面来回答：
+IVFFlat索引的概述 IVFFlat索引在向量数据库中的应用 IVFFlat索引在Bustub中的实现 IVFFlat索引的概述 IVF 通过聚类将向量划分到不同的“桶”（centroids, 聚类中心），查询时只在最相关的桶中搜索，从而减少计算量。
+训练阶段：
+使用 K-means 聚类将所有数据点分成 ( K ) 个簇（每个簇有一个中心）。 每个向量根据与哪个中心最近，归属于该中心对应的桶。 索引构建：
+记录每个桶中的向量 ID 及其原始向量。 形成一个 倒排表，即每个簇对应多个向量。 查询阶段：
+先找到查询向量最接近的 ( N ) 个簇中心（通常 ( N \ll K )）。 只在这些簇对应的桶内进行精确搜索，而不是全量搜索。 示例 假设有 100 万个 128 维向量：
+用 K-means 训练出 1000 个簇中心（K=1000）。 每个向量归类到最近的簇，存入倒排表。 当查询时：
+计算查询向量与 1000 个簇中心的距离，找到最近的 10 个簇。 只在这 10 个簇对应的桶里搜索最近邻，而不是在全部 100 万个向量中搜索。 这样，计算量大大减少，提高了搜索速度。
+IVF 的优点 ✅ 高效查询：比暴力搜索（Brute-force）快很多，适用于大规模数据。
+✅ 可扩展：K 值可调，适应不同数据规模。
+✅ 支持 ANN（近似最近邻搜索）：可以搭配其他方法（如 PQ, HNSW）进一步加速。">
+
+
+
+    <meta property="og:url" content="//localhost:1313/posts/zh/vectordb/ivfflat%E7%B4%A2%E5%BC%95%E5%9C%A8bustub%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0/">
+  <meta property="og:site_name" content="Victor的世界">
+  <meta property="og:title" content="IVFFlat索引在Bustub中的实现">
+  <meta property="og:description" content="IVFFlat索引 IVF（Inverted File Index，倒排文件索引）是一种常用于向量搜索（ANN, Approximate Nearest Neighbor）的索引结构，主要用于高维数据检索，比如图像、文本、音频等向量数据的相似性搜索。
+本文主要介绍IVFFlat索引在Bustub中的实现，主要从以下三个方面来回答：
+IVFFlat索引的概述 IVFFlat索引在向量数据库中的应用 IVFFlat索引在Bustub中的实现 IVFFlat索引的概述 IVF 通过聚类将向量划分到不同的“桶”（centroids, 聚类中心），查询时只在最相关的桶中搜索，从而减少计算量。
+训练阶段：
+使用 K-means 聚类将所有数据点分成 ( K ) 个簇（每个簇有一个中心）。 每个向量根据与哪个中心最近，归属于该中心对应的桶。 索引构建：
+记录每个桶中的向量 ID 及其原始向量。 形成一个 倒排表，即每个簇对应多个向量。 查询阶段：
+先找到查询向量最接近的 ( N ) 个簇中心（通常 ( N \ll K )）。 只在这些簇对应的桶内进行精确搜索，而不是全量搜索。 示例 假设有 100 万个 128 维向量：
+用 K-means 训练出 1000 个簇中心（K=1000）。 每个向量归类到最近的簇，存入倒排表。 当查询时：
+计算查询向量与 1000 个簇中心的距离，找到最近的 10 个簇。 只在这 10 个簇对应的桶里搜索最近邻，而不是在全部 100 万个向量中搜索。 这样，计算量大大减少，提高了搜索速度。
+IVF 的优点 ✅ 高效查询：比暴力搜索（Brute-force）快很多，适用于大规模数据。
+✅ 可扩展：K 值可调，适应不同数据规模。
+✅ 支持 ANN（近似最近邻搜索）：可以搭配其他方法（如 PQ, HNSW）进一步加速。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-11-30T19:42:02+08:00">
+    <meta property="article:modified_time" content="2024-11-30T19:42:02+08:00">
+    <meta property="article:tag" content="IVFFlat">
+    <meta property="article:tag" content="向量索引">
+    <meta property="article:tag" content="ANN">
+
+
+
+
+
+
+    <meta property="article:published_time" content="2024-11-30 19:42:02 &#43;0800 CST" />
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text ">
+                Victor的世界</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about">关于</a></li><li><a href="/posts">博客</a></li><li><a href="https://github.com/buzhimingyonghu">GitHub</a></li>
+        <ul class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">zh</a>
+                <div class="dropdown-content">
+                        
+                </div>
+            </li>
+        </ul>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        
+
+        
+      </p>
+
+      
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <a href="/posts/posts">Posts</a>
+      </p>
+      
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="//localhost:1313/posts/zh/vectordb/ivfflat%E7%B4%A2%E5%BC%95%E5%9C%A8bustub%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0/">IVFFlat索引在Bustub中的实现</a>
+      </h1>
+
+      
+
+      
+
+      <div class="post-content">
+        <h3 id="ivfflat索引">IVFFlat索引</h3>
+<p>IVF（Inverted File Index，倒排文件索引）是一种常用于向量搜索（ANN, Approximate Nearest Neighbor）的索引结构，主要用于高维数据检索，比如图像、文本、音频等向量数据的相似性搜索。</p>
+<p>本文主要介绍IVFFlat索引在Bustub中的实现，主要从以下三个方面来回答：</p>
+<ol>
+<li>IVFFlat索引的概述</li>
+<li>IVFFlat索引在向量数据库中的应用</li>
+<li>IVFFlat索引在Bustub中的实现</li>
+</ol>
+<h2 id="ivfflat索引的概述">IVFFlat索引的概述</h2>
+<p>IVF 通过聚类将向量划分到不同的“桶”（centroids, 聚类中心），查询时只在最相关的桶中搜索，从而减少计算量。</p>
+<ol>
+<li>
+<p><strong>训练阶段</strong>：</p>
+<ul>
+<li>使用 <strong>K-means</strong> 聚类将所有数据点分成 ( K ) 个簇（每个簇有一个中心）。</li>
+<li>每个向量根据与哪个中心最近，归属于该中心对应的桶。</li>
+</ul>
+</li>
+<li>
+<p><strong>索引构建</strong>：</p>
+<ul>
+<li>记录每个桶中的向量 ID 及其原始向量。</li>
+<li>形成一个 <strong>倒排表</strong>，即每个簇对应多个向量。</li>
+</ul>
+</li>
+<li>
+<p><strong>查询阶段</strong>：</p>
+<ul>
+<li>先找到查询向量最接近的 ( N ) 个簇中心（通常 ( N \ll K )）。</li>
+<li>只在这些簇对应的桶内进行精确搜索，而不是全量搜索。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="示例"><strong>示例</strong></h3>
+<p>假设有 100 万个 128 维向量：</p>
+<ul>
+<li>用 K-means 训练出 <strong>1000 个簇中心</strong>（K=1000）。</li>
+<li>每个向量归类到最近的簇，存入倒排表。</li>
+</ul>
+<p>当查询时：</p>
+<ol>
+<li>计算查询向量与 1000 个簇中心的距离，找到最近的 10 个簇。</li>
+<li>只在这 10 个簇对应的桶里搜索最近邻，而不是在全部 100 万个向量中搜索。</li>
+</ol>
+<p>这样，计算量大大减少，提高了搜索速度。</p>
+<hr>
+<h3 id="ivf-的优点"><strong>IVF 的优点</strong></h3>
+<p>✅ <strong>高效查询</strong>：比暴力搜索（Brute-force）快很多，适用于大规模数据。<br>
+✅ <strong>可扩展</strong>：K 值可调，适应不同数据规模。<br>
+✅ <strong>支持 ANN（近似最近邻搜索）</strong>：可以搭配其他方法（如 PQ, HNSW）进一步加速。</p>
+<h3 id="ivf-的缺点"><strong>IVF 的缺点</strong></h3>
+<p>❌ <strong>召回率下降</strong>：仅搜索部分簇，可能会漏掉最优解。<br>
+❌ <strong>需要训练</strong>：K-means 聚类需要预处理，适用于静态数据集。</p>
+<h2 id="ivf-在向量数据库中的应用">IVF 在向量数据库中的应用</h2>
+<p>向量数据库的核心功能是<strong>存储和检索高维向量</strong>，而 IVF 作为索引结构，优化了搜索效率。以下是它的主要应用方式：</p>
+<h3 id="1-数据索引">1. 数据索引</h3>
+<p>当你把向量数据插入数据库时：</p>
+<ol>
+<li>
+<p><strong>聚类（Clustering）</strong>：</p>
+<ul>
+<li>使用 <strong>K-means</strong> 预训练 ( K ) 个聚类中心（centroids）。</li>
+<li>每个聚类中心代表一个“桶”（cell）。</li>
+</ul>
+</li>
+<li>
+<p><strong>向量分桶（Assigning to Clusters）</strong>：</p>
+<ul>
+<li>每个向量分配到最近的簇中心，存入该中心的倒排列表。</li>
+</ul>
+</li>
+</ol>
+<p>数据库内部结构示意：</p>
+<pre tabindex="0"><code>Cluster 1: [vec_3, vec_7, vec_10]
+Cluster 2: [vec_2, vec_6, vec_9]
+...
+Cluster K: [vec_1, vec_4, vec_8]
+</code></pre><hr>
+<h3 id="2-向量查询">2. 向量查询</h3>
+<p>当你查询一个向量时：</p>
+<ol>
+<li><strong>找到最接近的聚类中心</strong>（一般选取 ( N ) 个最近的中心）。</li>
+<li><strong>只在这些桶中搜索最近邻向量</strong>（减少计算量）。</li>
+<li><strong>返回最相似的向量（Top-k 结果）</strong>。</li>
+</ol>
+<p>举例：</p>
+<ul>
+<li>查询向量 <code>q</code> 。</li>
+<li>计算 <code>q</code> 到所有聚类中心的距离，找到最近的 3 个簇（假设 K=1000，N=3）。</li>
+<li>只在这 3 个簇的倒排列表中搜索最近邻，而不是全局搜索。</li>
+</ul>
+<hr>
+<h2 id="ivf-结合其他优化方法">IVF 结合其他优化方法</h2>
+<p>IVF 可以和其他技术结合，进一步提升性能：</p>
+<ol>
+<li><strong>IVF-PQ（Product Quantization）</strong>：降低存储和计算成本。</li>
+<li><strong>IVF-HNSW（Hierarchical Navigable Small World）</strong>：加速近邻搜索。</li>
+<li><strong>IVF-SQ（Scalar Quantization）</strong>：减少索引占用的内存。</li>
+</ol>
+<h2 id="ivfflat索引实现技术">IVFFlat索引实现技术</h2>
+<h3 id="1-类结构">1. 类结构</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">IVFFlatIndex</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> VectorIndex {
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>Vector<span style="color:#f92672">&gt;</span> centroids_;              <span style="color:#75715e">// 聚类中心列表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>pair<span style="color:#f92672">&lt;</span>Vector, RID<span style="color:#f92672">&gt;&gt;&gt;</span> centroids_buckets_;  <span style="color:#75715e">// 向量桶
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    size_t lists_;                              <span style="color:#75715e">// 聚类数量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    size_t probe_lists_;                        <span style="color:#75715e">// 查询时检查的聚类数量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>};
+</span></span></code></pre></div><h3 id="2-索引构建流程">2. 索引构建流程</h3>
+<p><strong>实现步骤</strong>：</p>
+<ol>
+<li>检查数据量是否足够</li>
+<li>初始化聚类桶</li>
+<li>随机选择初始聚类中心</li>
+<li>执行K-means迭代（最多500次）</li>
+<li>将向量分配到最近的聚类中心</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> IVFFlatIndex<span style="color:#f92672">::</span>BuildIndex(std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>pair<span style="color:#f92672">&lt;</span>Vector, RID<span style="color:#f92672">&gt;&gt;</span> initial_data) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 1. 检查数据量是否足够
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span> (initial_data.size() <span style="color:#f92672">&lt;</span> lists_) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 2. 初始化聚类桶
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  centroids_buckets_.resize(lists_);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 3. 随机采样初始聚类中心
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  centroids_ <span style="color:#f92672">=</span> RandomSample(initial_data, lists_);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 4. K-means迭代优化聚类中心
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">for</span> (size_t iter <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; iter <span style="color:#f92672">&lt;</span> max_iterations; <span style="color:#f92672">++</span>iter) {
+</span></span><span style="display:flex;"><span>    centroids_ <span style="color:#f92672">=</span> FindCentroids(initial_data, centroids_, VectorExpressionType<span style="color:#f92672">::</span>L2Dist);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 5. 将向量分配到最近的聚类中心
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">auto</span><span style="color:#f92672">&amp;</span> pair : initial_data) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> Vector<span style="color:#f92672">&amp;</span> vec <span style="color:#f92672">=</span> pair.first;
+</span></span><span style="display:flex;"><span>    size_t nearest_centroid_idx <span style="color:#f92672">=</span> FindCentroid(vec, centroids_, VectorExpressionType<span style="color:#f92672">::</span>L2Dist);
+</span></span><span style="display:flex;"><span>    centroids_buckets_[nearest_centroid_idx].push_back(pair);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="3-插入流程">3. 插入流程</h3>
+<p><strong>实现步骤</strong>：</p>
+<ol>
+<li>找到最近的聚类中心</li>
+<li>将向量和RID对插入对应的桶中</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> IVFFlatIndex<span style="color:#f92672">::</span>InsertVectorEntry(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>key, RID rid) {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 1. 找到最近的聚类中心
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  size_t nearest_centroid_idx <span style="color:#f92672">=</span> FindCentroid(key, centroids_, VectorExpressionType<span style="color:#f92672">::</span>L2Dist);
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 2. 将向量添加到对应的聚类桶中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  centroids_buckets_[nearest_centroid_idx].emplace_back(key, rid);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="4-搜索流程">4. 搜索流程</h3>
+<p><strong>实现步骤</strong>：</p>
+<ol>
+<li>找到最近的probe_lists_个聚类中心</li>
+<li>在选中的聚类中搜索最近邻</li>
+<li>对结果排序</li>
+<li>返回前limit个最近邻的RID</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cpp" data-lang="cpp"><span style="display:flex;"><span><span style="color:#66d9ef">auto</span> IVFFlatIndex<span style="color:#f92672">::</span>ScanVectorKey(<span style="color:#66d9ef">const</span> std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">&amp;</span>base_vector, size_t limit) {
+</span></span><span style="display:flex;"><span>  std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>RID<span style="color:#f92672">&gt;</span> global_result;
+</span></span><span style="display:flex;"><span>  std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>std<span style="color:#f92672">::</span>pair<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">double</span>, RID<span style="color:#f92672">&gt;&gt;</span> local_results;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 1. 找到最近的probe_lists_个聚类中心
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>vector<span style="color:#f92672">&lt;</span>size_t<span style="color:#f92672">&gt;</span> nearest_centroids <span style="color:#f92672">=</span> FindNearestCentroids(base_vector, probe_lists_);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 2. 在选中的聚类中搜索最近邻
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">for</span> (size_t centroid_idx : nearest_centroids) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">auto</span><span style="color:#f92672">&amp;</span> entry : centroids_buckets_[centroid_idx]) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">const</span> Vector<span style="color:#f92672">&amp;</span> vec <span style="color:#f92672">=</span> entry.first;
+</span></span><span style="display:flex;"><span>      RID rid <span style="color:#f92672">=</span> entry.second;
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">double</span> distance <span style="color:#f92672">=</span> ComputeDistance(base_vector, vec, VectorExpressionType<span style="color:#f92672">::</span>L2Dist);
+</span></span><span style="display:flex;"><span>      local_results.emplace_back(distance, rid);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 3. 对候选结果排序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  std<span style="color:#f92672">::</span>sort(local_results.begin(), local_results.end());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// 4. 返回top-k结果
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">for</span> (size_t i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> std<span style="color:#f92672">::</span>min(limit, local_results.size()); <span style="color:#f92672">++</span>i) {
+</span></span><span style="display:flex;"><span>    global_result.push_back(local_results[i].second);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> global_result;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>主要特点：</p>
+<ol>
+<li>
+<p><strong>数据组织</strong>:</p>
+<ul>
+<li>使用K-means聚类将向量空间划分为多个区域</li>
+<li>每个区域有一个聚类中心(centroid)</li>
+<li>向量存储在最近的聚类中心对应的桶中</li>
+</ul>
+</li>
+<li>
+<p><strong>优化策略</strong>:</p>
+<ul>
+<li>查询时只需要搜索最近的几个聚类桶</li>
+<li>通过probe_lists_参数控制搜索范围</li>
+<li>在桶内进行精确距离计算</li>
+</ul>
+</li>
+<li>
+<p><strong>关键参数</strong>:</p>
+<ul>
+<li>lists_: 聚类中心数量</li>
+<li>probe_lists_: 查询时检查的聚类数量</li>
+</ul>
+</li>
+</ol>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="//localhost:1313/tags/ivfflat/">IVFFlat</a></span>
+        <span class="tag"><a href="//localhost:1313/tags/%E5%90%91%E9%87%8F%E7%B4%A2%E5%BC%95/">向量索引</a></span>
+        <span class="tag"><a href="//localhost:1313/tags/ann/">ANN</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2024-11-30 19:42
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+            <span class="button previous">
+                <a href="//localhost:1313/posts/zh/vectordb/hnsw%E5%90%91%E9%87%8F%E7%B4%A2%E5%BC%95%E5%9C%A8bustub%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0/">
+                    <span class="button__icon">←</span>
+                    <span class="button__text">HNSW向量索引在Bustub中的实现</span>
+                </a>
+            </span>
+            
+
+            
+            <span class="button next">
+                <a href="//localhost:1313/posts/zh/vectordb/%E5%8C%B9%E9%85%8D%E5%90%91%E9%87%8F%E7%B4%A2%E5%BC%95/">
+                    <span class="button__text">匹配向量索引</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.e89fda0f29b95d33f6f4224dd9e5cf69d84aff3818be2b0d73e731689cc374261b016d17d46f8381962fb4a1577ba3017b1f23509d894f6e66431f988c00889e.js" integrity="sha512-6J/aDym5XTP29CJN2eXPadhK/zgYvisNc&#43;cxaJzDdCYbAW0X1G&#43;DgZYvtKFXe6MBex8jUJ2JT25mQx&#43;YjACIng=="></script>
+
+
+
+
+    </body>
+</html>
