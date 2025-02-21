@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="3 漏斗哈希（Funnel Hashing） 在本节中，我们构建了一种贪婪的开放地址哈希方案，称为漏斗哈希，它实现了以下性能：
+最坏情况预期探测复杂度：O(log² δ⁻¹) 高概率最坏情况探测复杂度：O(log² δ⁻¹ &#43; log log n) 我们将证明，高概率最坏情况探测复杂度的界限是最优的。
+定理2：设n ∈ N和δ ∈ (0, 1)为参数，满足δ &gt; O(1/nᵒ⁽¹⁾)。存在一种贪婪的开放地址策略，支持在大小为n的数组中插入n − ⌊δn⌋个元素，并提供以下性能：
+最坏情况预期探测复杂度（和插入时间）：O(log² δ⁻¹) 高概率保证：概率为1 − 1/poly(n)，所有插入操作的最坏情况探测复杂度为O(log² δ⁻¹ &#43; log log n) 摊还预期探测复杂度：O(log δ⁻¹) 证明 在本节中，我们假设δ ≤ 1/8。设α = ⌈4 log δ⁻¹ &#43; 10⌉，β = ⌈2 log δ⁻¹⌉。
+漏斗哈希的策略如下：
+将数组A分为两部分：A′ 和一个特殊数组Aα&#43;1，其中⌊3δn/4⌋ ≥ |Aα&#43;1| ≥ ⌈δn/2⌉，且|A′|是β的倍数。 将A′进一步划分为α个数组A₁, A₂, &hellip;, Aα，每个数组的大小为βaᵢ，满足aᵢ₊₁ = 3aᵢ/4 ± 1。即每个数组的大小是β的倍数，且大小大致呈几何递减。 对于每个数组Aᵢ（i ∈ [α]），将其进一步划分为大小为β的子数组Aᵢ,ⱼ。 插入操作：
+对于每个键k，依次尝试插入A₁, A₂, &hellip;, Aα，直到成功插入为止。 每次尝试插入Aᵢ时： 哈希k得到一个子数组索引j ∈ [|Aᵢ|/β]。 检查Aᵢ,ⱼ中的每个槽，如果有空槽，则插入第一个空槽并返回成功；否则返回失败。 如果所有A₁到Aα的尝试都失败，则将k插入特殊数组Aα&#43;1。 特殊数组Aα&#43;1的实现：
+" />
+<meta name="keywords" content="Victor, 博客, 技术, 生活" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="http://localhost:1313/posts/zh/datastruct/%E6%BC%8F%E6%96%97%E5%93%88%E5%B8%8C/" />
+
+
+    <title>
+        
+             :: Victor的世界 
+        
+    </title>
+
+
+
+
+
+  <link rel="stylesheet" href="/main.min.244183cde1a38e0b08f82c11791181288f9aac1cc9618cd6f4e9e7710c5768ba.css" integrity="sha256-JEGDzeGjjgsI&#43;CwReRGBKI&#43;arBzJYYzW9OnncQxXaLo=" crossorigin="anonymous">
+
+
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="Victor的世界">
+  <meta itemprop="description" content="3 漏斗哈希（Funnel Hashing） 在本节中，我们构建了一种贪婪的开放地址哈希方案，称为漏斗哈希，它实现了以下性能：
+最坏情况预期探测复杂度：O(log² δ⁻¹) 高概率最坏情况探测复杂度：O(log² δ⁻¹ &#43; log log n) 我们将证明，高概率最坏情况探测复杂度的界限是最优的。
+定理2：设n ∈ N和δ ∈ (0, 1)为参数，满足δ &gt; O(1/nᵒ⁽¹⁾)。存在一种贪婪的开放地址策略，支持在大小为n的数组中插入n − ⌊δn⌋个元素，并提供以下性能：
+最坏情况预期探测复杂度（和插入时间）：O(log² δ⁻¹) 高概率保证：概率为1 − 1/poly(n)，所有插入操作的最坏情况探测复杂度为O(log² δ⁻¹ &#43; log log n) 摊还预期探测复杂度：O(log δ⁻¹) 证明 在本节中，我们假设δ ≤ 1/8。设α = ⌈4 log δ⁻¹ &#43; 10⌉，β = ⌈2 log δ⁻¹⌉。
+漏斗哈希的策略如下：
+将数组A分为两部分：A′ 和一个特殊数组Aα&#43;1，其中⌊3δn/4⌋ ≥ |Aα&#43;1| ≥ ⌈δn/2⌉，且|A′|是β的倍数。 将A′进一步划分为α个数组A₁, A₂, …, Aα，每个数组的大小为βaᵢ，满足aᵢ₊₁ = 3aᵢ/4 ± 1。即每个数组的大小是β的倍数，且大小大致呈几何递减。 对于每个数组Aᵢ（i ∈ [α]），将其进一步划分为大小为β的子数组Aᵢ,ⱼ。 插入操作：
+对于每个键k，依次尝试插入A₁, A₂, …, Aα，直到成功插入为止。 每次尝试插入Aᵢ时： 哈希k得到一个子数组索引j ∈ [|Aᵢ|/β]。 检查Aᵢ,ⱼ中的每个槽，如果有空槽，则插入第一个空槽并返回成功；否则返回失败。 如果所有A₁到Aα的尝试都失败，则将k插入特殊数组Aα&#43;1。 特殊数组Aα&#43;1的实现：">
+  <meta itemprop="wordCount" content="219">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Victor的世界">
+  <meta name="twitter:description" content="3 漏斗哈希（Funnel Hashing） 在本节中，我们构建了一种贪婪的开放地址哈希方案，称为漏斗哈希，它实现了以下性能：
+最坏情况预期探测复杂度：O(log² δ⁻¹) 高概率最坏情况探测复杂度：O(log² δ⁻¹ &#43; log log n) 我们将证明，高概率最坏情况探测复杂度的界限是最优的。
+定理2：设n ∈ N和δ ∈ (0, 1)为参数，满足δ &gt; O(1/nᵒ⁽¹⁾)。存在一种贪婪的开放地址策略，支持在大小为n的数组中插入n − ⌊δn⌋个元素，并提供以下性能：
+最坏情况预期探测复杂度（和插入时间）：O(log² δ⁻¹) 高概率保证：概率为1 − 1/poly(n)，所有插入操作的最坏情况探测复杂度为O(log² δ⁻¹ &#43; log log n) 摊还预期探测复杂度：O(log δ⁻¹) 证明 在本节中，我们假设δ ≤ 1/8。设α = ⌈4 log δ⁻¹ &#43; 10⌉，β = ⌈2 log δ⁻¹⌉。
+漏斗哈希的策略如下：
+将数组A分为两部分：A′ 和一个特殊数组Aα&#43;1，其中⌊3δn/4⌋ ≥ |Aα&#43;1| ≥ ⌈δn/2⌉，且|A′|是β的倍数。 将A′进一步划分为α个数组A₁, A₂, …, Aα，每个数组的大小为βaᵢ，满足aᵢ₊₁ = 3aᵢ/4 ± 1。即每个数组的大小是β的倍数，且大小大致呈几何递减。 对于每个数组Aᵢ（i ∈ [α]），将其进一步划分为大小为β的子数组Aᵢ,ⱼ。 插入操作：
+对于每个键k，依次尝试插入A₁, A₂, …, Aα，直到成功插入为止。 每次尝试插入Aᵢ时： 哈希k得到一个子数组索引j ∈ [|Aᵢ|/β]。 检查Aᵢ,ⱼ中的每个槽，如果有空槽，则插入第一个空槽并返回成功；否则返回失败。 如果所有A₁到Aα的尝试都失败，则将k插入特殊数组Aα&#43;1。 特殊数组Aα&#43;1的实现：">
+
+
+
+    <meta property="og:url" content="http://localhost:1313/posts/zh/datastruct/%E6%BC%8F%E6%96%97%E5%93%88%E5%B8%8C/">
+  <meta property="og:site_name" content="Victor的世界">
+  <meta property="og:title" content="Victor的世界">
+  <meta property="og:description" content="3 漏斗哈希（Funnel Hashing） 在本节中，我们构建了一种贪婪的开放地址哈希方案，称为漏斗哈希，它实现了以下性能：
+最坏情况预期探测复杂度：O(log² δ⁻¹) 高概率最坏情况探测复杂度：O(log² δ⁻¹ &#43; log log n) 我们将证明，高概率最坏情况探测复杂度的界限是最优的。
+定理2：设n ∈ N和δ ∈ (0, 1)为参数，满足δ &gt; O(1/nᵒ⁽¹⁾)。存在一种贪婪的开放地址策略，支持在大小为n的数组中插入n − ⌊δn⌋个元素，并提供以下性能：
+最坏情况预期探测复杂度（和插入时间）：O(log² δ⁻¹) 高概率保证：概率为1 − 1/poly(n)，所有插入操作的最坏情况探测复杂度为O(log² δ⁻¹ &#43; log log n) 摊还预期探测复杂度：O(log δ⁻¹) 证明 在本节中，我们假设δ ≤ 1/8。设α = ⌈4 log δ⁻¹ &#43; 10⌉，β = ⌈2 log δ⁻¹⌉。
+漏斗哈希的策略如下：
+将数组A分为两部分：A′ 和一个特殊数组Aα&#43;1，其中⌊3δn/4⌋ ≥ |Aα&#43;1| ≥ ⌈δn/2⌉，且|A′|是β的倍数。 将A′进一步划分为α个数组A₁, A₂, …, Aα，每个数组的大小为βaᵢ，满足aᵢ₊₁ = 3aᵢ/4 ± 1。即每个数组的大小是β的倍数，且大小大致呈几何递减。 对于每个数组Aᵢ（i ∈ [α]），将其进一步划分为大小为β的子数组Aᵢ,ⱼ。 插入操作：
+对于每个键k，依次尝试插入A₁, A₂, …, Aα，直到成功插入为止。 每次尝试插入Aᵢ时： 哈希k得到一个子数组索引j ∈ [|Aᵢ|/β]。 检查Aᵢ,ⱼ中的每个槽，如果有空槽，则插入第一个空槽并返回成功；否则返回失败。 如果所有A₁到Aα的尝试都失败，则将k插入特殊数组Aα&#43;1。 特殊数组Aα&#43;1的实现：">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text ">
+                Victor的世界</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about">关于</a></li><li><a href="/posts">博客</a></li><li><a href="https://github.com/buzhimingyonghu">GitHub</a></li>
+        <ul class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">zh</a>
+                <div class="dropdown-content">
+                        
+                </div>
+            </li>
+        </ul>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        
+
+        
+      </p>
+
+      
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <a href="/posts/posts">Posts</a>
+      </p>
+      
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="http://localhost:1313/posts/zh/datastruct/%E6%BC%8F%E6%96%97%E5%93%88%E5%B8%8C/"></a>
+      </h1>
+
+      
+
+      
+
+      <div class="post-content">
+        <h3 id="3-漏斗哈希funnel-hashing">3 漏斗哈希（Funnel Hashing）</h3>
+<p>在本节中，我们构建了一种<strong>贪婪的开放地址哈希方案</strong>，称为<strong>漏斗哈希</strong>，它实现了以下性能：</p>
+<ul>
+<li><strong>最坏情况预期探测复杂度</strong>：O(log² δ⁻¹)</li>
+<li><strong>高概率最坏情况探测复杂度</strong>：O(log² δ⁻¹ + log log n)</li>
+</ul>
+<p>我们将证明，高概率最坏情况探测复杂度的界限是最优的。</p>
+<p><strong>定理2</strong>：设n ∈ N和δ ∈ (0, 1)为参数，满足δ &gt; O(1/nᵒ⁽¹⁾)。存在一种贪婪的开放地址策略，支持在大小为n的数组中插入n − ⌊δn⌋个元素，并提供以下性能：</p>
+<ul>
+<li><strong>最坏情况预期探测复杂度</strong>（和插入时间）：O(log² δ⁻¹)</li>
+<li><strong>高概率保证</strong>：概率为1 − 1/poly(n)，所有插入操作的最坏情况探测复杂度为O(log² δ⁻¹ + log log n)</li>
+<li><strong>摊还预期探测复杂度</strong>：O(log δ⁻¹)</li>
+</ul>
+<hr>
+<h4 id="证明">证明</h4>
+<p>在本节中，我们假设δ ≤ 1/8。设α = ⌈4 log δ⁻¹ + 10⌉，β = ⌈2 log δ⁻¹⌉。</p>
+<p><strong>漏斗哈希的策略</strong>如下：</p>
+<ol>
+<li>将数组A分为两部分：A′ 和一个特殊数组Aα+1，其中⌊3δn/4⌋ ≥ |Aα+1| ≥ ⌈δn/2⌉，且|A′|是β的倍数。</li>
+<li>将A′进一步划分为α个数组A₁, A₂, &hellip;, Aα，每个数组的大小为βaᵢ，满足aᵢ₊₁ = 3aᵢ/4 ± 1。即每个数组的大小是β的倍数，且大小大致呈几何递减。</li>
+<li>对于每个数组Aᵢ（i ∈ [α]），将其进一步划分为大小为β的子数组Aᵢ,ⱼ。</li>
+</ol>
+<p><strong>插入操作</strong>：</p>
+<ul>
+<li>对于每个键k，依次尝试插入A₁, A₂, &hellip;, Aα，直到成功插入为止。</li>
+<li>每次尝试插入Aᵢ时：
+<ol>
+<li>哈希k得到一个子数组索引j ∈ [|Aᵢ|/β]。</li>
+<li>检查Aᵢ,ⱼ中的每个槽，如果有空槽，则插入第一个空槽并返回成功；否则返回失败。</li>
+</ol>
+</li>
+<li>如果所有A₁到Aα的尝试都失败，则将k插入特殊数组Aα+1。</li>
+</ul>
+<p><strong>特殊数组Aα+1的实现</strong>：</p>
+<ul>
+<li>将Aα+1分为两个子数组B和C，大小相等（±1）。</li>
+<li>插入时，先尝试插入B（使用均匀探测），最多尝试log log n次。</li>
+<li>如果B插入失败，则插入C（使用双选择哈希，桶大小为2 log log n）。</li>
+</ul>
+<hr>
+<h4 id="分析">分析</h4>
+<p><strong>引理5</strong>：对于任意i ∈ [α]，在2|Aᵢ|次插入尝试后，Aᵢ中剩余的空槽数少于δ|Aᵢ|/64的概率为1 − n⁻ω⁽¹⁾。</p>
+<p><strong>证明</strong>：</p>
+<ul>
+<li>每次插入尝试均匀随机选择一个子数组Aᵢ,ⱼ。</li>
+<li>通过Chernoff界，可以证明每个子数组Aᵢ,ⱼ被尝试的次数至少为β的概率极高。</li>
+<li>因此，未填满的子数组数量极少，整体空槽数少于δ|Aᵢ|/64。</li>
+</ul>
+<p><strong>引理6</strong>：概率为1 − n⁻ω⁽¹⁾，插入Aα+1的键数少于8δn。</p>
+<p><strong>证明</strong>：</p>
+<ul>
+<li>如果所有A₁到Aα都被充分探索（尝试次数≥2|Aᵢ|），则它们的填充率至少为1 − δ/64。</li>
+<li>通过几何级数求和，可以证明总插入键数不会超过n(1 − δ)，从而Aα+1的插入键数少于8δn。</li>
+</ul>
+<p><strong>Aα+1的实现分析</strong>：</p>
+<ul>
+<li><strong>B部分</strong>：使用均匀探测，负载因子不超过1/2，每次插入的预期探测次数为O(1)，最坏情况探测次数为O(log log n)。</li>
+<li><strong>C部分</strong>：使用双选择哈希，桶大小为2 log log n，通过经典的双选择结果（定理3），可以保证高概率下不会溢出。</li>
+</ul>
+<p><strong>总体性能</strong>：</p>
+<ul>
+<li><strong>最坏情况预期探测复杂度</strong>：O(log² δ⁻¹)</li>
+<li><strong>高概率最坏情况探测复杂度</strong>：O(log² δ⁻¹ + log log n)</li>
+<li><strong>摊还预期探测复杂度</strong>：O(log δ⁻¹)</li>
+</ul>
+<hr>
+<h4 id="总结">总结</h4>
+<p>漏斗哈希通过<strong>多级数组划分</strong>和<strong>动态插入策略</strong>，在贪婪开放地址哈希表中实现了优异的最坏情况和高概率性能。其核心思想是通过<strong>分层探测</strong>和<strong>双选择哈希</strong>，分散高负载压力，同时保证高效的摊还复杂度。</p>
+<h3 id="漏斗哈希funnel-hashing的通俗解释">漏斗哈希（Funnel Hashing）的通俗解释</h3>
+<hr>
+<h4 id="一句话理解">一句话理解：</h4>
+<p><strong>漏斗哈希就像一台智能分拣机</strong>——它将数据像“漏斗”一样逐层筛选，每层处理不同规模的负载，最终确保即使最坏情况下，操作次数也不会爆炸式增长。</p>
+<hr>
+<h3 id="一传统哈希的问题对比普通分拣机">一、传统哈希的问题（对比普通分拣机）</h3>
+<p>想象一个快递分拣中心（传统哈希表）：</p>
+<ul>
+<li><strong>高负载时</strong>：包裹（数据）太多，分拣员需要逐个检查每个区域（探测槽位），最坏情况下可能检查整个仓库（探测次数为Θ(δ⁻¹)）。</li>
+<li><strong>性能不稳定</strong>：某些包裹可能因为位置偏僻，需要极长时间才能找到空位。</li>
+</ul>
+<hr>
+<h3 id="二漏斗哈希的解决方案智能分拣流水线">二、漏斗哈希的解决方案（智能分拣流水线）</h3>
+<p>漏斗哈希将分拣中心改造成<strong>多层流水线</strong>，每层逐步减少负载压力：</p>
+<ol>
+<li>
+<p><strong>分层设计</strong>：</p>
+<ul>
+<li><strong>主流水线（A₁到Aα）</strong>：每层子数组的大小按3/4比例递减（例如：A₁有100个槽位，A₂有75个，A₃有56个&hellip;）。</li>
+<li><strong>应急层（Aα+1）</strong>：最后的小型缓冲区，处理“漏网之鱼”。</li>
+</ul>
+</li>
+<li>
+<p><strong>分拣规则</strong>：</p>
+<ul>
+<li><strong>第一优先级：逐层尝试</strong>：
+<ul>
+<li>新包裹先尝试放入第一层（A₁）的某个随机区块（子数组）。</li>
+<li>如果区块已满，立刻跳转到下一层（A₂），而不是继续搜索当前层。</li>
+<li>重复此过程直到某一层成功。</li>
+</ul>
+</li>
+<li><strong>兜底机制：应急处理</strong>：
+<ul>
+<li>如果所有主层都失败，包裹进入应急层（Aα+1），使用双保险策略（均匀探测+双选择哈希）确保快速插入。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>双选择哈希（应急层的秘密武器）</strong>：</p>
+<ul>
+<li>包裹在应急层可以随机选两个区块，选择较空的一个插入。</li>
+<li>如果两个区块都满，扩容区块大小（类似动态调整），但这种情况概率极低。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="三为什么漏斗哈希更高效">三、为什么漏斗哈希更高效？</h3>
+<ol>
+<li>
+<p><strong>最坏情况复杂度O(log² δ⁻¹)</strong>：</p>
+<ul>
+<li><strong>主流水线</strong>：每层最多尝试O(log δ⁻¹)次探测，共O(log δ⁻¹)层，总次数为O(log² δ⁻¹)。</li>
+<li><strong>应急层</strong>：通过双选择哈希，探测次数被限制为O(log log n)。</li>
+</ul>
+</li>
+<li>
+<p><strong>高概率保证</strong>：</p>
+<ul>
+<li>概率为1 − 1/poly(n)，所有插入的探测次数不超过O(log² δ⁻¹ + log log n)。这类似于“99.99%的情况下，分拣时间不会超过某个阈值”。</li>
+</ul>
+</li>
+<li>
+<p><strong>摊还复杂度O(log δ⁻¹)</strong>：</p>
+<ul>
+<li>大部分包裹在早期层级（如A₁、A₂）就被分拣完成，只有极少数进入应急层，整体平均时间很低。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="四实例说明">四、实例说明</h3>
+<p><strong>场景</strong>：<br>
+假设一个漏斗哈希表有1000个槽位（n=1000），δ=0.1（即负载因子为90%，保留10%的空位）：</p>
+<ul>
+<li><strong>主流水线层级</strong>：A₁（400槽位）、A₂（300槽位）、A₃（225槽位）&hellip;</li>
+<li><strong>应急层Aα+1</strong>：约50个槽位。</li>
+</ul>
+<p><strong>插入操作</strong>：<br>
+插入一个键k：</p>
+<ol>
+<li><strong>第一层A₁</strong>：哈希到某个区块（如区块5），检查10个槽位（β=O(log δ⁻¹)=10）。若满，立刻进入A₂。</li>
+<li><strong>第二层A₂</strong>：类似检查，若满则进入A₃。</li>
+<li><strong>第三层A₃</strong>：成功插入，总探测次数为10（A₁）+10（A₂）+1（A₃）=21次。</li>
+<li><strong>极端情况</strong>：若所有主层均满，进入应急层，探测次数最多为10（主层） + 20（应急层）=30次。</li>
+</ol>
+<hr>
+<h3 id="五与传统方法的对比">五、与传统方法的对比</h3>
+<table>
+  <thead>
+      <tr>
+          <th><strong>特性</strong></th>
+          <th><strong>均匀探测（传统）</strong></th>
+          <th><strong>漏斗哈希</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>最坏情况探测次数</td>
+          <td>Θ(100)（δ=0.1时）</td>
+          <td><strong>O((log 10)²)=O(4)</strong></td>
+      </tr>
+      <tr>
+          <td>高概率保证</td>
+          <td>无</td>
+          <td><strong>探测次数≤4 + log log 1000≈7</strong></td>
+      </tr>
+      <tr>
+          <td>是否需移动已插入元素</td>
+          <td>否</td>
+          <td>否</td>
+      </tr>
+      <tr>
+          <td>适用场景</td>
+          <td>低负载</td>
+          <td><strong>高负载（如90%填满）</strong></td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h3 id="六实际应用与限制">六、实际应用与限制</h3>
+<p><strong>适用场景</strong>：</p>
+<ul>
+<li><strong>实时监控系统</strong>：需要严格限制单次操作的最长时间。</li>
+<li><strong>内存数据库</strong>：高负载下仍要求稳定性能。</li>
+</ul>
+<p><strong>局限性</strong>：</p>
+<ul>
+<li><strong>动态操作支持有限</strong>：频繁删除可能导致应急层效率下降。</li>
+<li><strong>参数敏感</strong>：δ需要满足特定条件（如δ &gt; O(1/nᵒ⁽¹⁾），极端场景需额外调整。</li>
+</ul>
+<hr>
+<h3 id="七总结">七、总结</h3>
+<p>漏斗哈希通过<strong>分层过滤</strong>和<strong>应急双保险</strong>机制，将高负载压力分散到多个层级，既保证了贪婪策略的简单性，又突破了传统方法的最坏情况性能瓶颈。它的设计哲学是：<strong>“不要纠结于一层，快速失败，分层兜底”</strong>。</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          0001-01-01 08:05
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+            <span class="button previous">
+                <a href="http://localhost:1313/posts/zh/opensource/%E5%9F%BA%E4%BA%8Esimhash%E5%AE%9E%E7%8E%B0psm%E6%A6%82%E7%8E%87%E6%80%A7%E5%8C%B9%E9%85%8D%E7%B3%BB%E7%BB%9F/">
+                    <span class="button__icon">←</span>
+                    <span class="button__text">基于Simhash实现PSM概率性匹配系统</span>
+                </a>
+            </span>
+            
+
+            
+        </div>
+    </div>
+
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.e89fda0f29b95d33f6f4224dd9e5cf69d84aff3818be2b0d73e731689cc374261b016d17d46f8381962fb4a1577ba3017b1f23509d894f6e66431f988c00889e.js" integrity="sha512-6J/aDym5XTP29CJN2eXPadhK/zgYvisNc&#43;cxaJzDdCYbAW0X1G&#43;DgZYvtKFXe6MBex8jUJ2JT25mQx&#43;YjACIng=="></script>
+
+
+
+
+    </body>
+</html>

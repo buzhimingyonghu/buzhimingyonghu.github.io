@@ -2,187 +2,201 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://buzhimingyonghu.github.io/tags/pacifica/</loc>
-    <lastmod>2025-02-18T19:42:02+08:00</lastmod>
+    <loc>http://localhost:1313/posts/</loc>
+    <lastmod>2025-02-21T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://buzhimingyonghu.github.io/en/tags/pacifica/"
+                href="http://localhost:1313/en/posts/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://buzhimingyonghu.github.io/tags/pacifica/"
+                href="http://localhost:1313/posts/"
                 />
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/posts/zh/distributed/pacifica-test-cases/</loc>
-    <lastmod>2025-02-18T19:42:02+08:00</lastmod>
-  </url><url>
-    <loc>https://buzhimingyonghu.github.io/posts/</loc>
-    <lastmod>2025-02-18T19:42:02+08:00</lastmod>
+    <loc>http://localhost:1313/tags/</loc>
+    <lastmod>2025-02-21T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://buzhimingyonghu.github.io/en/posts/"
+                href="http://localhost:1313/en/tags/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://buzhimingyonghu.github.io/posts/"
+                href="http://localhost:1313/tags/"
                 />
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/tags/</loc>
-    <lastmod>2025-02-18T19:42:02+08:00</lastmod>
+    <loc>http://localhost:1313/</loc>
+    <lastmod>2025-02-21T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://buzhimingyonghu.github.io/en/tags/"
+                href="http://localhost:1313/en/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://buzhimingyonghu.github.io/tags/"
+                href="http://localhost:1313/"
                 />
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/</loc>
+    <loc>http://localhost:1313/tags/%E5%93%88%E5%B8%8C%E8%A1%A8/</loc>
+    <lastmod>2025-02-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/zh/datastruct/%E5%BC%B9%E6%80%A7%E5%93%88%E5%B8%8C/</loc>
+    <lastmod>2025-02-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/%E5%BC%80%E6%94%BE%E5%9C%B0%E5%9D%80/</loc>
+    <lastmod>2025-02-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</loc>
+    <lastmod>2025-02-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/pacifica/</loc>
     <lastmod>2025-02-18T19:42:02+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://buzhimingyonghu.github.io/en/"
+                href="http://localhost:1313/en/tags/pacifica/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://buzhimingyonghu.github.io/"
+                href="http://localhost:1313/tags/pacifica/"
                 />
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/tags/%E5%88%86%E5%B8%83%E5%BC%8F/</loc>
+    <loc>http://localhost:1313/posts/zh/distributed/pacifica-test-cases/</loc>
     <lastmod>2025-02-18T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/tags/%E4%B8%80%E8%87%B4%E6%80%A7/</loc>
+    <loc>http://localhost:1313/tags/%E5%88%86%E5%B8%83%E5%BC%8F/</loc>
     <lastmod>2025-02-18T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/posts/zh/pika/pacifica-test-cases/</loc>
+    <loc>http://localhost:1313/tags/%E4%B8%80%E8%87%B4%E6%80%A7/</loc>
+    <lastmod>2025-02-18T19:42:02+08:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/zh/pika/pacifica-test-cases/</loc>
     <lastmod>2025-02-10T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/tags/pika/</loc>
+    <loc>http://localhost:1313/tags/pika/</loc>
     <lastmod>2025-02-10T19:42:02+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://buzhimingyonghu.github.io/en/tags/pika/"
+                href="http://localhost:1313/en/tags/pika/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://buzhimingyonghu.github.io/tags/pika/"
+                href="http://localhost:1313/tags/pika/"
                 />
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/posts/zh/pika/pacifica-consistency/</loc>
+    <loc>http://localhost:1313/posts/zh/pika/pacifica-consistency/</loc>
     <lastmod>2025-01-10T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/tags/ann/</loc>
+    <loc>http://localhost:1313/tags/ann/</loc>
     <lastmod>2024-12-02T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/tags/hnsw/</loc>
+    <loc>http://localhost:1313/tags/hnsw/</loc>
     <lastmod>2024-12-02T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/posts/zh/vectordb/hnsw%E5%90%91%E9%87%8F%E7%B4%A2%E5%BC%95%E5%9C%A8bustub%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0/</loc>
+    <loc>http://localhost:1313/posts/zh/vectordb/hnsw%E5%90%91%E9%87%8F%E7%B4%A2%E5%BC%95%E5%9C%A8bustub%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0/</loc>
     <lastmod>2024-12-02T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/tags/%E5%90%91%E9%87%8F%E7%B4%A2%E5%BC%95/</loc>
+    <loc>http://localhost:1313/tags/%E5%90%91%E9%87%8F%E7%B4%A2%E5%BC%95/</loc>
     <lastmod>2024-12-02T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/tags/ivfflat/</loc>
+    <loc>http://localhost:1313/tags/ivfflat/</loc>
     <lastmod>2024-11-30T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/posts/zh/vectordb/ivfflat%E7%B4%A2%E5%BC%95%E5%9C%A8bustub%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0/</loc>
+    <loc>http://localhost:1313/posts/zh/vectordb/ivfflat%E7%B4%A2%E5%BC%95%E5%9C%A8bustub%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0/</loc>
     <lastmod>2024-11-30T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/posts/zh/vectordb/%E5%8C%B9%E9%85%8D%E5%90%91%E9%87%8F%E7%B4%A2%E5%BC%95/</loc>
+    <loc>http://localhost:1313/posts/zh/vectordb/%E5%8C%B9%E9%85%8D%E5%90%91%E9%87%8F%E7%B4%A2%E5%BC%95/</loc>
     <lastmod>2024-11-10T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/tags/%E4%BC%98%E5%8C%96%E5%99%A8/</loc>
+    <loc>http://localhost:1313/tags/%E4%BC%98%E5%8C%96%E5%99%A8/</loc>
     <lastmod>2024-11-10T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/tags/acl/</loc>
+    <loc>http://localhost:1313/tags/acl/</loc>
     <lastmod>2024-10-20T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/posts/zh/pika/pika-acl%E6%97%A0%E6%9D%83%E9%99%90bug/</loc>
+    <loc>http://localhost:1313/posts/zh/pika/pika-acl%E6%97%A0%E6%9D%83%E9%99%90bug/</loc>
     <lastmod>2024-10-20T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/tags/%E8%AE%A4%E8%AF%81/</loc>
+    <loc>http://localhost:1313/tags/%E8%AE%A4%E8%AF%81/</loc>
     <lastmod>2024-10-20T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/tags/obcdc/</loc>
+    <loc>http://localhost:1313/tags/obcdc/</loc>
     <lastmod>2024-08-20T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/tags/oblogminer/</loc>
+    <loc>http://localhost:1313/tags/oblogminer/</loc>
     <lastmod>2024-08-20T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/tags/oceanbase/</loc>
+    <loc>http://localhost:1313/tags/oceanbase/</loc>
     <lastmod>2024-08-20T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/posts/zh/opensource/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A9%E6%B1%A0%E4%BA%91oceanbase%E5%AF%B9obcdc%E8%BE%93%E5%87%BA%E4%BF%A1%E6%81%AF%E9%87%8D%E6%96%B0%E6%89%93%E6%A0%87/</loc>
+    <loc>http://localhost:1313/posts/zh/opensource/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A9%E6%B1%A0%E4%BA%91oceanbase%E5%AF%B9obcdc%E8%BE%93%E5%87%BA%E4%BF%A1%E6%81%AF%E9%87%8D%E6%96%B0%E6%89%93%E6%A0%87/</loc>
     <lastmod>2024-08-20T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</loc>
+    <loc>http://localhost:1313/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</loc>
     <lastmod>2024-07-20T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/tags/%E5%8A%A0%E6%9D%83%E8%BD%AE%E8%AF%A2%E7%AE%97%E6%B3%95/</loc>
+    <loc>http://localhost:1313/tags/%E5%8A%A0%E6%9D%83%E8%BD%AE%E8%AF%A2%E7%AE%97%E6%B3%95/</loc>
     <lastmod>2024-07-20T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/posts/zh/opensource/%E8%85%BE%E8%AE%AF%E7%8A%80%E7%89%9B%E9%B8%9F%E5%BC%80%E6%BA%90%E5%8A%A0%E6%9D%83%E8%BD%AE%E8%AF%A2%E7%AE%97%E6%B3%95/</loc>
+    <loc>http://localhost:1313/posts/zh/opensource/%E8%85%BE%E8%AE%AF%E7%8A%80%E7%89%9B%E9%B8%9F%E5%BC%80%E6%BA%90%E5%8A%A0%E6%9D%83%E8%BD%AE%E8%AF%A2%E7%AE%97%E6%B3%95/</loc>
     <lastmod>2024-07-20T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/tags/psm/</loc>
+    <loc>http://localhost:1313/tags/psm/</loc>
     <lastmod>2024-06-20T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/tags/simhash/</loc>
+    <loc>http://localhost:1313/tags/simhash/</loc>
     <lastmod>2024-06-20T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/tags/%E6%A6%82%E7%8E%87%E6%80%A7%E5%8C%B9%E9%85%8D/</loc>
+    <loc>http://localhost:1313/tags/%E6%A6%82%E7%8E%87%E6%80%A7%E5%8C%B9%E9%85%8D/</loc>
     <lastmod>2024-06-20T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/posts/zh/opensource/%E5%9F%BA%E4%BA%8Esimhash%E5%AE%9E%E7%8E%B0psm%E6%A6%82%E7%8E%87%E6%80%A7%E5%8C%B9%E9%85%8D%E7%B3%BB%E7%BB%9F/</loc>
+    <loc>http://localhost:1313/posts/zh/opensource/%E5%9F%BA%E4%BA%8Esimhash%E5%AE%9E%E7%8E%B0psm%E6%A6%82%E7%8E%87%E6%80%A7%E5%8C%B9%E9%85%8D%E7%B3%BB%E7%BB%9F/</loc>
     <lastmod>2024-06-20T19:42:02+08:00</lastmod>
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/about/</loc>
+    <loc>http://localhost:1313/about/</loc>
     <lastmod>2024-03-21T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://buzhimingyonghu.github.io/en/about/"
+                href="http://localhost:1313/en/about/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://buzhimingyonghu.github.io/about/"
+                href="http://localhost:1313/about/"
                 />
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/blog/</loc>
+    <loc>http://localhost:1313/posts/zh/datastruct/%E6%BC%8F%E6%96%97%E5%93%88%E5%B8%8C/</loc>
+  </url><url>
+    <loc>http://localhost:1313/blog/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://buzhimingyonghu.github.io/en/blog/"
+                href="http://localhost:1313/en/blog/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://buzhimingyonghu.github.io/blog/"
+                href="http://localhost:1313/blog/"
                 />
   </url><url>
-    <loc>https://buzhimingyonghu.github.io/series/</loc>
+    <loc>http://localhost:1313/series/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://buzhimingyonghu.github.io/en/series/"
+                href="http://localhost:1313/en/series/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://buzhimingyonghu.github.io/series/"
+                href="http://localhost:1313/series/"
                 />
   </url>
 </urlset>

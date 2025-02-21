@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="论文概述 Optimal Bounds for Open Addressing Without Reordering 这篇论文主要围绕开放地址哈希表中的插入操作进行研究，重点是如何优化插入操作时的探测复杂度
+引言：讨论了在不重排已插入元素的情况下，如何优化哈希表的探测复杂度。提出了两个问题：一是能否在不重排元素的情况下，优化期望的探测复杂度；二是能否在没有重排的情况下优化最坏情况下的探测复杂度。 弹性哈希（Elastic Hashing）：提出了一种新的哈希策略，能在没有重排元素的情况下实现 O(1) 的期望探测复杂度和 O(log δ^{-1}) 的最坏情况下的探测复杂度，证明了这种方法的最优性。 漏斗哈希（Funnel Hashing）：提出了一种贪心的哈希策略，能达到 O(log^2 δ^{-1}) 的最坏情况下的探测复杂度，进一步证明了Yao猜想的错误，说明均匀探测并非最优。 论文背景 首先我先介绍一下哈希表：哈希表是一种通过哈希函数将键（Key）映射到存储位置的高效数据结构。其核心思想是：直接寻址：理想情况下，每个键通过哈希函数 (h(k)) 直接映射到唯一的槽位（Slot），实现 O(1) 时间的插入和查询。
+哈希冲突： 但是由于哈希函数将大范围的键映射到有限槽位，哈希冲突（Collision） 是不可避免的。例如： 假设哈希表有 n=100 个槽位，存入 200个键时，至少有两个键映射到同一槽位（鸽巢原理）。
+那么如何去解决哈希冲突呢？
+常见的哈希冲突解决方法 (1) 链地址法 原理：每个槽位维护一个链表（或树），冲突元素追加到链表中。 优点：实现简单，负载因子容忍度高（&gt;1）。 缺点：指针开销大，缓存不友好。 (2) 开放寻址法 原理：所有元素存储在数组中，冲突时按探测序列（Probe Sequence）寻找下一个空槽。 典型探测方法： 线性探测：依次检查 h(k)&#43;1, h(k)&#43;2, &hellip;，简单但易产生聚集（Clustering）。 二次探测：按 h(k)&#43;C1i &#43; C2i^2 跳跃，缓解聚集但可能漏查空槽。 双重哈希：使用第二个哈希函数生成步长，分布更均匀。 因为论文主要讨论开放寻址法，所以下面主要介绍开放寻址法
+开放寻址法的核心痛点 在高负载因子（如负载因子 1-δ 接近 1）时：
+探测次数激增：平均探测次数从 O(1) 升至 O(δ^{-1})。 例如，当 δ=0.1（保留 10% 空位），均匀探测的平均探测次数约为 O(log δ^{-1})=O(3.3)，但最坏情况可能达到 O(δ^{-1})=O(10)。 性能不稳定：少数插入操作可能因连续冲突消耗大量时间。 Yao猜想：开放寻址的理论极限 1985年，Yao在其论文《Uniform Hashing is Optimal》中提出：
+" />
+<meta name="keywords" content="Victor, 博客, 技术, 生活, 数据结构, 哈希表, 开放地址" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="http://localhost:1313/posts/zh/datastruct/%E5%BC%B9%E6%80%A7%E5%93%88%E5%B8%8C/" />
+
+
+    <title>
+        
+            解读开放寻址哈希表最新发现，突破传统哈希表的性能瓶颈 :: Victor的世界 
+        
+    </title>
+
+
+
+
+
+  <link rel="stylesheet" href="/main.min.244183cde1a38e0b08f82c11791181288f9aac1cc9618cd6f4e9e7710c5768ba.css" integrity="sha256-JEGDzeGjjgsI&#43;CwReRGBKI&#43;arBzJYYzW9OnncQxXaLo=" crossorigin="anonymous">
+
+
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="解读开放寻址哈希表最新发现，突破传统哈希表的性能瓶颈">
+  <meta itemprop="description" content="论文概述 Optimal Bounds for Open Addressing Without Reordering 这篇论文主要围绕开放地址哈希表中的插入操作进行研究，重点是如何优化插入操作时的探测复杂度
+引言：讨论了在不重排已插入元素的情况下，如何优化哈希表的探测复杂度。提出了两个问题：一是能否在不重排元素的情况下，优化期望的探测复杂度；二是能否在没有重排的情况下优化最坏情况下的探测复杂度。 弹性哈希（Elastic Hashing）：提出了一种新的哈希策略，能在没有重排元素的情况下实现 O(1) 的期望探测复杂度和 O(log δ^{-1}) 的最坏情况下的探测复杂度，证明了这种方法的最优性。 漏斗哈希（Funnel Hashing）：提出了一种贪心的哈希策略，能达到 O(log^2 δ^{-1}) 的最坏情况下的探测复杂度，进一步证明了Yao猜想的错误，说明均匀探测并非最优。 论文背景 首先我先介绍一下哈希表：哈希表是一种通过哈希函数将键（Key）映射到存储位置的高效数据结构。其核心思想是：直接寻址：理想情况下，每个键通过哈希函数 (h(k)) 直接映射到唯一的槽位（Slot），实现 O(1) 时间的插入和查询。
+哈希冲突： 但是由于哈希函数将大范围的键映射到有限槽位，哈希冲突（Collision） 是不可避免的。例如： 假设哈希表有 n=100 个槽位，存入 200个键时，至少有两个键映射到同一槽位（鸽巢原理）。
+那么如何去解决哈希冲突呢？
+常见的哈希冲突解决方法 (1) 链地址法 原理：每个槽位维护一个链表（或树），冲突元素追加到链表中。 优点：实现简单，负载因子容忍度高（&gt;1）。 缺点：指针开销大，缓存不友好。 (2) 开放寻址法 原理：所有元素存储在数组中，冲突时按探测序列（Probe Sequence）寻找下一个空槽。 典型探测方法： 线性探测：依次检查 h(k)&#43;1, h(k)&#43;2, …，简单但易产生聚集（Clustering）。 二次探测：按 h(k)&#43;C1i &#43; C2i^2 跳跃，缓解聚集但可能漏查空槽。 双重哈希：使用第二个哈希函数生成步长，分布更均匀。 因为论文主要讨论开放寻址法，所以下面主要介绍开放寻址法
+开放寻址法的核心痛点 在高负载因子（如负载因子 1-δ 接近 1）时：
+探测次数激增：平均探测次数从 O(1) 升至 O(δ^{-1})。 例如，当 δ=0.1（保留 10% 空位），均匀探测的平均探测次数约为 O(log δ^{-1})=O(3.3)，但最坏情况可能达到 O(δ^{-1})=O(10)。 性能不稳定：少数插入操作可能因连续冲突消耗大量时间。 Yao猜想：开放寻址的理论极限 1985年，Yao在其论文《Uniform Hashing is Optimal》中提出：">
+  <meta itemprop="datePublished" content="2025-02-21T00:00:00+00:00">
+  <meta itemprop="dateModified" content="2025-02-21T00:00:00+00:00">
+  <meta itemprop="wordCount" content="818">
+  <meta itemprop="keywords" content="数据结构,哈希表,开放地址">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="解读开放寻址哈希表最新发现，突破传统哈希表的性能瓶颈">
+  <meta name="twitter:description" content="论文概述 Optimal Bounds for Open Addressing Without Reordering 这篇论文主要围绕开放地址哈希表中的插入操作进行研究，重点是如何优化插入操作时的探测复杂度
+引言：讨论了在不重排已插入元素的情况下，如何优化哈希表的探测复杂度。提出了两个问题：一是能否在不重排元素的情况下，优化期望的探测复杂度；二是能否在没有重排的情况下优化最坏情况下的探测复杂度。 弹性哈希（Elastic Hashing）：提出了一种新的哈希策略，能在没有重排元素的情况下实现 O(1) 的期望探测复杂度和 O(log δ^{-1}) 的最坏情况下的探测复杂度，证明了这种方法的最优性。 漏斗哈希（Funnel Hashing）：提出了一种贪心的哈希策略，能达到 O(log^2 δ^{-1}) 的最坏情况下的探测复杂度，进一步证明了Yao猜想的错误，说明均匀探测并非最优。 论文背景 首先我先介绍一下哈希表：哈希表是一种通过哈希函数将键（Key）映射到存储位置的高效数据结构。其核心思想是：直接寻址：理想情况下，每个键通过哈希函数 (h(k)) 直接映射到唯一的槽位（Slot），实现 O(1) 时间的插入和查询。
+哈希冲突： 但是由于哈希函数将大范围的键映射到有限槽位，哈希冲突（Collision） 是不可避免的。例如： 假设哈希表有 n=100 个槽位，存入 200个键时，至少有两个键映射到同一槽位（鸽巢原理）。
+那么如何去解决哈希冲突呢？
+常见的哈希冲突解决方法 (1) 链地址法 原理：每个槽位维护一个链表（或树），冲突元素追加到链表中。 优点：实现简单，负载因子容忍度高（&gt;1）。 缺点：指针开销大，缓存不友好。 (2) 开放寻址法 原理：所有元素存储在数组中，冲突时按探测序列（Probe Sequence）寻找下一个空槽。 典型探测方法： 线性探测：依次检查 h(k)&#43;1, h(k)&#43;2, …，简单但易产生聚集（Clustering）。 二次探测：按 h(k)&#43;C1i &#43; C2i^2 跳跃，缓解聚集但可能漏查空槽。 双重哈希：使用第二个哈希函数生成步长，分布更均匀。 因为论文主要讨论开放寻址法，所以下面主要介绍开放寻址法
+开放寻址法的核心痛点 在高负载因子（如负载因子 1-δ 接近 1）时：
+探测次数激增：平均探测次数从 O(1) 升至 O(δ^{-1})。 例如，当 δ=0.1（保留 10% 空位），均匀探测的平均探测次数约为 O(log δ^{-1})=O(3.3)，但最坏情况可能达到 O(δ^{-1})=O(10)。 性能不稳定：少数插入操作可能因连续冲突消耗大量时间。 Yao猜想：开放寻址的理论极限 1985年，Yao在其论文《Uniform Hashing is Optimal》中提出：">
+
+
+
+    <meta property="og:url" content="http://localhost:1313/posts/zh/datastruct/%E5%BC%B9%E6%80%A7%E5%93%88%E5%B8%8C/">
+  <meta property="og:site_name" content="Victor的世界">
+  <meta property="og:title" content="解读开放寻址哈希表最新发现，突破传统哈希表的性能瓶颈">
+  <meta property="og:description" content="论文概述 Optimal Bounds for Open Addressing Without Reordering 这篇论文主要围绕开放地址哈希表中的插入操作进行研究，重点是如何优化插入操作时的探测复杂度
+引言：讨论了在不重排已插入元素的情况下，如何优化哈希表的探测复杂度。提出了两个问题：一是能否在不重排元素的情况下，优化期望的探测复杂度；二是能否在没有重排的情况下优化最坏情况下的探测复杂度。 弹性哈希（Elastic Hashing）：提出了一种新的哈希策略，能在没有重排元素的情况下实现 O(1) 的期望探测复杂度和 O(log δ^{-1}) 的最坏情况下的探测复杂度，证明了这种方法的最优性。 漏斗哈希（Funnel Hashing）：提出了一种贪心的哈希策略，能达到 O(log^2 δ^{-1}) 的最坏情况下的探测复杂度，进一步证明了Yao猜想的错误，说明均匀探测并非最优。 论文背景 首先我先介绍一下哈希表：哈希表是一种通过哈希函数将键（Key）映射到存储位置的高效数据结构。其核心思想是：直接寻址：理想情况下，每个键通过哈希函数 (h(k)) 直接映射到唯一的槽位（Slot），实现 O(1) 时间的插入和查询。
+哈希冲突： 但是由于哈希函数将大范围的键映射到有限槽位，哈希冲突（Collision） 是不可避免的。例如： 假设哈希表有 n=100 个槽位，存入 200个键时，至少有两个键映射到同一槽位（鸽巢原理）。
+那么如何去解决哈希冲突呢？
+常见的哈希冲突解决方法 (1) 链地址法 原理：每个槽位维护一个链表（或树），冲突元素追加到链表中。 优点：实现简单，负载因子容忍度高（&gt;1）。 缺点：指针开销大，缓存不友好。 (2) 开放寻址法 原理：所有元素存储在数组中，冲突时按探测序列（Probe Sequence）寻找下一个空槽。 典型探测方法： 线性探测：依次检查 h(k)&#43;1, h(k)&#43;2, …，简单但易产生聚集（Clustering）。 二次探测：按 h(k)&#43;C1i &#43; C2i^2 跳跃，缓解聚集但可能漏查空槽。 双重哈希：使用第二个哈希函数生成步长，分布更均匀。 因为论文主要讨论开放寻址法，所以下面主要介绍开放寻址法
+开放寻址法的核心痛点 在高负载因子（如负载因子 1-δ 接近 1）时：
+探测次数激增：平均探测次数从 O(1) 升至 O(δ^{-1})。 例如，当 δ=0.1（保留 10% 空位），均匀探测的平均探测次数约为 O(log δ^{-1})=O(3.3)，但最坏情况可能达到 O(δ^{-1})=O(10)。 性能不稳定：少数插入操作可能因连续冲突消耗大量时间。 Yao猜想：开放寻址的理论极限 1985年，Yao在其论文《Uniform Hashing is Optimal》中提出：">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-02-21T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-02-21T00:00:00+00:00">
+    <meta property="article:tag" content="数据结构">
+    <meta property="article:tag" content="哈希表">
+    <meta property="article:tag" content="开放地址">
+
+
+
+
+
+
+    <meta property="article:published_time" content="2025-02-21 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__mark">></span>
+            <span class="logo__text ">
+                Victor的世界</span>
+            <span class="logo__cursor" style=
+                  "
+                   
+                   ">
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/about">关于</a></li><li><a href="/posts">博客</a></li><li><a href="https://github.com/buzhimingyonghu">GitHub</a></li>
+        <ul class="submenu">
+            <li class="dropdown">
+                <a href="javascript:void(0)" class="dropbtn">zh</a>
+                <div class="dropdown-content">
+                        
+                </div>
+            </li>
+        </ul>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+  <main class="post">
+
+    <div class="post-info">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        
+
+        
+      </p>
+
+      
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <a href="/posts/posts">Posts</a>
+      </p>
+      
+    </div>
+
+    <article>
+      <h1 class="post-title">
+        <a href="http://localhost:1313/posts/zh/datastruct/%E5%BC%B9%E6%80%A7%E5%93%88%E5%B8%8C/">解读开放寻址哈希表最新发现，突破传统哈希表的性能瓶颈</a>
+      </h1>
+
+      
+
+      
+
+      <div class="post-content">
+        <h2 id="论文概述">论文概述</h2>
+<p><a href="https://arxiv.org/pdf/2501.02305">Optimal Bounds for Open Addressing Without Reordering</a>
+这篇论文主要围绕开放地址哈希表中的插入操作进行研究，重点是如何优化插入操作时的探测复杂度</p>
+<ol>
+<li>引言：讨论了在不重排已插入元素的情况下，如何优化哈希表的探测复杂度。提出了两个问题：一是能否在不重排元素的情况下，优化期望的探测复杂度；二是能否在没有重排的情况下优化最坏情况下的探测复杂度。</li>
+<li>弹性哈希（Elastic Hashing）：提出了一种新的哈希策略，能在没有重排元素的情况下实现 <strong>O(1) 的期望探测复杂度和 O(log δ^{-1})</strong> 的最坏情况下的探测复杂度，证明了这种方法的最优性。</li>
+<li>漏斗哈希（Funnel Hashing）：提出了一种贪心的哈希策略，能达到 O(log^2 δ^{-1}) 的最坏情况下的探测复杂度，进一步证明了Yao猜想的错误，说明均匀探测并非最优。</li>
+</ol>
+<hr>
+<h2 id="论文背景">论文背景</h2>
+<p>首先我先介绍一下哈希表：哈希表是一种通过哈希函数将键（Key）映射到存储位置的高效数据结构。其核心思想是：<strong>直接寻址</strong>：理想情况下，每个键通过哈希函数 (h(k)) 直接映射到唯一的槽位（Slot），实现 O(1) 时间的插入和查询。</p>
+<h3 id="哈希冲突">哈希冲突：</h3>
+<p>但是由于哈希函数将大范围的键映射到有限槽位，<strong>哈希冲突（Collision）</strong> 是不可避免的。例如：
+假设哈希表有 n=100 个槽位，存入 200个键时，至少有两个键映射到同一槽位（鸽巢原理）。</p>
+<p><strong>那么如何去解决哈希冲突呢？</strong></p>
+<h3 id="常见的哈希冲突解决方法">常见的哈希冲突解决方法</h3>
+<h4 id="1-链地址法">(1) <strong>链地址法</strong></h4>
+<ul>
+<li><strong>原理</strong>：每个槽位维护一个链表（或树），冲突元素追加到链表中。</li>
+<li><strong>优点</strong>：实现简单，负载因子容忍度高（&gt;1）。</li>
+<li><strong>缺点</strong>：指针开销大，缓存不友好。</li>
+</ul>
+<h4 id="2-开放寻址法">(2) <strong>开放寻址法</strong></h4>
+<ul>
+<li><strong>原理</strong>：所有元素存储在数组中，冲突时按探测序列（Probe Sequence）寻找下一个空槽。</li>
+<li><strong>典型探测方法</strong>：
+<ul>
+<li><strong>线性探测</strong>：依次检查 h(k)+1, h(k)+2, &hellip;，简单但易产生聚集（Clustering）。</li>
+<li><strong>二次探测</strong>：按 h(k)+C1i + C2i^2 跳跃，缓解聚集但可能漏查空槽。</li>
+<li><strong>双重哈希</strong>：使用第二个哈希函数生成步长，分布更均匀。</li>
+</ul>
+</li>
+</ul>
+<p><strong>因为论文主要讨论开放寻址法，所以下面主要介绍开放寻址法</strong></p>
+<h3 id="开放寻址法的核心痛点">开放寻址法的核心痛点</h3>
+<p>在高负载因子（如负载因子 1-δ 接近 1）时：</p>
+<ol>
+<li><strong>探测次数激增</strong>：平均探测次数从 O(1) 升至 O(δ^{-1})。
+<ul>
+<li>例如，当 δ=0.1（保留 10% 空位），均匀探测的平均探测次数约为 O(log δ^{-1})=O(3.3)，但最坏情况可能达到 O(δ^{-1})=O(10)。</li>
+</ul>
+</li>
+<li><strong>性能不稳定</strong>：少数插入操作可能因连续冲突消耗大量时间。</li>
+</ol>
+<hr>
+<h3 id="yao猜想开放寻址的理论极限">Yao猜想：开放寻址的理论极限</h3>
+<p>1985年，Yao在其论文《Uniform Hashing is Optimal》中提出：</p>
+<ul>
+<li><strong>核心结论</strong>：任何贪婪的开放寻址策略（即插入时不移动已存在的元素）的最坏情况探测复杂度下限为 Ω(δ^{-1})。</li>
+<li><strong>意义</strong>：认为均匀探测（每个键的探测序列是随机排列）是开放寻址法的理论最优解。</li>
+</ul>
+<p>论文提出了两种新策略，证明开放寻址法在高负载下可实现更优性能：</p>
+<h4 id="1-弹性哈希elastic-hashing">(1) <strong>弹性哈希（Elastic Hashing）</strong></h4>
+<ul>
+<li><strong>核心思想</strong>：动态分层 + 自适应探测次数。
+<ul>
+<li>将哈希表划分为多层子数组（如 A1, A2, &hellip;），按负载因子动态选择探测层。</li>
+<li>根据当前层负载 ε 计算探测次数 f(ε)=O(log ε^{-1})，避免无效探测。</li>
+</ul>
+</li>
+<li><strong>性能</strong>：
+<ul>
+<li>摊余复杂度：O(1)</li>
+<li>最坏情况复杂度：O(log δ^{-1})</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-漏斗哈希funnel-hashing">(2) <strong>漏斗哈希（Funnel Hashing）</strong></h4>
+<ul>
+<li><strong>核心思想</strong>：贪婪分层 + 应急双保险。
+<ul>
+<li>主层（A1 ∼ Aα）按顺序探测，失败后进入应急层。</li>
+<li>应急层结合均匀探测和双选择哈希（Two-Choice Hashing），限制最坏情况。</li>
+</ul>
+</li>
+<li><strong>性能</strong>：
+<ul>
+<li>最坏情况复杂度：O(log^2 δ^{-1})</li>
+<li>高概率复杂度：O(log^2 δ^{-1} + log log n)</li>
+</ul>
+</li>
+</ul>
+<h2 id="弹性哈希">弹性哈希</h2>
+<p>弹性哈希是一种<strong>开放地址哈希表</strong>的创新设计，旨在解决传统哈希表在高负载因子（即哈希表接近填满时）下性能急剧下降的问题。其核心突破在于通过<strong>多级子数组结构</strong>和<strong>动态探测策略</strong>，<strong>不重新排序元素</strong></p>
+<p>以下从关键技术和性能优势三方面展开解释。</p>
+<h3 id="弹性哈希的关键技术">弹性哈希的关键技术</h3>
+<p><strong>1. 多级子数组结构</strong><br>
+将主数组<strong>A</strong>划分为多个子数组<strong>A₁, A₂, &hellip;, A⌈log n⌉</strong>，每个子数组的大小按指数递减：</p>
+<ul>
+<li><strong>A₁</strong>的大小约为n/2，</li>
+<li><strong>A₂</strong>的大小约为n/4，</li>
+<li>依此类推，直到最小的子数组。</li>
+</ul>
+<p><strong>2. 二维探测序列与映射函数φ</strong></p>
+<ul>
+<li><strong>探测序列设计</strong>：每个键x的探测序列是二维的{hᵢⱼ(x)}，其中hᵢⱼ(x)表示在第i个子数组Aᵢ中的第j次探测。</li>
+<li><strong>单射函数φ</strong>：通过引理1的映射函数φ(i, j)，将二维探测序列{hᵢⱼ}编码为一维序列{hₖ}，使得探测复杂度φ(i, j) = O(i·j²)。这避免了不同子数组探测位置的冲突。</li>
+</ul>
+<p><strong>3. 动态批次插入策略</strong><br>
+插入操作按**批次（Batch）**处理，每个批次Bᵢ负责填充子数组Aᵢ和Aᵢ₊₁：</p>
+<ul>
+<li><strong>批次B₀</strong>：填充A₁至75%容量，使用简单的贪婪探测。</li>
+<li><strong>后续批次Bᵢ（i≥1）</strong>：根据当前子数组的负载情况，动态选择插入位置：
+<ul>
+<li><strong>情况1</strong>：若Aᵢ未饱和（ε₁ &gt; δ/2）且Aᵢ₊₁未满载（ε₂ &gt; 0.25），优先在Aᵢ中探测f(ε₁)次，失败后转至Aᵢ₊₁。</li>
+<li><strong>情况2</strong>：若Aᵢ接近饱和（ε₁ ≤ δ/2），强制插入Aᵢ₊₁。</li>
+<li><strong>情况3</strong>（罕见）：若Aᵢ₊₁满载（ε₂ ≤ 0.25），回退到Aᵢ的均匀探测。</li>
+</ul>
+</li>
+</ul>
+<p>通过参数c控制探测次数f(ε) = c·min(log ε⁻¹, log δ⁻¹)</p>
+<h3 id="弹性哈希的动态插入策略示例">弹性哈希的动态插入策略示例</h3>
+<h4 id="场景设定">场景设定</h4>
+<p>假设我们有一个弹性哈希表，参数如下：</p>
+<ul>
+<li><strong>总容量</strong>：n = 16 个槽位</li>
+<li><strong>空闲率参数</strong>：δ = 0.25（保留 25% 的空位，即最终保留 4 个空槽）</li>
+<li><strong>层级划分</strong>：
+<ul>
+<li><strong>A₁层</strong>：8 个槽位（初始层）</li>
+<li><strong>A₂层</strong>：4 个槽位（下一层）</li>
+<li><strong>A₃层</strong>：4 个槽位（保留层）</li>
+</ul>
+</li>
+</ul>
+<p>当前状态：</p>
+<ul>
+<li><strong>A₁层</strong>：已插入 5 个元素 → 空闲槽位 3 个 → <strong>ε₁ = 3/8 = 0.375</strong></li>
+<li><strong>A₂层</strong>：已插入 1 个元素 → 空闲槽位 3 个 → <strong>ε₂ = 3/4 = 0.75</strong></li>
+</ul>
+<hr>
+<h4 id="插入规则解析">插入规则解析</h4>
+<p>条件：若 <strong>ε₁ &gt; δ/2</strong> 且 <strong>ε₂ &gt; 0.25</strong>，则优先在 A₁ 探测 <code>f(ε₁)</code> 次，失败后转至 A₂。</p>
+<ol>
+<li>
+<p><strong>条件验证</strong>：</p>
+<ul>
+<li>δ/2 = 0.25/2 = 0.125</li>
+<li>ε₁ = 0.375 &gt; 0.125 ✅</li>
+<li>ε₂ = 0.75 &gt; 0.25 ✅</li>
+<li><strong>结论</strong>：满足探测策略条件。</li>
+</ul>
+</li>
+<li>
+<p><strong>计算探测次数</strong>：</p>
+<ul>
+<li>函数 <code>f(ε) = c * min(log₂(1/ε), log₂(1/δ))</code>（假设 c=4）</li>
+<li>log₂(1/0.375) ≈ 1.415（当前层空闲率）</li>
+<li>log₂(1/0.25) = 2（全局空闲率参数）</li>
+<li><code>f(ε₁) = 4 * min(1.415, 2) ≈ 5.66 → 取整 **6 次探测**</code></li>
+</ul>
+</li>
+</ol>
+<hr>
+<h4 id="具体插入过程以插入键值-x42-为例">具体插入过程（以插入键值 <code>x=42</code> 为例）</h4>
+<h5 id="步骤-1在-a-层探测-6-次">步骤 1：在 A₁ 层探测 6 次</h5>
+<ol>
+<li>
+<p><strong>哈希序列生成</strong>：</p>
+<ul>
+<li>使用 φ(i,j) 映射到 A₁ 层的 8 个槽位。</li>
+<li>假设哈希结果为：<code>h₁,₁(x)=2</code>, <code>h₁,₂(x)=5</code>, <code>h₁,₃(x)=1</code>, <code>h₁,₄(x)=7</code>, <code>h₁,₅(x)=0</code>, <code>h₁,₆(x)=3</code></li>
+</ul>
+</li>
+<li>
+<p><strong>探测过程</strong>：</p>
+<table>
+  <thead>
+      <tr>
+          <th>探测序号</th>
+          <th>槽位</th>
+          <th>是否空闲</th>
+          <th>结果</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>已占用</td>
+          <td>❌ 失败</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>5</td>
+          <td>已占用</td>
+          <td>❌ 失败</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td>1</td>
+          <td>已占用</td>
+          <td>❌ 失败</td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td>7</td>
+          <td><strong>空闲</strong></td>
+          <td>✅ 成功插入</td>
+      </tr>
+  </tbody>
+</table>
+</li>
+<li>
+<p><strong>结果</strong>：</p>
+<ul>
+<li>在第 4 次探测时找到空槽，<strong>总探测次数 = 4</strong>。</li>
+<li>更新 A₁ 层状态：已插入 6 个元素，空闲槽位 2 个（ε₁ = 2/8 = 0.25）。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h5 id="步骤-2假设所有探测均失败">步骤 2（假设所有探测均失败）</h5>
+<p>如果 A₁ 层的 6 次探测全部失败（小概率事件）：</p>
+<ol>
+<li>
+<p><strong>转至 A₂ 层</strong>：</p>
+<ul>
+<li>生成 A₂ 层的探测序列（假设哈希到槽位 <code>h₂,₁(x)=0</code>, <code>h₂,₂(x)=2</code>）。</li>
+</ul>
+</li>
+<li>
+<p><strong>探测过程</strong>：</p>
+<table>
+  <thead>
+      <tr>
+          <th>探测序号</th>
+          <th>槽位</th>
+          <th>是否空闲</th>
+          <th>结果</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>0</td>
+          <td>已占用</td>
+          <td>❌ 失败</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>2</td>
+          <td><strong>空闲</strong></td>
+          <td>✅ 成功插入</td>
+      </tr>
+  </tbody>
+</table>
+</li>
+<li>
+<p><strong>结果</strong>：</p>
+<ul>
+<li>总探测次数 = 6（A₁） + 2（A₂） = <strong>8 次</strong>。</li>
+<li>更新 A₂ 层状态：已插入 2 个元素，空闲槽位 2 个（ε₂ = 2/4 = 0.5）。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h4 id="关键设计意义">关键设计意义</h4>
+<ol>
+<li>
+<p><strong>动态负载分配</strong>：</p>
+<ul>
+<li>当 A₁ 层仍有较多空位（ε₁ &gt; δ/2）且 A₂ 未满载（ε₂ &gt; 0.25）时，优先“榨取”当前层的空位。</li>
+<li>避免过早跳转至下一层，减少跨层探测开销。</li>
+</ul>
+</li>
+<li>
+<p><strong>探测次数控制</strong>：</p>
+<ul>
+<li><strong>f(ε₁)</strong> 的设计使得在较空的层（ε₁ 大）中探测次数较少（log₂(1/ε₁) 小），而在较满的层（ε₁ 小）中探测次数增加。</li>
+<li>示例中 ε₁=0.375 时，探测次数为 6 次；若 ε₁=0.1（更满），则 <code>f(ε₁)=4*log₂(10)≈13 次</code>。</li>
+</ul>
+</li>
+<li>
+<p><strong>系统平衡性</strong>：</p>
+<ul>
+<li>条件 <strong>ε₂ &gt; 0.25</strong> 确保下一层有足够空间接收可能的失败插入，避免级联崩溃。</li>
+<li>在示例中，A₂ 层的 ε₂=0.75 提供了安全缓冲。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h4 id="对比传统均匀探测">对比传统均匀探测</h4>
+<p>若使用传统均匀探测（无分层）：</p>
+<ul>
+<li>负载因子为 (5+1)/16 = 0.375 时，预期探测次数约为 1/(1-0.375) ≈ 1.6 次。</li>
+<li><strong>但</strong>当负载因子接近 1-δ=0.75 时，均匀探测的预期探测次数将飙升至 1/(1-0.75)=4 次，而弹性哈希仍能通过分层控制为 O(log δ⁻¹)。</li>
+</ul>
+<hr>
+<h3 id="3-漏斗哈希funnel-hashing">3 漏斗哈希（Funnel Hashing）</h3>
+<p>在本节中，我们构建了一种<strong>贪婪的开放地址哈希方案</strong>，称为<strong>漏斗哈希</strong>，它实现了以下性能：</p>
+<ul>
+<li><strong>最坏情况预期探测复杂度</strong>：O(log² δ⁻¹)</li>
+<li><strong>高概率最坏情况探测复杂度</strong>：O(log² δ⁻¹ + log log n)</li>
+</ul>
+<p>我们将证明，高概率最坏情况探测复杂度的界限是最优的。</p>
+<p><strong>定理2</strong>：设n ∈ N和δ ∈ (0, 1)为参数，满足δ &gt; O(1/nᵒ⁽¹⁾)。存在一种贪婪的开放地址策略，支持在大小为n的数组中插入n − ⌊δn⌋个元素，并提供以下性能：</p>
+<ul>
+<li><strong>最坏情况预期探测复杂度</strong>（和插入时间）：O(log² δ⁻¹)</li>
+<li><strong>高概率保证</strong>：概率为1 − 1/poly(n)，所有插入操作的最坏情况探测复杂度为O(log² δ⁻¹ + log log n)</li>
+<li><strong>摊还预期探测复杂度</strong>：O(log δ⁻¹)</li>
+</ul>
+<hr>
+<h4 id="证明">证明</h4>
+<p>在本节中，我们假设δ ≤ 1/8。设α = ⌈4 log δ⁻¹ + 10⌉，β = ⌈2 log δ⁻¹⌉。</p>
+<p><strong>漏斗哈希的策略</strong>如下：</p>
+<ol>
+<li>将数组A分为两部分：A′ 和一个特殊数组Aα+1，其中⌊3δn/4⌋ ≥ |Aα+1| ≥ ⌈δn/2⌉，且|A′|是β的倍数。</li>
+<li>将A′进一步划分为α个数组A₁, A₂, &hellip;, Aα，每个数组的大小为βaᵢ，满足aᵢ₊₁ = 3aᵢ/4 ± 1。即每个数组的大小是β的倍数，且大小大致呈几何递减。</li>
+<li>对于每个数组Aᵢ（i ∈ [α]），将其进一步划分为大小为β的子数组Aᵢ,ⱼ。</li>
+</ol>
+<p><strong>插入操作</strong>：</p>
+<ul>
+<li>对于每个键k，依次尝试插入A₁, A₂, &hellip;, Aα，直到成功插入为止。</li>
+<li>每次尝试插入Aᵢ时：
+<ol>
+<li>哈希k得到一个子数组索引j ∈ [|Aᵢ|/β]。</li>
+<li>检查Aᵢ,ⱼ中的每个槽，如果有空槽，则插入第一个空槽并返回成功；否则返回失败。</li>
+</ol>
+</li>
+<li>如果所有A₁到Aα的尝试都失败，则将k插入特殊数组Aα+1。</li>
+</ul>
+<p><strong>特殊数组Aα+1的实现</strong>：</p>
+<ul>
+<li>将Aα+1分为两个子数组B和C，大小相等（±1）。</li>
+<li>插入时，先尝试插入B（使用均匀探测），最多尝试log log n次。</li>
+<li>如果B插入失败，则插入C（使用双选择哈希，桶大小为2 log log n）。</li>
+</ul>
+<hr>
+<h4 id="分析">分析</h4>
+<p><strong>引理5</strong>：对于任意i ∈ [α]，在2|Aᵢ|次插入尝试后，Aᵢ中剩余的空槽数少于δ|Aᵢ|/64的概率为1 − n⁻ω⁽¹⁾。</p>
+<p><strong>证明</strong>：</p>
+<ul>
+<li>每次插入尝试均匀随机选择一个子数组Aᵢ,ⱼ。</li>
+<li>通过Chernoff界，可以证明每个子数组Aᵢ,ⱼ被尝试的次数至少为β的概率极高。</li>
+<li>因此，未填满的子数组数量极少，整体空槽数少于δ|Aᵢ|/64。</li>
+</ul>
+<p><strong>引理6</strong>：概率为1 − n⁻ω⁽¹⁾，插入Aα+1的键数少于8δn。</p>
+<p><strong>证明</strong>：</p>
+<ul>
+<li>如果所有A₁到Aα都被充分探索（尝试次数≥2|Aᵢ|），则它们的填充率至少为1 − δ/64。</li>
+<li>通过几何级数求和，可以证明总插入键数不会超过n(1 − δ)，从而Aα+1的插入键数少于8δn。</li>
+</ul>
+<p><strong>Aα+1的实现分析</strong>：</p>
+<ul>
+<li><strong>B部分</strong>：使用均匀探测，负载因子不超过1/2，每次插入的预期探测次数为O(1)，最坏情况探测次数为O(log log n)。</li>
+<li><strong>C部分</strong>：使用双选择哈希，桶大小为2 log log n，通过经典的双选择结果（定理3），可以保证高概率下不会溢出。</li>
+</ul>
+<p><strong>总体性能</strong>：</p>
+<ul>
+<li><strong>最坏情况预期探测复杂度</strong>：O(log² δ⁻¹)</li>
+<li><strong>高概率最坏情况探测复杂度</strong>：O(log² δ⁻¹ + log log n)</li>
+<li><strong>摊还预期探测复杂度</strong>：O(log δ⁻¹)</li>
+</ul>
+<hr>
+<h4 id="总结">总结</h4>
+<p>漏斗哈希通过<strong>多级数组划分</strong>和<strong>动态插入策略</strong>，在贪婪开放地址哈希表中实现了优异的最坏情况和高概率性能。其核心思想是通过<strong>分层探测</strong>和<strong>双选择哈希</strong>，分散高负载压力，同时保证高效的摊还复杂度。</p>
+<h3 id="漏斗哈希funnel-hashing插入流程详解">漏斗哈希（Funnel Hashing）插入流程详解</h3>
+<p>漏斗哈希通过<strong>分层过滤</strong>和<strong>应急兜底</strong>机制，在高负载下优化插入性能。以下是其核心插入流程及示例：</p>
+<hr>
+<h4 id="插入流程步骤"><strong>插入流程步骤</strong></h4>
+<ol>
+<li>
+<p><strong>主层顺序探测</strong><br>
+依次尝试将键插入主层 A_1 到 A_α，每层按以下步骤操作：</p>
+<ul>
+<li><strong>步骤 1</strong>：哈希选择子数组<br>
+根据键的哈希值，随机选择一个子数组 A_{i,j}。</li>
+<li><strong>步骤 2</strong>：检查子数组空位<br>
+遍历子数组的所有槽位（共 β = O(log δ^{-1}) 个），找到第一个空位插入。</li>
+<li><strong>结果</strong>：若插入成功，结束流程；否则进入下一层。</li>
+</ul>
+</li>
+<li>
+<p><strong>应急层处理</strong><br>
+若所有主层均失败，进入应急层 A_{α+1}：</p>
+<ul>
+<li><strong>步骤 1</strong>：尝试均匀探测区（B区）<br>
+在B区中按均匀探测尝试 log log n 次，找到空位则插入。</li>
+<li><strong>步骤 2</strong>：双选择哈希兜底（C区）<br>
+若B区失败，使用双选择哈希：
+<ul>
+<li>哈希生成两个候选桶，选择较空的桶插入。</li>
+<li>若桶未满，插入成功；否则哈希表扩容或报错。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h4 id="具体示例演示"><strong>具体示例演示</strong></h4>
+<p><strong>场景设定</strong>：</p>
+<ul>
+<li><strong>总容量</strong>：n = 32（槽位）</li>
+<li><strong>空闲率</strong>：δ = 0.25（保留 8 个空槽）</li>
+<li><strong>主层参数</strong>：
+<ul>
+<li>α = 4 log(1/0.25) + 10 = 4 × 2 + 10 = 18</li>
+<li>β = 2 log(1/0.25) = 4</li>
+</ul>
+</li>
+<li><strong>主层划分</strong>：
+<ul>
+<li>A_1：12 槽位（分 3 个子数组，每个子数组 4 槽位）</li>
+<li>A_2：9 槽位（分 2 个子数组，每个 4 槽位 + 1 冗余槽）</li>
+<li>&hellip;（后续层级按 3/4 比例递减）</li>
+</ul>
+</li>
+<li><strong>应急层 A_{19}</strong>：8 槽位（B区 4 槽，C区 4 槽）</li>
+</ul>
+<hr>
+<p><strong>插入键 k=42 的流程</strong>：</p>
+<ol>
+<li>
+<p><strong>主层探测</strong>：</p>
+<ul>
+<li><strong>尝试 A_1 层</strong>：
+<ul>
+<li>哈希计算 j = hash(k) % 3 = 1，选择子数组 A_{1,1}。</li>
+<li>检查子数组槽位 [4, 5, 6, 7]，发现全满。</li>
+</ul>
+</li>
+<li><strong>尝试 A_2 层</strong>：
+<ul>
+<li>哈希计算 j = hash(k) % 2 = 0，选择子数组 A_{2,0}。</li>
+<li>检查槽位 [12, 13, 14, 15]，发现槽位 14 为空，插入成功。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>结果</strong>：</p>
+<ul>
+<li>总探测次数 = A_1 的 4 次 + A_2 的 3 次 = <strong>7 次</strong>。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>极端情况示例（主层全满）</strong>：</p>
+<ol>
+<li>
+<p><strong>主层全失败</strong>：</p>
+<ul>
+<li>A_1 到 A_{18} 所有子数组均无空位。</li>
+</ul>
+</li>
+<li>
+<p><strong>进入应急层</strong>：</p>
+<ul>
+<li><strong>尝试 B区（均匀探测）</strong>：
+<ul>
+<li>生成探测序列：hash(k), hash(k)+1, hash(k)+2。</li>
+<li>检查槽位 24, 25, 26，均失败。</li>
+</ul>
+</li>
+<li><strong>转至 C区（双选择哈希）</strong>：
+<ul>
+<li>哈希生成两个候选桶：b_1 = hash_1(k) % 1 = 0，b_2 = hash_2(k) % 1 = 0。</li>
+<li>选择桶 0，检查其 4 个槽位（27-30），发现槽位 28 为空，插入成功。</li>
+</ul>
+</li>
+<li>总探测次数 = 主层 18×4 次 + B区 3 次 + C区 2 次 = <strong>77 次</strong>。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h4 id="设计优势总结"><strong>设计优势总结</strong></h4>
+<table>
+  <thead>
+      <tr>
+          <th><strong>特性</strong></th>
+          <th><strong>传统开放寻址</strong></th>
+          <th><strong>漏斗哈希</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>最坏情况复杂度</strong></td>
+          <td>O(δ^{-1})</td>
+          <td>O(log^2 δ^{-1} + loglog n)</td>
+      </tr>
+      <tr>
+          <td><strong>高负载适应性</strong></td>
+          <td>性能急剧下降</td>
+          <td>通过应急层平滑过渡</td>
+      </tr>
+      <tr>
+          <td><strong>工程实现</strong></td>
+          <td>简单但低效</td>
+          <td>分层结构 + 双选择哈希优化</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h4 id="关键设计点"><strong>关键设计点</strong></h4>
+<ol>
+<li><strong>主层过滤</strong>：<br>
+通过几何递减的主层结构，将多数插入限制在低层完成，避免全局探测。</li>
+<li><strong>应急双保险</strong>：
+<ul>
+<li><strong>B区</strong>：限制均匀探测次数为 log log n，避免无限循环。</li>
+<li><strong>C区</strong>：双选择哈希降低冲突概率，桶大小设计为 2 log log n 以高概率避免溢出。</li>
+</ul>
+</li>
+<li><strong>复杂度控制</strong>：<br>
+主层探测次数为 α×β=O(log 2 δ −1 )，应急层兜底代价为 O(log log n)。</li>
+</ol>
+<hr>
+<p>通过这一设计，漏斗哈希在保持贪婪策略的同时，突破了Yao猜想的下限，为高负载场景提供了理论最优解。</p>
+
+      </div>
+    </article>
+
+    <hr />
+
+    <div class="post-info">
+      
+    <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg>
+
+        <span class="tag"><a href="http://localhost:1313/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></span>
+        <span class="tag"><a href="http://localhost:1313/tags/%E5%93%88%E5%B8%8C%E8%A1%A8/">哈希表</a></span>
+        <span class="tag"><a href="http://localhost:1313/tags/%E5%BC%80%E6%94%BE%E5%9C%B0%E5%9D%80/">开放地址</a></span>
+        
+    </p>
+
+      
+
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        
+          2025-02-21 08:00
+        
+      </p>
+    </div>
+
+    
+    <div class="pagination">
+        
+
+        <div class="pagination__buttons">
+            
+
+            
+            <span class="button next">
+                <a href="http://localhost:1313/posts/zh/distributed/pacifica-test-cases/">
+                    <span class="button__text">PacificA解读</span>
+                    <span class="button__icon">→</span>
+                </a>
+            </span>
+            
+        </div>
+    </div>
+
+
+  </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.e89fda0f29b95d33f6f4224dd9e5cf69d84aff3818be2b0d73e731689cc374261b016d17d46f8381962fb4a1577ba3017b1f23509d894f6e66431f988c00889e.js" integrity="sha512-6J/aDym5XTP29CJN2eXPadhK/zgYvisNc&#43;cxaJzDdCYbAW0X1G&#43;DgZYvtKFXe6MBex8jUJ2JT25mQx&#43;YjACIng=="></script>
+
+
+
+
+    </body>
+</html>

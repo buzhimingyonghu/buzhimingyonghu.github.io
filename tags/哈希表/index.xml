@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>哈希表 on Victor的世界</title>
+    <link>http://localhost:1313/tags/%E5%93%88%E5%B8%8C%E8%A1%A8/</link>
+    <description>Recent content in 哈希表 on Victor的世界</description>
+    <generator>Hugo</generator>
+    <language>zh</language>
+    <lastBuildDate>Fri, 21 Feb 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/%E5%93%88%E5%B8%8C%E8%A1%A8/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>解读开放寻址哈希表最新发现，突破传统哈希表的性能瓶颈</title>
+      <link>http://localhost:1313/posts/zh/datastruct/%E5%BC%B9%E6%80%A7%E5%93%88%E5%B8%8C/</link>
+      <pubDate>Fri, 21 Feb 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/zh/datastruct/%E5%BC%B9%E6%80%A7%E5%93%88%E5%B8%8C/</guid>
+      <description>&lt;h2 id=&#34;论文概述&#34;&gt;论文概述&lt;/h2&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://arxiv.org/pdf/2501.02305&#34;&gt;Optimal Bounds for Open Addressing Without Reordering&lt;/a&gt;&#xA;这篇论文主要围绕开放地址哈希表中的插入操作进行研究，重点是如何优化插入操作时的探测复杂度&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;引言：讨论了在不重排已插入元素的情况下，如何优化哈希表的探测复杂度。提出了两个问题：一是能否在不重排元素的情况下，优化期望的探测复杂度；二是能否在没有重排的情况下优化最坏情况下的探测复杂度。&lt;/li&gt;&#xA;&lt;li&gt;弹性哈希（Elastic Hashing）：提出了一种新的哈希策略，能在没有重排元素的情况下实现 &lt;strong&gt;O(1) 的期望探测复杂度和 O(log δ^{-1})&lt;/strong&gt; 的最坏情况下的探测复杂度，证明了这种方法的最优性。&lt;/li&gt;&#xA;&lt;li&gt;漏斗哈希（Funnel Hashing）：提出了一种贪心的哈希策略，能达到 O(log^2 δ^{-1}) 的最坏情况下的探测复杂度，进一步证明了Yao猜想的错误，说明均匀探测并非最优。&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;论文背景&#34;&gt;论文背景&lt;/h2&gt;&#xA;&lt;p&gt;首先我先介绍一下哈希表：哈希表是一种通过哈希函数将键（Key）映射到存储位置的高效数据结构。其核心思想是：&lt;strong&gt;直接寻址&lt;/strong&gt;：理想情况下，每个键通过哈希函数 (h(k)) 直接映射到唯一的槽位（Slot），实现 O(1) 时间的插入和查询。&lt;/p&gt;&#xA;&lt;h3 id=&#34;哈希冲突&#34;&gt;哈希冲突：&lt;/h3&gt;&#xA;&lt;p&gt;但是由于哈希函数将大范围的键映射到有限槽位，&lt;strong&gt;哈希冲突（Collision）&lt;/strong&gt; 是不可避免的。例如：&#xA;假设哈希表有 n=100 个槽位，存入 200个键时，至少有两个键映射到同一槽位（鸽巢原理）。&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;那么如何去解决哈希冲突呢？&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;h3 id=&#34;常见的哈希冲突解决方法&#34;&gt;常见的哈希冲突解决方法&lt;/h3&gt;&#xA;&lt;h4 id=&#34;1-链地址法&#34;&gt;(1) &lt;strong&gt;链地址法&lt;/strong&gt;&lt;/h4&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;原理&lt;/strong&gt;：每个槽位维护一个链表（或树），冲突元素追加到链表中。&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;优点&lt;/strong&gt;：实现简单，负载因子容忍度高（&amp;gt;1）。&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;缺点&lt;/strong&gt;：指针开销大，缓存不友好。&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h4 id=&#34;2-开放寻址法&#34;&gt;(2) &lt;strong&gt;开放寻址法&lt;/strong&gt;&lt;/h4&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;原理&lt;/strong&gt;：所有元素存储在数组中，冲突时按探测序列（Probe Sequence）寻找下一个空槽。&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;典型探测方法&lt;/strong&gt;：&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;线性探测&lt;/strong&gt;：依次检查 h(k)+1, h(k)+2, &amp;hellip;，简单但易产生聚集（Clustering）。&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;二次探测&lt;/strong&gt;：按 h(k)+C1i + C2i^2 跳跃，缓解聚集但可能漏查空槽。&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;双重哈希&lt;/strong&gt;：使用第二个哈希函数生成步长，分布更均匀。&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;&lt;strong&gt;因为论文主要讨论开放寻址法，所以下面主要介绍开放寻址法&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;h3 id=&#34;开放寻址法的核心痛点&#34;&gt;开放寻址法的核心痛点&lt;/h3&gt;&#xA;&lt;p&gt;在高负载因子（如负载因子 1-δ 接近 1）时：&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;&lt;strong&gt;探测次数激增&lt;/strong&gt;：平均探测次数从 O(1) 升至 O(δ^{-1})。&#xA;&lt;ul&gt;&#xA;&lt;li&gt;例如，当 δ=0.1（保留 10% 空位），均匀探测的平均探测次数约为 O(log δ^{-1})=O(3.3)，但最坏情况可能达到 O(δ^{-1})=O(10)。&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;性能不稳定&lt;/strong&gt;：少数插入操作可能因连续冲突消耗大量时间。&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;hr&gt;&#xA;&lt;h3 id=&#34;yao猜想开放寻址的理论极限&#34;&gt;Yao猜想：开放寻址的理论极限&lt;/h3&gt;&#xA;&lt;p&gt;1985年，Yao在其论文《Uniform Hashing is Optimal》中提出：&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

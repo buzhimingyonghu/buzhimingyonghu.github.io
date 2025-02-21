@@ -2,45 +2,45 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Victor&#39;s World</title>
-    <link>https://buzhimingyonghu.github.io/en/tags/</link>
+    <link>http://localhost:1313/en/tags/</link>
     <description>Recent content in Tags on Victor&#39;s World</description>
     <generator>Hugo</generator>
     <language>en</language>
     <lastBuildDate>Tue, 18 Feb 2025 19:42:02 +0800</lastBuildDate>
-    <atom:link href="https://buzhimingyonghu.github.io/en/tags/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/en/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Consistency</title>
-      <link>https://buzhimingyonghu.github.io/en/tags/consistency/</link>
+      <link>http://localhost:1313/en/tags/consistency/</link>
       <pubDate>Tue, 18 Feb 2025 19:42:02 +0800</pubDate>
-      <guid>https://buzhimingyonghu.github.io/en/tags/consistency/</guid>
+      <guid>http://localhost:1313/en/tags/consistency/</guid>
       <description></description>
     </item>
     <item>
       <title>Distributed</title>
-      <link>https://buzhimingyonghu.github.io/en/tags/distributed/</link>
+      <link>http://localhost:1313/en/tags/distributed/</link>
       <pubDate>Tue, 18 Feb 2025 19:42:02 +0800</pubDate>
-      <guid>https://buzhimingyonghu.github.io/en/tags/distributed/</guid>
+      <guid>http://localhost:1313/en/tags/distributed/</guid>
       <description></description>
     </item>
     <item>
       <title>Distributed Systems</title>
-      <link>https://buzhimingyonghu.github.io/en/tags/distributed-systems/</link>
+      <link>http://localhost:1313/en/tags/distributed-systems/</link>
       <pubDate>Tue, 18 Feb 2025 19:42:02 +0800</pubDate>
-      <guid>https://buzhimingyonghu.github.io/en/tags/distributed-systems/</guid>
+      <guid>http://localhost:1313/en/tags/distributed-systems/</guid>
       <description></description>
     </item>
     <item>
       <title>PacificA</title>
-      <link>https://buzhimingyonghu.github.io/en/tags/pacifica/</link>
+      <link>http://localhost:1313/en/tags/pacifica/</link>
       <pubDate>Tue, 18 Feb 2025 19:42:02 +0800</pubDate>
-      <guid>https://buzhimingyonghu.github.io/en/tags/pacifica/</guid>
+      <guid>http://localhost:1313/en/tags/pacifica/</guid>
       <description></description>
     </item>
     <item>
       <title>Pika</title>
-      <link>https://buzhimingyonghu.github.io/en/tags/pika/</link>
+      <link>http://localhost:1313/en/tags/pika/</link>
       <pubDate>Tue, 18 Feb 2025 19:42:02 +0800</pubDate>
-      <guid>https://buzhimingyonghu.github.io/en/tags/pika/</guid>
+      <guid>http://localhost:1313/en/tags/pika/</guid>
       <description></description>
     </item>
   </channel>
